@@ -1,15 +1,19 @@
 local ui = {}
 local conf = require('modules.ui.config')
 
+ui['kyazdani42/nvim-web-devicons'] = {opt = false}
 ui['sainnhe/edge'] = {opt = false, config = conf.edge}
 ui['sainnhe/everforest'] = {opt = false, config = conf.everforest}
-ui['hoob3rt/lualine.nvim'] = {opt = false, config = conf.lualine}
-ui['glepnir/dashboard-nvim'] = {opt = false, config = conf.dashboard}
+ui['hoob3rt/lualine.nvim'] = {
+    opt = true,
+    after = 'nvim-gps',
+    config = conf.lualine
+}
+ui['glepnir/dashboard-nvim'] = {opt = true, event = "BufWinEnter"}
 ui['kyazdani42/nvim-tree.lua'] = {
     opt = true,
     cmd = {'NvimTreeToggle', 'NvimTreeOpen'},
-    config = conf.nvim_tree,
-    requires = 'kyazdani42/nvim-web-devicons'
+    config = conf.nvim_tree
 }
 ui['lewis6991/gitsigns.nvim'] = {
     opt = true,
@@ -23,9 +27,9 @@ ui['lukas-reineke/indent-blankline.nvim'] = {
     config = conf.indent_blankline
 }
 ui['akinsho/nvim-bufferline.lua'] = {
-    opt = false,
-    config = conf.nvim_bufferline,
-    requires = 'kyazdani42/nvim-web-devicons'
+    opt = true,
+    event = 'BufRead',
+    config = conf.nvim_bufferline
 }
 ui['folke/zen-mode.nvim'] = {
     opt = true,

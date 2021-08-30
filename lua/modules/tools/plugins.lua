@@ -24,7 +24,15 @@ tools['nvim-telescope/telescope-frecency.nvim'] = {
     after = 'telescope.nvim',
     requires = {{'tami5/sql.nvim', opt = true}}
 }
+tools['thinca/vim-quickrun'] = {opt = true, cmd = {'QuickRun', 'Q'}}
+tools['michaelb/sniprun'] = {
+    opt = true,
+    run = 'bash ./install.sh',
+    cmd = {"SnipRun", "'<,'>SnipRun"}
+}
 tools['folke/which-key.nvim'] = {
+    opt = true,
+    keys = ",",
     config = function() require("which-key").setup {} end
 }
 tools['folke/trouble.nvim'] = {
@@ -33,5 +41,9 @@ tools['folke/trouble.nvim'] = {
     config = conf.trouble
 }
 tools['dstein64/vim-startuptime'] = {opt = true, cmd = "StartupTime"}
-
+tools['gelguy/wilder.nvim'] = {
+    event = "CmdlineEnter",
+    run = ":UpdateRemotePlugins",
+    config = conf.wilder
+}
 return tools

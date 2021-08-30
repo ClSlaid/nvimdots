@@ -16,7 +16,7 @@ end
 
 function config.lualine()
     local function lsp()
-        local icon = [[ LSP: ]]
+        local icon = [[  LSP: ]]
         local msg = 'No Active LSP'
         local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
         local clients = vim.lsp.get_active_clients()
@@ -30,6 +30,8 @@ function config.lualine()
         return icon .. msg
     end
 
+    local gps = require("nvim-gps")
+
     require('lualine').setup {
         options = {
             icons_enabled = true,
@@ -39,19 +41,12 @@ function config.lualine()
 
         sections = {
             lualine_a = {'mode'},
-            lualine_b = {
-                {'branch'}, {
-                    'diff',
-                    -- Is it me or the symbol for modified us really weird
-                    symbols = {
-                        added = ' ',
-                        modified = '柳 ',
-                        removed = ' '
-                    }
-                }
-            },
+            lualine_b = {{'branch'}, {'diff'}},
             lualine_c = {
-                {'filename'}, {
+                {'filename'}, {gps.get_location, condition = gps.is_available}
+            },
+            lualine_x = {
+                {
                     'diagnostics',
                     sources = {'nvim_lsp'},
                     color_error = "#BF616A",
@@ -59,9 +54,8 @@ function config.lualine()
                     color_info = "#81A1AC",
                     color_hint = "#88C0D0",
                     symbols = {error = ' ', warn = ' ', info = ' '}
-                }
+                }, {lsp}, {'encoding'}, {'fileformat'}
             },
-            lualine_x = {{lsp}, {'encoding'}, {'fileformat'}},
             lualine_y = {'progress'},
             lualine_z = {'location'}
         },
@@ -78,98 +72,7 @@ function config.lualine()
     }
 end
 
-function config.nvim_bufferline()
-    require('bufferline').setup {
-        options = {
-            number = "both",
-            number_style = "superscript",
-            modified_icon = '✥',
-            buffer_close_icon = "",
-            mappings = true,
-            left_trunc_marker = "",
-            right_trunc_marker = "",
-            max_name_length = 14,
-            max_prefix_length = 13,
-            tab_size = 20,
-            show_buffer_close_icons = true,
-            show_buffer_icons = true,
-            show_tab_indicators = true,
-            separator_style = "thin",
-            diagnostics = "nvim_lsp",
-            always_show_bufferline = true,
-            offsets = {
-                {
-                    filetype = "NvimTree",
-                    text = "File Explorer",
-                    text_align = "center",
-                    padding = 1
-                }
-            }
-        }
-    }
-end
-
-function config.dashboard()
-    local home = os.getenv('HOME')
-    vim.g.dashboard_footer_icon = '🐬 '
-    vim.g.dashboard_default_executive = 'telescope'
-
-    vim.g.dashboard_custom_header = {
-        [[              ...  .......          ]],
-        [[         ....................       ]],
-        [[    ..'........................     ]],
-        [[ ...,'.......'.., .........'....    ]],
-        [[  .'......,. ;'., '..'.......'.'.   ]],
-        [[ .'.,'.''.;..,'.. .  ...'....','..  ]],
-        [[..''.'.''''.....        .,'....;'.. ]],
-        [[..',.......'. .        ..';'..','...]],
-        [[ ....''..  ..        .....;,..','...]],
-        [[  . .....           ......,..';,....]],
-        [[      .'.         ....  ... ,,'.....]],
-        [[      .,..             .....,'..... ]],
-        [[     .'''.             ...'......   ]],
-        [[     ..'..'.          ... ......    ]],
-        [[       . '.'..             ..       ]],
-        [[         ......           .         ]],
-        [[            ....                    ]]
-    }
-
-    vim.g.dashboard_custom_section = {
-        change_colorscheme = {
-            description = {' Scheme change              comma s c '},
-            command = 'DashboardChangeColorscheme'
-        },
-        find_frecency = {
-            description = {' File frecency              comma f r '},
-            command = 'Telescope frecency'
-        },
-        find_history = {
-            description = {' File history               comma f e '},
-            command = 'DashboardFindHistory'
-        },
-        find_project = {
-            description = {' Project find               comma f p '},
-            command = 'Telescope project'
-        },
-        find_file = {
-            description = {' File find                  comma f f '},
-            command = 'DashboardFindFile'
-        },
-        file_new = {
-            description = {' File new                   comma f n '},
-            command = 'DashboardNewFile'
-        },
-        find_word = {
-            description = {' Word find                  comma f w '},
-            command = 'DashboardFindWord'
-        }
-    }
-end
-
 function config.nvim_tree()
-    if not packer_plugins['nvim-tree.lua'].loaded then
-        vim.cmd [[packadd nvim-tree.lua]]
-    end
     vim.g.nvim_tree_width = 35
     vim.g.nvim_tree_follow = 1
     vim.g.nvim_tree_gitignore = 1
@@ -183,6 +86,8 @@ function config.nvim_tree()
     vim.g.nvim_tree_highlight_opened_files = 1
     vim.g.nvim_tree_tab_open = 1
     vim.g.nvim_tree_lsp_diagnostics = 1
+    vim.g.nvim_tree_disable_netrw = 1
+    vim.g.nvim_tree_hijack_netrw = 1
     vim.g.nvim_tree_indent_markers = 1
     vim.g.nvim_tree_ignore = {'.git', 'node_modules', '.cache'}
     vim.g.nvim_tree_icons = {
@@ -194,6 +99,75 @@ function config.nvim_tree()
             unmerged = "≠",
             renamed = "≫",
             untracked = "★"
+        }
+    }
+    vim.g.nvim_tree_disable_keybindings = 0
+    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+    vim.g.nvim_tree_bindings = {
+        {key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("tabnew")},
+        {key = {"<2-RightMouse>", "<C-]>"}, cb = tree_cb("cd")},
+        {key = "<C-v>", cb = tree_cb("vsplit")},
+        {key = "<C-x>", cb = tree_cb("split")},
+        {key = "<C-t>", cb = tree_cb("tabnew")},
+        {key = "<", cb = tree_cb("prev_sibling")},
+        {key = ">", cb = tree_cb("next_sibling")},
+        {key = "P", cb = tree_cb("parent_node")},
+        {key = "<BS>", cb = tree_cb("close_node")},
+        {key = "<S-CR>", cb = tree_cb("close_node")},
+        {key = "<Tab>", cb = tree_cb("preview")},
+        {key = "K", cb = tree_cb("first_sibling")},
+        {key = "J", cb = tree_cb("last_sibling")},
+        {key = "I", cb = tree_cb("toggle_ignored")},
+        {key = "H", cb = tree_cb("toggle_dotfiles")},
+        {key = "R", cb = tree_cb("refresh")},
+        {key = "a", cb = tree_cb("create")},
+        {key = "d", cb = tree_cb("remove")},
+        {key = "r", cb = tree_cb("rename")},
+        {key = "<C-r>", cb = tree_cb("full_rename")},
+        {key = "x", cb = tree_cb("cut")}, {key = "c", cb = tree_cb("copy")},
+        {key = "p", cb = tree_cb("paste")},
+        {key = "y", cb = tree_cb("copy_name")},
+        {key = "Y", cb = tree_cb("copy_path")},
+        {key = "gy", cb = tree_cb("copy_absolute_path")},
+        {key = "[c", cb = tree_cb("prev_git_item")},
+        {key = "]c", cb = tree_cb("next_git_item")},
+        {key = "-", cb = tree_cb("dir_up")},
+        {key = "s", cb = tree_cb("system_open")},
+        {key = "q", cb = tree_cb("close")},
+        {key = "g?", cb = tree_cb("toggle_help")}
+    }
+end
+
+function config.nvim_bufferline()
+    require('bufferline').setup {
+        options = {
+            number = "both",
+            numbers = function(opts)
+
+                return string.format('%s·%s', opts.raise(opts.ordinal),
+                                     opts.lower(opts.id))
+            end,
+            modified_icon = '✥',
+            buffer_close_icon = '',
+            left_trunc_marker = "",
+            right_trunc_marker = "",
+            max_name_length = 14,
+            max_prefix_length = 13,
+            tab_size = 20,
+            show_buffer_close_icons = true,
+            show_buffer_icons = true,
+            show_tab_indicators = true,
+            diagnostics = "nvim_lsp",
+            always_show_bufferline = true,
+            separator_style = "slant",
+            offsets = {
+                {
+                    filetype = "NvimTree",
+                    text = "File Explorer",
+                    text_align = "center",
+                    padding = 1
+                }
+            }
         }
     }
 end
@@ -239,8 +213,7 @@ function config.gitsigns()
         },
         watch_index = {interval = 1000, follow_files = true},
         current_line_blame = true,
-        current_line_blame_delay = 1000,
-        current_line_blame_position = 'eol',
+        current_line_blame_opts = {delay = 1000, virtual_text_pos = 'eol'},
         sign_priority = 6,
         update_debounce = 100,
         status_formatter = nil, -- Use default
