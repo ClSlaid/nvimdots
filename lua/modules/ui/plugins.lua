@@ -2,6 +2,7 @@ local ui = {}
 local conf = require('modules.ui.config')
 
 ui['sainnhe/edge'] = {opt = false, config = conf.edge}
+ui['sainnhe/everforest'] = {opt = false, config = conf.everforest}
 ui['hoob3rt/lualine.nvim'] = {opt = false, config = conf.lualine}
 ui['glepnir/dashboard-nvim'] = {opt = false, config = conf.dashboard}
 ui['kyazdani42/nvim-tree.lua'] = {

@@ -87,7 +87,7 @@ local load_core = function()
     require('core.event')
     pack.load_compile()
 
-    vim.cmd [[colorscheme edge]]
+    vim.cmd [[colorscheme everforest]]
 end
 
 load_core()

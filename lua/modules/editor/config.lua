@@ -119,6 +119,13 @@ end
 
 function config.nvim_colorizer() require('colorizer').setup() end
 
+function config.lsp_colors() require('lsp-colors').setup({
+    Error = "#db4b4b",
+    Warning = "#e0af68",
+    Information = "#0db9d7",
+    Hint = "#10B981"
+}) end
+
 function config.easymotion()
     vim.g.EasyMotion_do_mapping = 0
     vim.g.EasyMotion_smartcase = 1

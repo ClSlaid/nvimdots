@@ -54,6 +54,12 @@ editor['norcalli/nvim-colorizer.lua'] = {
     event = 'BufRead',
     config = conf.nvim_colorizer
 }
+
+-- lsp message highlighting
+editor['folke/lsp-colors.nvim'] = {
+    opt = true,
+}
+
 editor['rmagatti/auto-session'] = {
     opt = true,
     cmd = {'SaveSession', 'RestoreSession', 'DeleteSession'},
