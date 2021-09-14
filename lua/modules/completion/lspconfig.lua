@@ -38,6 +38,60 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
     properties = {'documentation', 'detail', 'additionalTextEdits'}
 }
 
+local function custom_attach()
+    require('lsp_signature').on_attach({
+        bind = true,
+        use_lspsaga = false,
+        floating_window = true,
+        fix_pos = true,
+        hint_enable = true,
+        hi_parameter = "Search",
+        handler_opts = {"double"}
+    })
+end
+
+local function switch_source_header_splitcmd(bufnr, splitcmd)
+    bufnr = nvim_lsp.util.validate_bufnr(bufnr)
+    local params = {uri = vim.uri_from_bufnr(bufnr)}
+    vim.lsp.buf_request(bufnr, 'textDocument/switchSourceHeader', params,
+                        function(err, _, result)
+        if err then error(tostring(err)) end
+        if not result then
+            print("Corresponding file can’t be determined")
+            return
+        end
+        vim.api.nvim_command(splitcmd .. ' ' .. vim.uri_to_fname(result))
+    end)
+end
+
+local function setup_cpp()
+    nvim_lsp.clangd.setup {
+        capabilities = capabilities,
+        flags = {debounce_text_changes = 500},
+        on_attach = custom_attach,
+        commands = {
+            ClangdSwitchSourceHeader = {
+                function()
+                    switch_source_header_splitcmd(0, "edit")
+                end,
+                description = "Open source/header in current buffer"
+            },
+            ClangdSwitchSourceHeaderVSplit = {
+                function()
+                    switch_source_header_splitcmd(0, "vsplit")
+                end,
+                description = "Open source/header in a new vsplit"
+            },
+            ClangdSwitchSourceHeaderSplit = {
+                function()
+                    switch_source_header_splitcmd(0, "split")
+                end,
+                description = "Open source/header in a new split"
+            }
+        }
+    }
+end
+
 local function setup_servers()
     lsp_install.setup()
     local servers = lsp_install.installed_servers()
@@ -60,33 +114,13 @@ local function setup_servers()
                         telemetry = {enable = false}
                     }
                 },
-                on_attach = function()
-                    require('lsp_signature').on_attach({
-                        bind = true,
-                        use_lspsaga = false,
-                        floating_window = true,
-                        fix_pos = true,
-                        hint_enable = true,
-                        hi_parameter = "Search",
-                        handler_opts = {"double"}
-                    })
-                end
+                on_attach = custom_attach
             }
         else
             nvim_lsp[lsp].setup {
                 capabilities = capabilities,
                 flags = {debounce_text_changes = 500},
-                on_attach = function()
-                    require('lsp_signature').on_attach({
-                        bind = true,
-                        use_lspsaga = false,
-                        floating_window = true,
-                        fix_pos = true,
-                        hint_enable = true,
-                        hi_parameter = "Search",
-                        handler_opts = {"double"}
-                    })
-                end
+                on_attach = custom_attach
             }
         end
     end
@@ -98,3 +132,5 @@ lsp_install.post_install_hook = function()
 end
 
 setup_servers()
+
+setup_cpp()

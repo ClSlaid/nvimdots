@@ -107,7 +107,8 @@ function config.nvim_treesitter()
             max_file_lines = 1000 -- Do not enable for files with more than 1000 lines, int
         },
         context_commentstring = {enable = true, enable_autocmd = false},
-        matchup = {enable = true}
+        matchup = {enable = true},
+        context = {enable = true, throttle = true}
     }
 end
 
@@ -237,13 +238,13 @@ function config.dapui()
                 }, {id = "breakpoints", size = 0.25},
                 {id = "stacks", size = 0.25}, {id = "watches", size = 00.25}
             },
-            width = 40,
+            size = 40,
             position = "left"
         },
         tray = {
             open_on_start = true,
             elements = {"repl"},
-            height = 10,
+            size = 10,
             position = "bottom"
         },
         floating = {
