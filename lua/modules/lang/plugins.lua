@@ -23,4 +23,17 @@ lang['iamcco/markdown-preview.nvim'] = {
     ft = "markdown",
     run = 'cd app && yarn install'
 }
+lang['wlangstroth/vim-racket'] = {
+    opt = true,
+    ft = {"scheme", "racket"},
+}
+lang['Olical/conjure'] = {
+    opt = true,
+    ft = {"racket", "scheme", "clojure", "common lisp"},
+}
+lang['neovimhaskell/haskell-vim'] = {
+    opt = true,
+    ft = "haskell",
+    config = conf.haskell
+}
 return lang

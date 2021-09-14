@@ -93,4 +93,8 @@ function config.lang_org()
     })
 end
 
+function config.haskell()
+    -- TODO: Add customized hightlighting configure
+end
+
 return config
