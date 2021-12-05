@@ -3,14 +3,16 @@ local dap_dir = vim.fn.stdpath("data") .. "/dapinstall/"
 local sessions_dir = vim.fn.stdpath("data") .. "/sessions/"
 
 function config.symbols_outline()
-    vim.g.symbols_outline = {
+    require("symbols-outline").setup({
         highlight_hovered_item = true,
+        width = 60,
         show_guides = true,
         auto_preview = true,
-        position = 'right',
-        show_numbers = false,
-        show_relative_numbers = false,
+        position = "right",
+        show_numbers = true,
+        show_relative_numbers = true,
         show_symbol_details = true,
+        preview_bg_highlight = 'Pmenu',
         keymaps = {
             close = "<Esc>",
             goto_location = "<Cr>",
@@ -48,28 +50,28 @@ function config.symbols_outline()
             Operator = {icon = "+", hl = "TSOperator"},
             TypeParameter = {icon = "𝙏", hl = "TSParameter"}
         }
-    }
+    })
 end
 
 function config.vim_cursorwod()
-    vim.api.nvim_command('augroup user_plugin_cursorword')
-    vim.api.nvim_command('autocmd!')
+    vim.api.nvim_command("augroup user_plugin_cursorword")
+    vim.api.nvim_command("autocmd!")
     vim.api.nvim_command(
-        'autocmd FileType NvimTree,lspsagafinder,dashboard let b:cursorword = 0')
+        "autocmd FileType NvimTree,lspsagafinder,dashboard let b:cursorword = 0")
     vim.api.nvim_command(
-        'autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif')
-    vim.api.nvim_command('autocmd InsertEnter * let b:cursorword = 0')
-    vim.api.nvim_command('autocmd InsertLeave * let b:cursorword = 1')
-    vim.api.nvim_command('augroup END')
+        "autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
+    vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
+    vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
+    vim.api.nvim_command("augroup END")
 end
 
 function config.nvim_treesitter()
-    vim.api.nvim_command('set foldmethod=expr')
-    vim.api.nvim_command('set foldexpr=nvim_treesitter#foldexpr()')
+    vim.api.nvim_command("set foldmethod=expr")
+    vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()")
 
-    require'nvim-treesitter.configs'.setup {
-        ensure_installed = 'maintained',
-        highlight = {enable = true, disable = {'vim'}},
+    require"nvim-treesitter.configs".setup {
+        ensure_installed = "maintained",
+        highlight = {enable = true, disable = {"vim"}},
         textobjects = {
             select = {
                 enable = true,
@@ -119,11 +121,12 @@ end
 function config.nvim_gps()
     require("nvim-gps").setup({
         icons = {
-            ["class-name"] = ' ', -- Classes and class-like objects
-            ["function-name"] = ' ', -- Functions
-            ["method-name"] = ' ' -- Methods (functions inside class-like objects)
+            ["class-name"] = " ", -- Classes and class-like objects
+            ["function-name"] = " ", -- Functions
+            ["method-name"] = " " -- Methods (functions inside class-like objects)
         },
-        languages = { -- You can disable any language individually here
+        languages = {
+            -- You can disable any language individually here
             ["c"] = true,
             ["cpp"] = true,
             ["go"] = true,
@@ -133,12 +136,12 @@ function config.nvim_gps()
             ["python"] = true,
             ["rust"] = true
         },
-        separator = ' > '
+        separator = " > "
     })
 end
 
 function config.autotag()
-    require('nvim-ts-autotag').setup({
+    require("nvim-ts-autotag").setup({
         filetypes = {
             "html", "xml", "javascript", "typescriptreact", "javascriptreact",
             "vue"
@@ -162,11 +165,11 @@ function config.easymotion()
 end
 
 function config.neoscroll()
-    require('neoscroll').setup({
+    require("neoscroll").setup({
         -- All these keys will be mapped to their corresponding default scrolling animation
         mappings = {
-            '<C-u>', '<C-d>', '<C-b>', '<C-f>', '<C-y>', '<C-e>', 'zt', 'zz',
-            'zb'
+            "<C-u>", "<C-d>", "<C-b>", "<C-f>", "<C-y>", "<C-e>", "zt", "zz",
+            "zb"
         },
         hide_cursor = true, -- Hide cursor while scrolling
         stop_eof = true, -- Stop at <EOF> when scrolling downwards
@@ -179,9 +182,93 @@ function config.neoscroll()
     })
 end
 
+function config.format()
+    require("format").setup {
+        ["*"] = {
+            {cmd = {"sed -i 's/[ \t]*$//'"}} -- remove trailing whitespace
+        },
+        vim = {
+            {
+                cmd = {"luafmt -w replace"},
+                start_pattern = "^lua << EOF$",
+                end_pattern = "^EOF$"
+            }
+        },
+        vimwiki = {
+            {
+                cmd = {"prettier -w --parser babel"},
+                start_pattern = "^{{{javascript$",
+                end_pattern = "^}}}$"
+            }
+        },
+        lua = {
+            {
+                cmd = {
+                    function(file)
+                        return string.format("lua-format -i %s", file)
+                    end
+                }
+            }
+        },
+        c = {
+            {
+                cmd = {
+                    function(file)
+                        return string.format("clang-format -i %s", file)
+                    end
+                }
+            }
+        },
+        cpp = {
+            {
+                cmd = {
+                    function(file)
+                        return string.format("clang-format -i %s", file)
+                    end
+                }
+            }
+        },
+        go = {{cmd = {"gofmt -w", "goimports -w"}, tempfile_postfix = ".tmp"}},
+        python = {
+            {cmd = {"python3 -m autopep8 --in-place --aggressive --aggressive"}}
+        },
+        sh = {
+            {
+                cmd = {
+                    function(file)
+                        return string.format("shfmt -w %s", file)
+                    end
+                }
+            }
+        },
+        rust = {
+            {
+                cmd = {
+                    function(file)
+                        return string.format("rustfmt %s", file)
+                    end
+                }
+            }
+        },
+        html = {{cmd = {"prettier -w"}}},
+        javascript = {
+            {cmd = {"prettier -w", "./node_modules/.bin/eslint --fix"}}
+        },
+        json = {{cmd = {"prettier -w"}}},
+        markdown = {
+            {cmd = {"prettier -w"}}, {
+                cmd = {"black"},
+                start_pattern = "^```python$",
+                end_pattern = "^```$",
+                target = "current"
+            }
+        }
+    }
+end
+
 function config.auto_session()
     local opts = {
-        log_level = 'info',
+        log_level = "info",
         auto_session_enable_last_session = true,
         auto_session_root_dir = sessions_dir,
         auto_session_enabled = true,
@@ -190,7 +277,7 @@ function config.auto_session()
         auto_session_suppress_dirs = nil
     }
 
-    require('auto-session').setup(opts)
+    require("auto-session").setup(opts)
 end
 
 function config.toggleterm()
@@ -198,7 +285,7 @@ function config.toggleterm()
         -- size can be a number or function which is passed the current terminal
         size = function(term)
             if term.direction == "horizontal" then
-                return 20
+                return 15
             elseif term.direction == "vertical" then
                 return vim.o.columns * 0.40
             end
@@ -207,17 +294,28 @@ function config.toggleterm()
         hide_numbers = true, -- hide the number column in toggleterm buffers
         shade_filetypes = {},
         shade_terminals = false,
-        shading_factor = '1', -- the degree by which to darken to terminal colour, default: 1 for dark backgrounds, 3 for light
+        shading_factor = "1", -- the degree by which to darken to terminal colour, default: 1 for dark backgrounds, 3 for light
         start_in_insert = true,
         insert_mappings = true, -- whether or not the open mapping applies in insert mode
         persist_size = true,
-        direction = 'vertical',
+        direction = "horizontal",
         close_on_exit = true, -- close the terminal window when the process exits
         shell = vim.o.shell -- change the default shell
     }
 end
 
 function config.dapui()
+    local dap, dapui = require("dap"), require("dapui")
+    dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+    end
+    dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+    end
+    dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+    end
+
     require("dapui").setup({
         icons = {expanded = "▾", collapsed = "▸"},
         mappings = {
@@ -229,7 +327,6 @@ function config.dapui()
             repl = "r"
         },
         sidebar = {
-            open_on_start = true,
             elements = {
                 -- Provide as ID strings or tables with "id" and "size" keys
                 {
@@ -241,12 +338,7 @@ function config.dapui()
             size = 40,
             position = "left"
         },
-        tray = {
-            open_on_start = true,
-            elements = {"repl"},
-            size = 10,
-            position = "bottom"
-        },
+        tray = {elements = {"repl"}, size = 10, position = "bottom"},
         floating = {
             max_height = nil,
             max_width = nil,
@@ -272,14 +364,14 @@ function config.dap()
         handle, pid_or_err = vim.loop.spawn("dlv", opts, function(code)
             stdout:close()
             handle:close()
-            if code ~= 0 then print('dlv exited with code', code) end
+            if code ~= 0 then print("dlv exited with code", code) end
         end)
-        assert(handle, 'Error running dlv: ' .. tostring(pid_or_err))
+        assert(handle, "Error running dlv: " .. tostring(pid_or_err))
         stdout:read_start(function(err, chunk)
             assert(not err, err)
             if chunk then
                 vim.schedule(function()
-                    require('dap.repl').append(chunk)
+                    require("dap.repl").append(chunk)
                 end)
             end
         end)
@@ -297,7 +389,7 @@ function config.dap()
             request = "launch",
             mode = "test",
             program = "${file}"
-        }, -- works with go.mod packages and sub packages 
+        }, -- works with go.mod packages and sub packages
         {
             type = "go",
             name = "Debug test (go.mod)",
@@ -308,18 +400,17 @@ function config.dap()
     }
 
     dap.adapters.python = {
-        type = 'executable',
+        type = "executable",
         command = os.getenv("HOME") ..
-            '/.local/share/nvim/dapinstall/python_dbg/bin/python',
-        args = {'-m', 'debugpy.adapter'}
+            "/.local/share/nvim/dapinstall/python_dbg/bin/python",
+        args = {"-m", "debugpy.adapter"}
     }
     dap.configurations.python = {
         {
             -- The first three options are required by nvim-dap
-            type = 'python', -- the type here established the link to the adapter definition: `dap.adapters.python`
-            request = 'launch',
+            type = "python", -- the type here established the link to the adapter definition: `dap.adapters.python`
+            request = "launch",
             name = "Launch file",
-
             -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
 
             program = "${file}", -- This configuration will launch the current file if used.
@@ -328,23 +419,47 @@ function config.dap()
                 -- The code below looks for a `venv` or `.venv` folder in the current directly and uses the python within.
                 -- You could adapt this - to for example use the `VIRTUAL_ENV` environment variable.
                 local cwd = vim.fn.getcwd()
-                if vim.fn.executable(cwd .. '/venv/bin/python') == 1 then
-                    return cwd .. '/venv/bin/python'
-                elseif vim.fn.executable(cwd .. '/.venv/bin/python') == 1 then
-                    return cwd .. '/.venv/bin/python'
+                if vim.fn.executable(cwd .. "/venv/bin/python") == 1 then
+                    return cwd .. "/venv/bin/python"
+                elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
+                    return cwd .. "/.venv/bin/python"
                 else
-                    return '/usr/bin/python'
+                    return "/usr/bin/python"
                 end
             end
         }
     }
 end
 
-function config.dapinstal()
-    require("dap-install").setup({
-        installation_path = dap_dir,
-        verbosely_call_debuggers = false
-    })
+function config.marks()
+    require('marks').setup {
+        -- whether to map keybinds or not. default true
+        default_mappings = true,
+        -- which builtin marks to show. default {}
+        builtin_marks = {".", "<", ">", "^"},
+        -- whether movements cycle back to the beginning/end of buffer. default true
+        cyclic = true,
+        -- whether the shada file is updated after modifying uppercase marks. default false
+        force_write_shada = false,
+        -- how often (in ms) to redraw signs/recompute mark positions.
+        -- higher values will have better performance but may cause visual lag,
+        -- while lower values may cause performance penalties. default 150.
+        refresh_interval = 250,
+        -- sign priorities for each type of mark - builtin marks, uppercase marks, lowercase
+        -- marks, and bookmarks.
+        -- can be either a table with all/none of the keys, or a single number, in which case
+        -- the priority applies to all marks.
+        -- default 10.
+        sign_priority = {lower = 10, upper = 15, builtin = 8, bookmark = 20},
+        -- disables mark tracking for specific filetypes. default {}
+        excluded_filetypes = {},
+        -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
+        -- sign/virttext. Bookmarks can be used to group together positions and quickly move
+        -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
+        -- default virt_text is "".
+        bookmark_0 = {sign = "⚑", virt_text = "hello world"},
+        mappings = {}
+    }
 end
 
 return config

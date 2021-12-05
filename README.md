@@ -21,11 +21,15 @@
 
 ![Gitui](./shots/gitui.png)
 
-This is my neovim's configuration.
+This is my neovim's configuration, which contains four branch.
 
 I use [packer.nvim](https://github.com/wbthomason/packer.nvim) to manage plugins.
 
-I use [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) and [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) to realize code complete.
+| Branch |   Completion Solution   |
+| :----: | :---------------------: |
+|  main  | nvim-lspconfig+nvim-cmp |
+|  coq   | nvim-lspconfig+coq_nvim |
+|  coc   |        coc.nvim         |
 
 Chinese introduction is [here](https://zhuanlan.zhihu.com/p/382092667).
 
@@ -50,18 +54,27 @@ Chinese introduction is [here](https://zhuanlan.zhihu.com/p/382092667).
 1. Neovim base installation for archlinux
 
 ```shell
-# gitui for tui git operations
-# ripgrep for telescope word search engine
-# fd for telescope file search engine
-# yarn for markdown preview
-# nerd-fonts-ibm-plex-mono for devicons
-sudo pacman -S git neovim gitui ripgrep fd yarn nerd-fonts-ibm-plex-mono
+# gitui required by tui git operations
+# ripgrep required by telescope word search engine
+# ripgrep required by telescope-zoxide
+# sqlite required by telescope-frecency
+# fd required by telescope file search engine
+# yarn required by markdown preview
+# nerd-fonts-ibm-plex-mono required by devicons
+sudo pacman -S git gitui zoxide ripgrep sqlite fd yarn nerd-fonts-ibm-plex-mono
+
+# nodejs, neovim-git required by copilot.
+# neovim version >= 0.6
+yay -S nodejs neovim-git
 
 # for neovim python module
 pip install neovim --user
 
 # clone
 git clone https://github.com/ayamir/nvimdots ~/.config/nvim
+
+# sync plugins(maybe need multiple times)
+nvim +PackerSync
 ```
 
 2. Recommended Terminals:
@@ -83,12 +96,19 @@ paru goneovim
 
 4. Tools for plugins
 
-- For [nvim-lspinstall](https://github.com/kabouzeid/nvim-lspinstall#usage), you
+- For [nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer#available-lsps), you
   need to install corresponding language server use it.
+
+The default html server has bug which does not support embeded
+javascript completion. So you need to install another server manually.
+
+```
+npm i -g vscode-html-languageserver-bin
+```
 
 - For [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#supported-languages), all maintained parser will be installed by default.
 
-- For [neoformat](https://github.com/sbdchd/neoformat#supported-filetypes), you
+- For [format.nvim](https://github.com/sbdchd/neoformat#supported-filetypes), you
   need to install corresponding formatter manually:
 
 ```shell
@@ -96,9 +116,8 @@ paru goneovim
 sudo pacman -S clang
 # gofmt and goimports for golang
 go get -u golang.org/x/tools/...
-# luaformatter for lua
-sudo pacman -S luarocks
-luarocks install --server=https://luarocks.org/dev luaformatter
+# lua-format for lua
+paru -S lua-format-git
 # yapf and autopep8 for python
 pip install autopep8 yapf --user
 # rustfmt
@@ -239,18 +258,17 @@ Then you can figure out what modification makes error.
 
 ## UI
 
-|                                             Name                                              |                 Effect                 |
-| :-------------------------------------------------------------------------------------------: | :------------------------------------: |
-|                        [sainnhe/edge](https://github.com/sainnhe/edge)                        |          My light/dark theme           |
-|        [kyazdani42/nvim-web-devicons](https://github.com/kyazdani42/nvim-web-devicons)        |         For nvim-tree's icons          |
-|                [hoob3rt/lualine.nvim](https://github.com/hoob3rt/lualine.nvim)                |  Minimal, fast but customizable line   |
-|              [glepnir/dashboard-nvim](https://github.com/glepnir/dashboard-nvim)              |          Dashboard for Neovim          |
-|            [kyazdani42/nvim-tree.lua](https://github.com/kyazdani42/nvim-tree.lua)            |        Replacement of Nerdtree         |
-|             [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)             |        Show git status in nvim         |
-| [lukas-reineke/indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) |    Show indent with different level    |
-|             [akinsho/bufferline.nvim](https://github.com/akinsho/bufferline.nvim)             |       Tab and buffer management        |
-|                 [folke/zen-mode.nvim](https://github.com/folke/zen-mode.nvim)                 |           Focus on code only           |
-|                 [folke/twilight.nvim](https://github.com/folke/twilight.nvim)                 | Highlight current block and dim others |
+|                                             Name                                              |               Effect                |
+| :-------------------------------------------------------------------------------------------: | :---------------------------------: |
+|                        [sainnhe/edge](https://github.com/sainnhe/edge)                        |         My light/dark theme         |
+|        [kyazdani42/nvim-web-devicons](https://github.com/kyazdani42/nvim-web-devicons)        |        For nvim-tree's icons        |
+|                [hoob3rt/lualine.nvim](https://github.com/hoob3rt/lualine.nvim)                | Minimal, fast but customizable line |
+|              [glepnir/dashboard-nvim](https://github.com/glepnir/dashboard-nvim)              |        Dashboard for Neovim         |
+|            [kyazdani42/nvim-tree.lua](https://github.com/kyazdani42/nvim-tree.lua)            |       Replacement of Nerdtree       |
+|             [lewis6991/gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim)             |       Show git status in nvim       |
+| [lukas-reineke/indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) |  Show indent with different level   |
+|             [akinsho/bufferline.nvim](https://github.com/akinsho/bufferline.nvim)             |      Tab and buffer management      |
+|              [Xuyuanp/scrollbar.nvim](https://github.com/Xuyuanp/scrollbar.nvim)              |        Show buffer scrollbar        |
 
 ## Tools
 
@@ -258,7 +276,7 @@ Then you can figure out what modification makes error.
 | :-----------------------------------------------------------------------------------------------------: | :---------------------------------: |
 |                      [nvim-lua/popup.nvim](https://github.com/nvim-lua/popup.nvim)                      |     Required by telescope.nvim      |
 |                    [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim)                    |     Required by telescope.nvim      |
-|                           [tami5/sql.nvim](https://github.com/tami5/sql.nvim)                           | Required by telescope-frecency.nvim |
+|                         [tami5/sqlite.lua](https://github.com/tami5/sqlite.lua)                         | Required by telescope-frecency.nvim |
 |            [nvim-telescope/telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)            |     Find, Filter, Preview, Pick     |
 | [nvim-telescope/telescope-fzy-native.nvim](https://github.com/nvim-telescope/telescope-fzy-native.nvim) |      Fzy search for telescope       |
 |    [nvim-telescope/telescope-project.nvim](https://github.com/nvim-telescope/telescope-project.nvim)    |   Manage projects with telescope    |
@@ -283,38 +301,43 @@ Then you can figure out what modification makes error.
 |              [romgrk/nvim-treesitter-context](https://github.com/romgrk/nvim-treesitter-context)              |         Show current context         |
 |                        [p00f/nvim-ts-rainbow](https://github.com/p00f/nvim-ts-rainbow)                        |           Rainbow brackets           |
 | [JoosepAlviste/nvim-ts-context-commentstring](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) |       Comment base on context        |
+|        [mfussenegger/nvim-ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)        |     Select region like hop.nvim      |
 |                           [SmiteshP/nvim-gps](https://github.com/SmiteshP/nvim-gps)                           |   Show current context in lualine    |
 |                        [andymass/vim-matchup](https://github.com/andymass/vim-matchup)                        |        Better matchup for `%`        |
 |                     [jdhao/better-escape.vim](https://github.com/jdhao/better-escape.vim)                     |       Replace `esc` with `jk`        |
-|                            [sbdchd/neoformat](https://github.com/sbdchd/neoformat)                            |     Super powerful code formater     |
+|                   [lukas-reineke/format.nvim](https://github.com/lukas-reineke/format.nvim)                   |      Format code asynchronously      |
 |                      [windwp/nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag)                      |         Faster vim-closetag          |
 |                 [norcalli/nvim-colorizer.lua](https://github.com/norcalli/nvim-colorizer.lua)                 |        Display detected color        |
 |                        [rhysd/accelerated-jk](https://github.com/rhysd/accelerated-jk)                        |           Accelerated j/k            |
 |                             [hrsh7th/vim-eft](https://github.com/hrsh7th/vim-eft)                             |             Enhanced f/t             |
-|                   [easymotion/vim-easymotion](https://github.com/easymotion/vim-easymotion)                   |         Powerful vim motion          |
+|                            [phaazon/hop.nvim](https://github.com/phaazon/hop.nvim)                            |      `easymotion`'s replacement      |
 |                       [karb94/neoscroll.nvim](https://github.com/karb94/neoscroll.nvim)                       |            smooth scroll             |
 |                         [vimlab/split-term](https://github.com/vimlab/split-term.vim)                         | Utilites around neovim's `:terminal` |
+|                 [akinsho/nvim-toggleterm.lua](https://github.com/akinsho/nvim-toggleterm.lua)                 |           Toggled terminal           |
+|                         [numtostr/FTerm.nvim](https://github.com/numtostr/FTerm.nvim)                         |            Float terminal            |
+|                          [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive)                          |     Git operations inside neovim     |
+|                          [chentau/marks.nvim](https://github.com/chentau/marks.nvim)                          |         Manage marks easier          |
 
 ## Completion
 
-|                                      Name                                       |                       Effect                       |
-| :-----------------------------------------------------------------------------: | :------------------------------------------------: |
-|        [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)        |          Neovim native LSP configuration           |
-|    [kabouzeid/nvim-lspinstall](https://github.com/kabouzeid/nvim-lspinstall)    |               Manage each LSP engine               |
-|         [glepnir/lspsaga.nvim](https://github.com/glepnir/lspsaga.nvim)         |             Make Nvim LSP more useful              |
-|     [ray-x/lsp_signature.nvim](https://github.com/ray-x/lsp_signature.nvim)     | Show signature when completing function parameters |
-|             [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)             |          Auto completion plugin for nvim           |
-|           [hrsh7th/cmp-buffer](https://github.com/hrsh7th/cmp-buffer)           |             buffer source for nvim-cmp             |
-|             [hrsh7th/cmp-path](https://github.com/hrsh7th/cmp-path)             |              path source for nvim-cmp              |
-|          [tzachar/cmp-tabnine](https://github.com/tzachar/cmp-tabnine)          |            tabnine source for nvim-cmp             |
-|         [hrsh7th/cmp-nvim-lua](https://github.com/hrsh7th/cmp-nvim-lua)         |              lua source for nvim-cmp               |
-|         [hrsh7th/cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp)         |              lsp source for nvim-cmp               |
-|             [f3fora/cmp-spell](https://github.com/f3fora/cmp-spell)             |             spell source for nvim-cmp              |
-|     [andersevenrud/compe-tmux](https://github.com/andersevenrud/compe-tmux)     |              tmux source for nvim-cmp              |
-|     [saadparwaiz1/cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip)     |            luasnip source for nvim-cmp             |
-|             [L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip)             |      snippets completion engine for nvim-cmp       |
-| [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets) |            snippets source for LusSnip             |
-|        [windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs)        |                  Completion pairs                  |
+|                                         Name                                          |                       Effect                       |
+| :-----------------------------------------------------------------------------------: | :------------------------------------------------: |
+|           [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig)           |          Neovim native LSP configuration           |
+| [williamboman/nvim-lsp-installer](https://github.com/williamboman/nvim-lsp-installer) |               Manage each LSP engine               |
+|        [ray-x/lsp_signature.nvim](https://github.com/ray-x/lsp_signature.nvim)        | Show signature when completing function parameters |
+|                [hrsh7th/nvim-cmp](https://github.com/hrsh7th/nvim-cmp)                |          Auto completion plugin for nvim           |
+|            [lukas-reineke/cmp-rg](https://github.com/lukas-reineke/cmp-rg)            |            ripgrep source for nvim-cmp             |
+|                [hrsh7th/cmp-path](https://github.com/hrsh7th/cmp-path)                |              path source for nvim-cmp              |
+|             [tzachar/cmp-tabnine](https://github.com/tzachar/cmp-tabnine)             |            tabnine source for nvim-cmp             |
+|            [hrsh7th/cmp-nvim-lua](https://github.com/hrsh7th/cmp-nvim-lua)            |              lua source for nvim-cmp               |
+|            [hrsh7th/cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp)            |              lsp source for nvim-cmp               |
+|                [f3fora/cmp-spell](https://github.com/f3fora/cmp-spell)                |             spell source for nvim-cmp              |
+|        [andersevenrud/compe-tmux](https://github.com/andersevenrud/compe-tmux)        |              tmux source for nvim-cmp              |
+|        [saadparwaiz1/cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip)        |            luasnip source for nvim-cmp             |
+|                [L3MON4D3/LuaSnip](https://github.com/L3MON4D3/LuaSnip)                |      snippets completion engine for nvim-cmp       |
+|    [rafamadriz/friendly-snippets](https://github.com/rafamadriz/friendly-snippets)    |            snippets source for LusSnip             |
+|           [windwp/nvim-autopairs](https://github.com/windwp/nvim-autopairs)           |                  Completion pairs                  |
+|                [github/copilot](https://github.com/github/copilot.vim)                |                Copilot neovim port                 |
 
 ## Lang
 
@@ -338,16 +361,15 @@ The leader key is `,`.
 |                      install plugins                      |          `<leader>pi`          |
 |                      update plugins                       |          `<leader>pu`          |
 |                       clean plugins                       |          `<leader>pc`          |
-|                                                           |                                |
 |                     toggle nvim-tree                      |            `<C-n>`             |
 |                       toggle tagbar                       |            `<A-t>`             |
-|                                                           |                                |
-|                 open horizontal terminal                  |       `<C-w>t` or `<F5>`       |
-|                 toggle vertical terminal                  |            `<C-\>`             |
+|                         Terminal                          |                                |
+|                  open vertical terminal                   |       `<C-w>t` or `<F5>`       |
+|                toggle horizontal terminal                 |            `<C-\>`             |
 |                       quit terminal                       |            `<C-d>`             |
 |                 toggle floating terminal                  |            `<A-d>`             |
-|             open `gitui` in current directory             |          `<leader>g`           |
-|                                                           |                                |
+|               force quit floating terminal                |           `<A-S-d>`            |
+|                     Buffer navigation                     |                                |
 |               pick buffer `n`(`n`means No)                |            `<A-n>`             |
 |                       right buffer                        |            `<A-j>`             |
 |                        left buffer                        |            `<A-k>`             |
@@ -357,13 +379,11 @@ The leader key is `,`.
 |                force close current buffer                 |           `<A-S-q>`            |
 |                  split buffer vertically                  |            `<C-w>v`            |
 |                 split buffer horizontally                 |            `<C-w>s`            |
-|                                                           |                                |
 |                       navigate down                       |            `<C-j>`             |
 |                        navigate up                        |            `<C-k>`             |
 |                       navigate left                       |            `<C-h>`             |
 |                      navigate right                       |            `<C-l>`             |
-|                                                           |                                |
-|                 operaions in `nvim-tree`                  |                                |
+|                 Operaions in `nvim-tree`                  |                                |
 |                         new file                          |              `a`               |
 |                   remove file/directory                   |              `d`               |
 |                   rename file/directory                   |              `r`               |
@@ -378,18 +398,16 @@ The leader key is `,`.
 |               find file in recently opened                |          `<leader>fr`          |
 |                   find file in history                    |          `<leader>fe`          |
 |            find file in current work directory            |          `<leader>ff`          |
+|            find directory recorded by `zoxide`            |          `<leader>fz`          |
 |                       find project                        |          `<leader>fp`          |
 |                        add project                        |    `<leader>fp`then`<C-A>`     |
 |                      delete project                       |    `<leader>fp`then`<C-D>`     |
 |                                                           |                                |
-|                    find one character                     |          `<leader>f`           |
-|                       find one word                       |          `<leader>w`           |
-|                                                           |                                |
 |                    escape insert mode                     |              `jk`              |
-|                         neoformat                         |           `<C-A-l>`            |
+|                      format manually                      |           `<C-A-l>`            |
 |                back to last cursor's place                |            `<C-O>`             |
-|                    jump to definition                     |              `gd`              |
-|                    show implementation                    |              `gD`              |
+|                    preview definition                     |              `gd`              |
+|                    jump to definition                     |              `gD`              |
 |                       smart rename                        |              `gr`              |
 |                  toggle last diagnostics                  |              `gt`              |
 |                   toggle lsp references                   |              `gR`              |
@@ -401,31 +419,47 @@ The leader key is `,`.
 |             toggle lsp workspace diagnostics              |          `<leader>cw`          |
 |                   toggle code quickfix                    |          `<leader>cq`          |
 |                    toggle code loclist                    |          `<leader>cl`          |
-|                                                           |                                |
+|                    Navigate in snippet                    |                                |
 |                   next snippet's block                    |            `<C-l>`             |
 |                   prev snippet's block                    |            `<C-h>`             |
-|                                                           |                                |
+|                      Code selection                       |                                |
+|                   select block manually                   |              `vm`              |
 |                 select current `()` block                 |             `vab`              |
 |                 select current `{}` block                 |             `vaB`              |
 |            select current outer function block            |             `vaf`              |
 |             select current outer class block              |             `vac`              |
 |            select current inner function block            |             `vif`              |
 |             select current inner class block              |             `vic`              |
-|                                                           |                                |
-|                move to next function begin                |              `][`              |
-|                move to prev function begin                |              `[[`              |
-|                 move to next function end                 |              `]]`              |
-|                 move to prev function end                 |              `[]`              |
-|                                                           |                                |
+|                      Cursor movement                      |                                |
+|                     jump to one line                      |    `<leader>j`/`<leader>k`     |
+|                       find one word                       |          `<leader>w`           |
+|                    find one character                     |          `<leader>c`           |
+|             find two characters below cursor              |          `<leader>cc`          |
+| find one character`x` in front of cursor in the same line |              `Fx`              |
+|   find one character`x` behind cursor in the same line    |              `fx`              |
+| find next character`x` follow direction in the same line  |              `;`               |
+|                    next function begin                    |              `][`              |
+|                    prev function begin                    |              `[[`              |
+|                     next function end                     |              `]]`              |
+|                     prev function end                     |              `[]`              |
+|              mark current place with mark`x`              |              `mx`              |
+|                      delete mark`x`                       |             `dmx`              |
+|                         next mark                         |              `m]`              |
+|                         prev mark                         |              `m[`              |
+|                   next unstage git hunk                   |              `]g`              |
+|                   prev unstage git hunk                   |              `[g`              |
+|                   next code diagnostics                   |              `g]`              |
+|                   prev code diagnostics                   |              `g[`              |
+|                       Code comment                        |                                |
 |                 toggle one line's comment                 |             `gcc`              |
 |              toggle selected lines' comment               | `<S-V>`, select area then `gc` |
-|                                                           |                                |
+|                     Markdown preview                      |                                |
 |                  toggle MarkdownPreView                   |            `<F12>`             |
-|                                                           |                                |
+|                    Session management                     |                                |
 |                   Save current session                    |          `<leader>ss`          |
 |                   Restore last session                    |          `<leader>sr`          |
 |                    Delete last session                    |          `<leader>sd`          |
-|        Debug mode only supports golang&python now         |                                |
+|        Debug mode(only supports golang&python now)        |                                |
 |                    Debug continue(run)                    |       `<leader>dr`/`F6`        |
 |                      Debug run last                       |         `<leader>drl`          |
 |                    Debug run to cursor                    |         `<leader>drc`          |
@@ -438,8 +472,8 @@ The leader key is `,`.
 |                      Debug step out                       |       `<leader>do`/`F11`       |
 |                     Debug disconnect                      |          `<leader>dd`          |
 |                      Git management                       |                                |
-|                         Prev hunk                         |              `[g`              |
-|                         Next hunk                         |              `]g`              |
+|             open `gitui` in current directory             |          `<leader>g`           |
+|                    Enter vim-fugitive                     |          `<leader>G`           |
 |                        Stage hunk                         | `<leader>hs`(`n` and `v` mode) |
 |                        Reset hunk                         | `<leader>hr`(`n` and `v` mode) |
 |                      Undo stage hunk                      |          `<leader>hu`          |
@@ -453,47 +487,36 @@ You can see more keybinds in `lua/core/mapping.lua` and `lua/keymap/init.lua`.
 
 # Issues
 
-1. Tabnine doesn't install automatically
+1. Clipboard for WSL2 users
 
-```shell
-cd ~/.local/share/nvim/site/pack/packer/opt/compe-tabnine
-./install.sh
-```
+Please refer to [it](https://github.com/neovim/neovim/wiki/FAQ#how-to-use-the-windows-clipboard-from-wsl) and add `win32yank.exe` to your path.
 
-2. Install and configure different lsp server
+Then uncomment [this line](https://github.com/ayamir/nvimdots/blob/4ed10ccc71937cc86460f23da5ec646eec32125f/lua/core/init.lua#L147).
 
-You can find all of the servers available in
-[here](https://microsoft.github.io/language-server-protocol/implementors/servers/).
-
-You can install servers manually by different means. LSP will look your path for
-it and start it.
-
-For example (python-lsp-server):
-
-```shell
-pip install python-lsp-server --user
-```
-
-Add this line to `lua/modules/completion/lspconfig.lua`'s end.
-
-```lua
-nvim_lsp.pylsp.setup{}
-```
-
-Don't forget to remove the old server installed before.
-
-3. Wrong configuration may invoke the dialog asking for deleting all plugins
+2. Wrong configuration may invoke the dialog asking for deleting all plugins
 
 Input `n` and `<CR>`
 
-4. LSP servers don't autostart.
+3. LSP servers don't autostart.
 
-Please check [this](https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md) to make sure your directory can be detected as a working directory.
+Please check [this](https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md) to make sure your directory can be detected as a working directory.
 
 For example (gopls):
 
 Your root directory need a `go.mod` and your `.go` file need to be created
 first. Then LSP will autostart when you edit `.go` file next time.
+
+4. Copilot setup.
+
+Make sure your github account is signed up for [copilot](https://copilot.github.com/).
+
+Then use `Copilot setup` command to setup.
+
+5. `cmp-rg` search directory unwanted.
+
+Create a config file manually like [this](https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file).
+
+Or create a `.ignore` file in your work directory refer to [this](https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering).
 
 <a id="credit"></a>
 
@@ -507,4 +530,3 @@ first. Then LSP will autostart when you edit `.go` file next time.
 
 - [x] More documentation for how to customize.
 - [x] Backup old compiled configuration when error occurs.
-- [ ] Install script for different distros.

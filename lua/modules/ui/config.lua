@@ -7,6 +7,7 @@ function config.edge()
     vim.g.edge_disable_italic_comment = 1
     vim.g.edge_show_eob = 1
     vim.g.edge_better_performance = 1
+    vim.g.edge_transparent_background = 1
 end
 
 function config.everforest()
@@ -15,140 +16,142 @@ function config.everforest()
 end
 
 function config.lualine()
-    local function lsp()
-        local icon = [[  LSP: ]]
-        local msg = 'No Active LSP'
-        local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-        local clients = vim.lsp.get_active_clients()
-        if next(clients) == nil then return icon .. msg end
-        for _, client in ipairs(clients) do
-            local filetypes = client.config.filetypes
-            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                return icon .. client.name
-            end
-        end
-        return icon .. msg
-    end
-
     local gps = require("nvim-gps")
 
-    require('lualine').setup {
-        options = {
-            icons_enabled = true,
-            theme = 'onelight',
-            disabled_filetypes = {}
-        },
-
+    local function gps_content()
+        if gps.is_available() then
+            return gps.get_location()
+        else
+            return ""
+        end
+    end
+    local symbols_outline = {
         sections = {
             lualine_a = {'mode'},
-            lualine_b = {{'branch'}, {'diff'}},
+            lualine_b = {'filetype'},
+            lualine_c = {},
+            lualine_x = {},
+            lualine_y = {},
+            lualine_z = {'location'}
+        },
+        filetypes = {'Outline'}
+    }
+
+    require("lualine").setup {
+        options = {
+            icons_enabled = true,
+            theme = "onedark",
+            disabled_filetypes = {},
+            component_separators = "|",
+            section_separators = {left = "", right = ""}
+        },
+        sections = {
+            lualine_a = {"mode"},
+            lualine_b = {{"branch"}, {"diff"}},
             lualine_c = {
-                {'filename'}, {gps.get_location, condition = gps.is_available}
+                {"lsp_progress"}, {gps_content, cond = gps.is_available}
             },
             lualine_x = {
                 {
-                    'diagnostics',
-                    sources = {'nvim_lsp'},
+                    "diagnostics",
+                    sources = {"nvim_lsp"},
                     color_error = "#BF616A",
                     color_warn = "#EBCB8B",
                     color_info = "#81A1AC",
                     color_hint = "#88C0D0",
-                    symbols = {error = ' ', warn = ' ', info = ' '}
-                }, {lsp}, {'encoding'}, {'fileformat'}
+                    symbols = {error = " ", warn = " ", info = " "}
+                }
             },
-            lualine_y = {'progress'},
-            lualine_z = {'location'}
+            lualine_y = {"filetype", "encoding", "fileformat"},
+            lualine_z = {"progress", "location"}
         },
         inactive_sections = {
             lualine_a = {},
             lualine_b = {},
-            lualine_c = {'filename'},
-            lualine_x = {'location'},
+            lualine_c = {"filename"},
+            lualine_x = {"location"},
             lualine_y = {},
             lualine_z = {}
         },
         tabline = {},
-        extensions = {}
+        extensions = {
+            "quickfix", "nvim-tree", "toggleterm", "fugitive", symbols_outline
+        }
     }
 end
 
 function config.nvim_tree()
-    vim.g.nvim_tree_width = 35
-    vim.g.nvim_tree_follow = 1
-    vim.g.nvim_tree_gitignore = 1
-    vim.g.nvim_tree_auto_open = 1
-    vim.g.nvim_tree_auto_close = 1
-    vim.g.nvim_tree_auto_ignore_ft = {'startify', 'dashboard'}
-    vim.g.nvim_tree_quit_on_open = 1
-    vim.g.nvim_tree_indent_markers = 1
-    vim.g.nvim_tree_hide_dotfiles = 0
-    vim.g.nvim_tree_git_hl = 1
-    vim.g.nvim_tree_highlight_opened_files = 1
-    vim.g.nvim_tree_tab_open = 1
-    vim.g.nvim_tree_lsp_diagnostics = 1
-    vim.g.nvim_tree_disable_netrw = 1
-    vim.g.nvim_tree_hijack_netrw = 1
-    vim.g.nvim_tree_indent_markers = 1
-    vim.g.nvim_tree_ignore = {'.git', 'node_modules', '.cache'}
-    vim.g.nvim_tree_icons = {
-        default = '',
-        symlink = '',
-        git = {
-            unstaged = "✚",
-            staged = "✚",
-            unmerged = "≠",
-            renamed = "≫",
-            untracked = "★"
+    local tree_cb = require"nvim-tree.config".nvim_tree_callback
+    require("nvim-tree").setup {
+        gitignore = true,
+        ignore = {".git", "node_modules", ".cache"},
+        open_on_tab = false,
+        disable_netrw = true,
+        hijack_netrw = true,
+        hijack_cursor = true,
+        auto_close = true,
+        update_cwd = true,
+        highlight_opened_files = true,
+        auto_ignore_ft = {"startify", "dashboard"},
+        update_focused_file = {
+            enable = true,
+            update_cwd = true,
+            ignore_list = {}
+        },
+        view = {
+            width = 30,
+            side = "left",
+            auto_resize = false,
+            mappings = {
+                custom_only = true,
+                -- list of mappings to set on the tree manually
+                list = {
+                    {
+                        key = {"<CR>", "o", "<2-LeftMouse>"},
+                        cb = tree_cb("tabnew")
+                    }, {key = {"<2-RightMouse>", "<C-]>"}, cb = tree_cb("cd")},
+                    {key = "<C-v>", cb = tree_cb("vsplit")},
+                    {key = "<C-x>", cb = tree_cb("split")},
+                    {key = "<C-t>", cb = tree_cb("tabnew")},
+                    {key = "<", cb = tree_cb("prev_sibling")},
+                    {key = ">", cb = tree_cb("next_sibling")},
+                    {key = "P", cb = tree_cb("parent_node")},
+                    {key = "<BS>", cb = tree_cb("close_node")},
+                    {key = "<S-CR>", cb = tree_cb("close_node")},
+                    {key = "<Tab>", cb = tree_cb("preview")},
+                    {key = "K", cb = tree_cb("first_sibling")},
+                    {key = "J", cb = tree_cb("last_sibling")},
+                    {key = "I", cb = tree_cb("toggle_ignored")},
+                    {key = "H", cb = tree_cb("toggle_dotfiles")},
+                    {key = "R", cb = tree_cb("refresh")},
+                    {key = "a", cb = tree_cb("create")},
+                    {key = "d", cb = tree_cb("remove")},
+                    {key = "r", cb = tree_cb("rename")},
+                    {key = "<C-r>", cb = tree_cb("full_rename")},
+                    {key = "x", cb = tree_cb("cut")},
+                    {key = "c", cb = tree_cb("copy")},
+                    {key = "p", cb = tree_cb("paste")},
+                    {key = "y", cb = tree_cb("copy_name")},
+                    {key = "Y", cb = tree_cb("copy_path")},
+                    {key = "gy", cb = tree_cb("copy_absolute_path")},
+                    {key = "[c", cb = tree_cb("prev_git_item")},
+                    {key = "]c", cb = tree_cb("next_git_item")},
+                    {key = "-", cb = tree_cb("dir_up")},
+                    {key = "s", cb = tree_cb("system_open")},
+                    {key = "q", cb = tree_cb("close")},
+                    {key = "g?", cb = tree_cb("toggle_help")}
+                }
+            }
         }
-    }
-    vim.g.nvim_tree_disable_keybindings = 0
-    local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-    vim.g.nvim_tree_bindings = {
-        {key = {"<CR>", "o", "<2-LeftMouse>"}, cb = tree_cb("tabnew")},
-        {key = {"<2-RightMouse>", "<C-]>"}, cb = tree_cb("cd")},
-        {key = "<C-v>", cb = tree_cb("vsplit")},
-        {key = "<C-x>", cb = tree_cb("split")},
-        {key = "<C-t>", cb = tree_cb("tabnew")},
-        {key = "<", cb = tree_cb("prev_sibling")},
-        {key = ">", cb = tree_cb("next_sibling")},
-        {key = "P", cb = tree_cb("parent_node")},
-        {key = "<BS>", cb = tree_cb("close_node")},
-        {key = "<S-CR>", cb = tree_cb("close_node")},
-        {key = "<Tab>", cb = tree_cb("preview")},
-        {key = "K", cb = tree_cb("first_sibling")},
-        {key = "J", cb = tree_cb("last_sibling")},
-        {key = "I", cb = tree_cb("toggle_ignored")},
-        {key = "H", cb = tree_cb("toggle_dotfiles")},
-        {key = "R", cb = tree_cb("refresh")},
-        {key = "a", cb = tree_cb("create")},
-        {key = "d", cb = tree_cb("remove")},
-        {key = "r", cb = tree_cb("rename")},
-        {key = "<C-r>", cb = tree_cb("full_rename")},
-        {key = "x", cb = tree_cb("cut")}, {key = "c", cb = tree_cb("copy")},
-        {key = "p", cb = tree_cb("paste")},
-        {key = "y", cb = tree_cb("copy_name")},
-        {key = "Y", cb = tree_cb("copy_path")},
-        {key = "gy", cb = tree_cb("copy_absolute_path")},
-        {key = "[c", cb = tree_cb("prev_git_item")},
-        {key = "]c", cb = tree_cb("next_git_item")},
-        {key = "-", cb = tree_cb("dir_up")},
-        {key = "s", cb = tree_cb("system_open")},
-        {key = "q", cb = tree_cb("close")},
-        {key = "g?", cb = tree_cb("toggle_help")}
     }
 end
 
 function config.nvim_bufferline()
-    require('bufferline').setup {
+    require("bufferline").setup {
         options = {
-            number = "both",
-            numbers = function(opts)
-
-                return string.format('%s·%s', opts.raise(opts.ordinal),
-                                     opts.lower(opts.id))
-            end,
-            modified_icon = '✥',
-            buffer_close_icon = '',
+            number = "none",
+            modified_icon = "✥",
+            buffer_close_icon = "",
             left_trunc_marker = "",
             right_trunc_marker = "",
             max_name_length = 14,
@@ -159,7 +162,7 @@ function config.nvim_bufferline()
             show_tab_indicators = true,
             diagnostics = "nvim_lsp",
             always_show_bufferline = true,
-            separator_style = "slant",
+            separator_style = "thin",
             offsets = {
                 {
                     filetype = "NvimTree",
@@ -173,47 +176,44 @@ function config.nvim_bufferline()
 end
 
 function config.gitsigns()
-    if not packer_plugins['plenary.nvim'].loaded then
+    if not packer_plugins["plenary.nvim"].loaded then
         vim.cmd [[packadd plenary.nvim]]
     end
-    require('gitsigns').setup {
+    require("gitsigns").setup {
         signs = {
-            add = {hl = 'GitGutterAdd', text = '▋'},
-            change = {hl = 'GitGutterChange', text = '▋'},
-            delete = {hl = 'GitGutterDelete', text = '▋'},
-            topdelete = {hl = 'GitGutterDeleteChange', text = '▔'},
-            changedelete = {hl = 'GitGutterChange', text = '▎'}
+            add = {hl = "GitGutterAdd", text = "▋"},
+            change = {hl = "GitGutterChange", text = "▋"},
+            delete = {hl = "GitGutterDelete", text = "▋"},
+            topdelete = {hl = "GitGutterDeleteChange", text = "▔"},
+            changedelete = {hl = "GitGutterChange", text = "▎"}
         },
         keymaps = {
             -- Default keymap options
             noremap = true,
             buffer = true,
-
-            ['n ]g'] = {
+            ["n ]g"] = {
                 expr = true,
-                "&diff ? ']g' : '<cmd>lua require\"gitsigns\".next_hunk()<CR>'"
+                '&diff ? \']g\' : \'<cmd>lua require"gitsigns".next_hunk()<CR>\''
             },
-            ['n [g'] = {
+            ["n [g"] = {
                 expr = true,
-                "&diff ? '[g' : '<cmd>lua require\"gitsigns\".prev_hunk()<CR>'"
+                '&diff ? \'[g\' : \'<cmd>lua require"gitsigns".prev_hunk()<CR>\''
             },
-
-            ['n <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
-            ['v <leader>hs'] = '<cmd>lua require"gitsigns".stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
-            ['n <leader>hu'] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
-            ['n <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
-            ['v <leader>hr'] = '<cmd>lua require"gitsigns".reset_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
-            ['n <leader>hR'] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
-            ['n <leader>hp'] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
-            ['n <leader>hb'] = '<cmd>lua require"gitsigns".blame_line(true)<CR>',
-
+            ["n <leader>hs"] = '<cmd>lua require"gitsigns".stage_hunk()<CR>',
+            ["v <leader>hs"] = '<cmd>lua require"gitsigns".stage_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
+            ["n <leader>hu"] = '<cmd>lua require"gitsigns".undo_stage_hunk()<CR>',
+            ["n <leader>hr"] = '<cmd>lua require"gitsigns".reset_hunk()<CR>',
+            ["v <leader>hr"] = '<cmd>lua require"gitsigns".reset_hunk({vim.fn.line("."), vim.fn.line("v")})<CR>',
+            ["n <leader>hR"] = '<cmd>lua require"gitsigns".reset_buffer()<CR>',
+            ["n <leader>hp"] = '<cmd>lua require"gitsigns".preview_hunk()<CR>',
+            ["n <leader>hb"] = '<cmd>lua require"gitsigns".blame_line(true)<CR>',
             -- Text objects
-            ['o ih'] = ':<C-U>lua require"gitsigns".text_object()<CR>',
-            ['x ih'] = ':<C-U>lua require"gitsigns".text_object()<CR>'
+            ["o ih"] = ':<C-U>lua require"gitsigns".text_object()<CR>',
+            ["x ih"] = ':<C-U>lua require"gitsigns".text_object()<CR>'
         },
-        watch_index = {interval = 1000, follow_files = true},
+        watch_gitdir = {interval = 1000, follow_files = true},
         current_line_blame = true,
-        current_line_blame_opts = {delay = 1000, virtual_text_pos = 'eol'},
+        current_line_blame_opts = {delay = 1000, virtual_text_pos = "eol"},
         sign_priority = 6,
         update_debounce = 100,
         status_formatter = nil, -- Use default
@@ -252,11 +252,7 @@ function config.indent_blankline()
         }
     }
     -- because lazy load indent-blankline so need readd this autocmd
-    vim.cmd('autocmd CursorMoved * IndentBlanklineRefresh')
+    vim.cmd("autocmd CursorMoved * IndentBlanklineRefresh")
 end
-
-function config.zen_mode() require('zen-mode').setup {} end
-
-function config.twilight() require('twilight').setup {} end
 
 return config

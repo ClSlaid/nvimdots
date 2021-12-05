@@ -3,21 +3,19 @@ local autocmd = {}
 
 function autocmd.nvim_create_augroups(definitions)
     for group_name, definition in pairs(definitions) do
-        vim.api.nvim_command('augroup ' .. group_name)
-        vim.api.nvim_command('autocmd!')
+        vim.api.nvim_command("augroup " .. group_name)
+        vim.api.nvim_command("autocmd!")
         for _, def in ipairs(definition) do
-            local command = table.concat(vim.tbl_flatten {'autocmd', def}, ' ')
+            local command = table.concat(vim.tbl_flatten {"autocmd", def}, " ")
             vim.api.nvim_command(command)
         end
-        vim.api.nvim_command('augroup END')
+        vim.api.nvim_command("augroup END")
     end
 end
 
 function autocmd.load_autocmds()
     local definitions = {
-        packer = {
-            -- {"BufWritePost", "*.lua", "lua require('core.pack').auto_compile()"}
-        },
+        packer = {},
         bufs = {
             -- Reload vim config automatically
             {
@@ -31,12 +29,9 @@ function autocmd.load_autocmds()
             {"BufWritePre", "COMMIT_EDITMSG", "setlocal noundofile"},
             {"BufWritePre", "MERGE_MSG", "setlocal noundofile"},
             {"BufWritePre", "*.tmp", "setlocal noundofile"},
-            {"BufWritePre", "*.bak", "setlocal noundofile"}, -- Neoformat
-            -- {
-            --     "BufWritePre", "*",
-            --     "if index(['org', 'cat'], &ft) < 0 | undojoin | Neoformat"
-            -- }, 
-            -- Auto change work directory
+            {"BufWritePre", "*.bak", "setlocal noundofile"},
+            -- Auto format when save
+            {"BufWritePost", "*", "FormatWrite"}, -- Auto change work directory
             {"BufEnter", "*", "silent! lcd %:p:h"}, -- auto place to last edit
             {
                 "BufReadPost", "*",
@@ -47,7 +42,6 @@ function autocmd.load_autocmds()
             -- {"BufEnter", "*", ":silent !fcitx5-remote -c "},
             -- {"BufLeave", "*", ":silent !fcitx5-remote -c "}
         },
-
         wins = {
             -- Highlight current line only on focused window
             {
@@ -66,11 +60,15 @@ function autocmd.load_autocmds()
             -- Equalize window dimensions when resizing vim window
             {"VimResized", "*", [[tabdo wincmd =]]}
         },
-
         ft = {
             {"BufNewFile,BufRead", "*.toml", " setf toml"},
             {"FileType", "make", "set noexpandtab shiftwidth=8 softtabstop=0"},
-            {"FileType", "c,cpp,go,rust", "setlocal tabstop=4"}, {
+            {"FileType", "go,rust", "setlocal tabstop=4 shiftwidth=4"},
+            {"FileType", "c,cpp", "setlocal tabstop=2 shiftwidth=2"},
+            {
+                "FileType", "javascript,typescript,html",
+                "setlocal tabstop=2 shiftwidth=2"
+            }, {
                 "FileType", "dashboard",
                 "set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2"
             }, {
@@ -82,11 +80,10 @@ function autocmd.load_autocmds()
                 "nnoremap <leader>h :ClangdSwitchSourceHeaderVSplit<CR>"
             }
         },
-
         yank = {
             {
-                "TextYankPost",
-                [[* silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=300})]]
+                "TextYankPost", "*",
+                [[silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=300})]]
             }
         }
     }
