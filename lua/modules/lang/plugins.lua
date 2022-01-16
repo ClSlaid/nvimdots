@@ -14,16 +14,17 @@ lang["simrat39/rust-tools.nvim"] = {
     config = conf.rust_tools,
     requires = {{"nvim-lua/plenary.nvim", opt = false}}
 }
-lang["kristijanhusak/orgmode.nvim"] = {
-    opt = true,
-    ft = "org",
-    config = conf.lang_org
-}
+-- lang["kristijanhusak/orgmode.nvim"] = {
+--     opt = true,
+--     ft = "org",
+--     config = conf.lang_org
+-- }
 lang["iamcco/markdown-preview.nvim"] = {
     opt = true,
     ft = "markdown",
     run = "cd app && yarn install"
 }
+
 lang['wlangstroth/vim-racket'] = {
     opt = true,
     ft = {"scheme", "racket"},
@@ -37,4 +38,7 @@ lang['neovimhaskell/haskell-vim'] = {
     ft = "haskell",
     config = conf.haskell
 }
+
+lang["chrisbra/csv.vim"] = {opt = true, ft = "csv"}
+
 return lang

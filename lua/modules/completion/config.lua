@@ -1,6 +1,6 @@
 local config = {}
 
-function config.nvim_lsp() require("modules.completion.lspconfig") end
+function config.nvim_lsp() require("modules.completion.lsp") end
 
 function config.lightbulb()
     vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
@@ -32,6 +32,14 @@ function config.cmp()
 
     local cmp = require("cmp")
     cmp.setup {
+        sorting = {
+            comparators = {
+                cmp.config.compare.offset, cmp.config.compare.exact,
+                cmp.config.compare.score, require("cmp-under-comparator").under,
+                cmp.config.compare.kind, cmp.config.compare.sort_text,
+                cmp.config.compare.length, cmp.config.compare.order
+            }
+        },
         formatting = {
             format = function(entry, vim_item)
                 local lspkind_icons = {
@@ -67,8 +75,8 @@ function config.cmp()
                                               vim_item.kind)
 
                 vim_item.menu = ({
-                    cmp_tabnine = "[TN]",
-                    rg = "[RG]",
+                    -- cmp_tabnine = "[TN]",
+                    buffer = "[BUF]",
                     orgmode = "[ORG]",
                     nvim_lsp = "[LSP]",
                     nvim_lua = "[LUA]",
@@ -129,7 +137,8 @@ function config.cmp()
         sources = {
             {name = "nvim_lsp"}, {name = "nvim_lua"}, {name = "luasnip"},
             {name = "path"}, {name = "spell"}, {name = "tmux"},
-            {name = "orgmode"}, {name = "rg"}, {name = 'cmp_tabnine'}
+            {name = "orgmode"}, {name = "buffer"}, {name = "latex_symbols"}
+            -- {name = 'cmp_tabnine'}
         }
     }
 end
@@ -142,10 +151,10 @@ function config.luasnip()
     require("luasnip/loaders/from_vscode").load()
 end
 
-function config.tabnine()
-    local tabnine = require('cmp_tabnine.config')
-    tabnine:setup({max_line = 1000, max_num_results = 20, sort = true})
-end
+-- function config.tabnine()
+--     local tabnine = require('cmp_tabnine.config')
+--     tabnine:setup({max_line = 1000, max_num_results = 20, sort = true})
+-- end
 
 function config.autopairs()
     require("nvim-autopairs").setup {}
@@ -156,6 +165,86 @@ function config.autopairs()
     cmp.event:on("confirm_done",
                  cmp_autopairs.on_confirm_done({map_char = {tex = ""}}))
     cmp_autopairs.lisp[#cmp_autopairs.lisp + 1] = "racket"
+end
+
+function config.nvim_lsputils()
+    if vim.fn.has('nvim-0.5.1') == 1 then
+        vim.lsp.handlers['textDocument/codeAction'] =
+            require'lsputil.codeAction'.code_action_handler
+        vim.lsp.handlers['textDocument/references'] =
+            require'lsputil.locations'.references_handler
+        vim.lsp.handlers['textDocument/definition'] =
+            require'lsputil.locations'.definition_handler
+        vim.lsp.handlers['textDocument/declaration'] =
+            require'lsputil.locations'.declaration_handler
+        vim.lsp.handlers['textDocument/typeDefinition'] =
+            require'lsputil.locations'.typeDefinition_handler
+        vim.lsp.handlers['textDocument/implementation'] =
+            require'lsputil.locations'.implementation_handler
+        vim.lsp.handlers['textDocument/documentSymbol'] =
+            require'lsputil.symbols'.document_handler
+        vim.lsp.handlers['workspace/symbol'] =
+            require'lsputil.symbols'.workspace_handler
+    else
+        local bufnr = vim.api.nvim_buf_get_number(0)
+
+        vim.lsp.handlers['textDocument/codeAction'] =
+            function(_, _, actions)
+                require('lsputil.codeAction').code_action_handler(nil, actions,
+                                                                  nil, nil, nil)
+            end
+
+        vim.lsp.handlers['textDocument/references'] =
+            function(_, _, result)
+                require('lsputil.locations').references_handler(nil, result, {
+                    bufnr = bufnr
+                }, nil)
+            end
+
+        vim.lsp.handlers['textDocument/definition'] =
+            function(_, method, result)
+                require('lsputil.locations').definition_handler(nil, result, {
+                    bufnr = bufnr,
+                    method = method
+                }, nil)
+            end
+
+        vim.lsp.handlers['textDocument/declaration'] = function(_, method,
+                                                                result)
+            require('lsputil.locations').declaration_handler(nil, result, {
+                bufnr = bufnr,
+                method = method
+            }, nil)
+        end
+
+        vim.lsp.handlers['textDocument/typeDefinition'] = function(_, method,
+                                                                   result)
+            require('lsputil.locations').typeDefinition_handler(nil, result, {
+                bufnr = bufnr,
+                method = method
+            }, nil)
+        end
+
+        vim.lsp.handlers['textDocument/implementation'] = function(_, method,
+                                                                   result)
+            require('lsputil.locations').implementation_handler(nil, result, {
+                bufnr = bufnr,
+                method = method
+            }, nil)
+        end
+
+        vim.lsp.handlers['textDocument/documentSymbol'] =
+            function(_, _, result, _, bufn)
+                require('lsputil.symbols').document_handler(nil, result,
+                                                            {bufnr = bufn}, nil)
+            end
+
+        vim.lsp.handlers['textDocument/symbol'] =
+            function(_, _, result, _, bufn)
+                require('lsputil.symbols').workspace_handler(nil, result,
+                                                             {bufnr = bufn}, nil)
+            end
+    end
 end
 
 return config

@@ -54,11 +54,6 @@ editor["SmiteshP/nvim-gps"] = {
     after = "nvim-treesitter",
     config = conf.nvim_gps
 }
-editor["lukas-reineke/format.nvim"] = {
-    opt = true,
-    cmd = {"Format", "FormatWrite"},
-    config = conf.format
-}
 editor["windwp/nvim-ts-autotag"] = {
     opt = true,
     ft = {"html", "xml"},
@@ -128,10 +123,14 @@ editor["rcarriga/nvim-dap-ui"] = {
     }
 }
 editor["tpope/vim-fugitive"] = {opt = true, cmd = {"Git", "G"}}
-editor["chentau/marks.nvim"] = {
+editor["famiu/bufdelete.nvim"] = {
     opt = true,
-    event = "BufReadPost",
-    config = conf.marks
+    cmd = {"Bdelete", "Bwipeout", "Bdelete!", "Bwipeout!"}
+}
+editor["edluffy/specs.nvim"] = {
+    opt = true,
+    event = "CursorMoved",
+    config = conf.specs
 }
 
 return editor

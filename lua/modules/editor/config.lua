@@ -182,90 +182,6 @@ function config.neoscroll()
     })
 end
 
-function config.format()
-    require("format").setup {
-        ["*"] = {
-            {cmd = {"sed -i 's/[ \t]*$//'"}} -- remove trailing whitespace
-        },
-        vim = {
-            {
-                cmd = {"luafmt -w replace"},
-                start_pattern = "^lua << EOF$",
-                end_pattern = "^EOF$"
-            }
-        },
-        vimwiki = {
-            {
-                cmd = {"prettier -w --parser babel"},
-                start_pattern = "^{{{javascript$",
-                end_pattern = "^}}}$"
-            }
-        },
-        lua = {
-            {
-                cmd = {
-                    function(file)
-                        return string.format("lua-format -i %s", file)
-                    end
-                }
-            }
-        },
-        c = {
-            {
-                cmd = {
-                    function(file)
-                        return string.format("clang-format -i %s", file)
-                    end
-                }
-            }
-        },
-        cpp = {
-            {
-                cmd = {
-                    function(file)
-                        return string.format("clang-format -i %s", file)
-                    end
-                }
-            }
-        },
-        go = {{cmd = {"gofmt -w", "goimports -w"}, tempfile_postfix = ".tmp"}},
-        python = {
-            {cmd = {"python3 -m autopep8 --in-place --aggressive --aggressive"}}
-        },
-        sh = {
-            {
-                cmd = {
-                    function(file)
-                        return string.format("shfmt -w %s", file)
-                    end
-                }
-            }
-        },
-        rust = {
-            {
-                cmd = {
-                    function(file)
-                        return string.format("rustfmt %s", file)
-                    end
-                }
-            }
-        },
-        html = {{cmd = {"prettier -w"}}},
-        javascript = {
-            {cmd = {"prettier -w", "./node_modules/.bin/eslint --fix"}}
-        },
-        json = {{cmd = {"prettier -w"}}},
-        markdown = {
-            {cmd = {"prettier -w"}}, {
-                cmd = {"black"},
-                start_pattern = "^```python$",
-                end_pattern = "^```$",
-                target = "current"
-            }
-        }
-    }
-end
-
 function config.auto_session()
     local opts = {
         log_level = "info",
@@ -431,34 +347,21 @@ function config.dap()
     }
 end
 
-function config.marks()
-    require('marks').setup {
-        -- whether to map keybinds or not. default true
-        default_mappings = true,
-        -- which builtin marks to show. default {}
-        builtin_marks = {".", "<", ">", "^"},
-        -- whether movements cycle back to the beginning/end of buffer. default true
-        cyclic = true,
-        -- whether the shada file is updated after modifying uppercase marks. default false
-        force_write_shada = false,
-        -- how often (in ms) to redraw signs/recompute mark positions.
-        -- higher values will have better performance but may cause visual lag,
-        -- while lower values may cause performance penalties. default 150.
-        refresh_interval = 250,
-        -- sign priorities for each type of mark - builtin marks, uppercase marks, lowercase
-        -- marks, and bookmarks.
-        -- can be either a table with all/none of the keys, or a single number, in which case
-        -- the priority applies to all marks.
-        -- default 10.
-        sign_priority = {lower = 10, upper = 15, builtin = 8, bookmark = 20},
-        -- disables mark tracking for specific filetypes. default {}
-        excluded_filetypes = {},
-        -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
-        -- sign/virttext. Bookmarks can be used to group together positions and quickly move
-        -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
-        -- default virt_text is "".
-        bookmark_0 = {sign = "⚑", virt_text = "hello world"},
-        mappings = {}
+function config.specs()
+    require('specs').setup {
+        show_jumps = true,
+        min_jump = 10,
+        popup = {
+            delay_ms = 0, -- delay before popup displays
+            inc_ms = 10, -- time increments used for fade/resize effects
+            blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+            width = 10,
+            winhl = "PMenu",
+            fader = require('specs').pulse_fader,
+            resizer = require('specs').shrink_resizer
+        },
+        ignore_filetypes = {},
+        ignore_buftypes = {nofile = true}
     }
 end
 

@@ -15,6 +15,56 @@ function config.everforest()
     vim.g.everforest_background = 'soft'
 end
 
+function config.catppuccin()
+    require('catppuccin').setup({
+        transparent_background = false,
+        term_colors = true,
+        styles = {
+            comments = "italic",
+            functions = "italic,bold",
+            keywords = "italic",
+            strings = "NONE",
+            variables = "NONE"
+        },
+        integrations = {
+            treesitter = true,
+            native_lsp = {
+                enabled = true,
+                virtual_text = {
+                    errors = "italic",
+                    hints = "italic",
+                    warnings = "italic",
+                    information = "italic"
+                },
+                underlines = {
+                    errors = "underline",
+                    hints = "underline",
+                    warnings = "underline",
+                    information = "underline"
+                }
+            },
+            lsp_trouble = true,
+            lsp_saga = true,
+            gitgutter = false,
+            gitsigns = true,
+            telescope = true,
+            nvimtree = {enabled = true, show_root = true},
+            which_key = true,
+            indent_blankline = {enabled = true, colored_indent_levels = false},
+            dashboard = true,
+            neogit = false,
+            vim_sneak = false,
+            fern = false,
+            barbar = false,
+            bufferline = true,
+            markdown = true,
+            lightspeed = false,
+            ts_rainbow = true,
+            hop = true
+        }
+    })
+end
+
 function config.lualine()
     local gps = require("nvim-gps")
 
@@ -40,7 +90,7 @@ function config.lualine()
     require("lualine").setup {
         options = {
             icons_enabled = true,
-            theme = "onedark",
+            theme = "catppuccin",
             disabled_filetypes = {},
             component_separators = "|",
             section_separators = {left = "", right = ""}
@@ -54,11 +104,7 @@ function config.lualine()
             lualine_x = {
                 {
                     "diagnostics",
-                    sources = {"nvim_lsp"},
-                    color_error = "#BF616A",
-                    color_warn = "#EBCB8B",
-                    color_info = "#81A1AC",
-                    color_hint = "#88C0D0",
+                    sources = {'nvim_diagnostic'},
                     symbols = {error = " ", warn = " ", info = " "}
                 }
             },
@@ -81,68 +127,40 @@ function config.lualine()
 end
 
 function config.nvim_tree()
-    local tree_cb = require"nvim-tree.config".nvim_tree_callback
     require("nvim-tree").setup {
-        gitignore = true,
-        ignore = {".git", "node_modules", ".cache"},
-        open_on_tab = false,
         disable_netrw = true,
         hijack_netrw = true,
-        hijack_cursor = true,
+        open_on_setup = false,
+        ignore_ft_on_setup = {},
         auto_close = true,
-        update_cwd = true,
-        highlight_opened_files = true,
-        auto_ignore_ft = {"startify", "dashboard"},
+        open_on_tab = false,
+        hijack_cursor = true,
+        update_cwd = false,
+        update_to_buf_dir = {enable = true, auto_open = true},
+        diagnostics = {
+            enable = false,
+            icons = {hint = "", info = "", warning = "", error = ""}
+        },
         update_focused_file = {
             enable = true,
             update_cwd = true,
             ignore_list = {}
         },
+        system_open = {cmd = nil, args = {}},
+        filters = {dotfiles = false, custom = {}},
+        git = {enable = true, ignore = true, timeout = 500},
         view = {
             width = 30,
-            side = "left",
+            height = 30,
+            hide_root_folder = false,
+            side = 'left',
             auto_resize = false,
-            mappings = {
-                custom_only = true,
-                -- list of mappings to set on the tree manually
-                list = {
-                    {
-                        key = {"<CR>", "o", "<2-LeftMouse>"},
-                        cb = tree_cb("tabnew")
-                    }, {key = {"<2-RightMouse>", "<C-]>"}, cb = tree_cb("cd")},
-                    {key = "<C-v>", cb = tree_cb("vsplit")},
-                    {key = "<C-x>", cb = tree_cb("split")},
-                    {key = "<C-t>", cb = tree_cb("tabnew")},
-                    {key = "<", cb = tree_cb("prev_sibling")},
-                    {key = ">", cb = tree_cb("next_sibling")},
-                    {key = "P", cb = tree_cb("parent_node")},
-                    {key = "<BS>", cb = tree_cb("close_node")},
-                    {key = "<S-CR>", cb = tree_cb("close_node")},
-                    {key = "<Tab>", cb = tree_cb("preview")},
-                    {key = "K", cb = tree_cb("first_sibling")},
-                    {key = "J", cb = tree_cb("last_sibling")},
-                    {key = "I", cb = tree_cb("toggle_ignored")},
-                    {key = "H", cb = tree_cb("toggle_dotfiles")},
-                    {key = "R", cb = tree_cb("refresh")},
-                    {key = "a", cb = tree_cb("create")},
-                    {key = "d", cb = tree_cb("remove")},
-                    {key = "r", cb = tree_cb("rename")},
-                    {key = "<C-r>", cb = tree_cb("full_rename")},
-                    {key = "x", cb = tree_cb("cut")},
-                    {key = "c", cb = tree_cb("copy")},
-                    {key = "p", cb = tree_cb("paste")},
-                    {key = "y", cb = tree_cb("copy_name")},
-                    {key = "Y", cb = tree_cb("copy_path")},
-                    {key = "gy", cb = tree_cb("copy_absolute_path")},
-                    {key = "[c", cb = tree_cb("prev_git_item")},
-                    {key = "]c", cb = tree_cb("next_git_item")},
-                    {key = "-", cb = tree_cb("dir_up")},
-                    {key = "s", cb = tree_cb("system_open")},
-                    {key = "q", cb = tree_cb("close")},
-                    {key = "g?", cb = tree_cb("toggle_help")}
-                }
-            }
-        }
+            mappings = {custom_only = false, list = {}},
+            number = false,
+            relativenumber = false,
+            signcolumn = "yes"
+        },
+        trash = {cmd = "trash", require_confirm = true}
     }
 end
 
@@ -176,16 +194,38 @@ function config.nvim_bufferline()
 end
 
 function config.gitsigns()
-    if not packer_plugins["plenary.nvim"].loaded then
-        vim.cmd [[packadd plenary.nvim]]
-    end
     require("gitsigns").setup {
         signs = {
-            add = {hl = "GitGutterAdd", text = "▋"},
-            change = {hl = "GitGutterChange", text = "▋"},
-            delete = {hl = "GitGutterDelete", text = "▋"},
-            topdelete = {hl = "GitGutterDeleteChange", text = "▔"},
-            changedelete = {hl = "GitGutterChange", text = "▎"}
+            add = {
+                hl = 'GitSignsAdd',
+                text = '│',
+                numhl = 'GitSignsAddNr',
+                linehl = 'GitSignsAddLn'
+            },
+            change = {
+                hl = 'GitSignsChange',
+                text = '│',
+                numhl = 'GitSignsChangeNr',
+                linehl = 'GitSignsChangeLn'
+            },
+            delete = {
+                hl = 'GitSignsDelete',
+                text = '_',
+                numhl = 'GitSignsDeleteNr',
+                linehl = 'GitSignsDeleteLn'
+            },
+            topdelete = {
+                hl = 'GitSignsDelete',
+                text = '‾',
+                numhl = 'GitSignsDeleteNr',
+                linehl = 'GitSignsDeleteLn'
+            },
+            changedelete = {
+                hl = 'GitSignsChange',
+                text = '~',
+                numhl = 'GitSignsChangeNr',
+                linehl = 'GitSignsChangeLn'
+            }
         },
         keymaps = {
             -- Default keymap options
@@ -223,16 +263,8 @@ function config.gitsigns()
 end
 
 function config.indent_blankline()
-    -- vim.cmd [[highlight IndentTwo guifg=#D08770 guibg=NONE gui=nocombine]]
-    -- vim.cmd [[highlight IndentThree guifg=#EBCB8B guibg=NONE gui=nocombine]]
-    -- vim.cmd [[highlight IndentFour guifg=#A3BE8C guibg=NONE gui=nocombine]]
-    -- vim.cmd [[highlight IndentFive guifg=#5E81AC guibg=NONE gui=nocombine]]
-    -- vim.cmd [[highlight IndentSix guifg=#88C0D0 guibg=NONE gui=nocombine]]
-    -- vim.cmd [[highlight IndentSeven guifg=#B48EAD guibg=NONE gui=nocombine]]
-    -- vim.g.indent_blankline_char_highlight_list = {
-    --     "IndentTwo", "IndentThree", "IndentFour", "IndentFive", "IndentSix",
-    --     "IndentSeven"
-    -- }
+    vim.opt.termguicolors = true
+    vim.opt.list = true
     require("indent_blankline").setup {
         char = "│",
         show_first_indent_level = true,
@@ -249,7 +281,8 @@ function config.indent_blankline()
             "class", "function", "method", "block", "list_literal", "selector",
             "^if", "^table", "if_statement", "while", "for", "type", "var",
             "import"
-        }
+        },
+        space_char_blankline = " "
     }
     -- because lazy load indent-blankline so need readd this autocmd
     vim.cmd("autocmd CursorMoved * IndentBlanklineRefresh")

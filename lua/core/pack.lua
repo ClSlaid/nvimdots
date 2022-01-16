@@ -40,6 +40,7 @@ function Packer:load_packer()
         compile_path = packer_compiled,
         git = {clone_timeout = 120},
         disable_commands = true,
+        max_jobs = 20,
         display = {
             open_fn = function()
                 return require("packer.util").float({border = "single"})
@@ -132,7 +133,7 @@ function plugins.load_compile()
     vim.cmd [[command! PackerSync lua require('core.pack').sync()]]
     vim.cmd [[command! PackerClean lua require('core.pack').clean()]]
     vim.cmd [[autocmd User PackerComplete lua require('core.pack').magic_compile()]]
-    vim.cmd [[command! PackerStatus  lua require('packer').status()]]
+    vim.cmd [[command! PackerStatus lua require('core.pack').magic_compile() require('packer').status()]]
 end
 
 return plugins
