@@ -232,6 +232,8 @@ local enhance_server_opts = {
 			custom_attach(client)
 		end
 	end,
+	["hls"] = function(opts)
+	end,
 }
 
 lsp_installer.on_server_ready(function(server)
@@ -292,7 +294,7 @@ local shfmt = require("efmls-configs.formatters.shfmt")
 
 -- Add your own config for formatter and linter here
 
--- local rustfmt = require("modules.completion.efm.formatters.rustfmt")
+local rustfmt = require("modules.completion.efm.formatters.rustfmt")
 
 -- Override default config here
 
@@ -324,5 +326,5 @@ efmls.setup({
 	scss = { formatter = prettier },
 	sh = { formatter = shfmt, linter = shellcheck },
 	markdown = { formatter = prettier },
-	-- rust = {formatter = rustfmt},
+	rust = {formatter = rustfmt},
 })

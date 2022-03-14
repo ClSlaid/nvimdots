@@ -38,6 +38,13 @@ lang['neovimhaskell/haskell-vim'] = {
     ft = "haskell",
     config = conf.haskell
 }
+lang['haskell/haskell-language-server'] = {
+	opt = true,
+	ft = {"haskell", "lhaskell"},
+	args = {"--lsp"},
+	rootPatterns = {"*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"},
+	config = conf.hls
+}
 
 lang["chrisbra/csv.vim"] = {opt = true, ft = "csv"}
 

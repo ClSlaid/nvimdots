@@ -67,7 +67,21 @@ function config.rust_tools()
 		-- all the opts to send to nvim-lspconfig
 		-- these override the defaults set by rust-tools.nvim
 		-- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
-		server = {}, -- rust-analyer options
+		server = {
+			settings = {
+				["rust-analyzer"] = {
+					cargo = {
+						allFeatures = true
+					},
+					procMacro = {
+						enable = true
+					},
+					checkOnSave = {
+						command = "clippy",
+					},
+				}
+			}
+		}, -- rust-analyer options
 	}
 
 	require("rust-tools").setup(opts)
@@ -86,14 +100,20 @@ end
 -- end
 
 function config.haskell()
-	vim.g.haskell_enable_quantification = 1  -- to enable highlighting of `forall`
-	vim.g.haskell_enable_recursivedo = 1     -- to enable highlighting of `mdo` and `rec`
-	vim.g.haskell_enable_arrowsyntax = 1     -- to enable highlighting of `proc`
-	vim.g.haskell_enable_pattern_synonyms = 1-- to enable highlighting of `pattern`
-	vim.g.haskell_enable_typeroles = 1       -- to enable highlighting of type roles
-	vim.g.haskell_enable_static_pointers = 1 -- to enable highlighting of `static`
-	vim.g.haskell_backpack = 1               -- to enable highlighting of backpack keywords
-    -- TODO: Add customized hightlighting configure
+	vim.g.haskell_enable_quantification = true
+	-- to enable highlighting of `forall`
+	vim.g.haskell_enable_recursivedo = true 
+	-- to enable highlighting of `mdo` and `rec`
+	vim.g.haskell_enable_arrowsyntax = true 
+	-- to enable highlighting of `proc`
+	vim.g.haskell_enable_pattern_synonyms = true
+	-- to enable highlighting of `pattern`
+	vim.g.haskell_enable_typeroles = true   
+	-- to enable highlighting of type roles
+	vim.g.haskell_enable_static_pointers = true
+	-- to enable highlighting of `static`
+	vim.g.haskell_backpack = true              
+	-- to enable highlighting of backpack keywords
 end
 
 return config
