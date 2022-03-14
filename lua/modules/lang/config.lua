@@ -1,6 +1,7 @@
 local config = {}
 
 function config.rust_tools()
+	vim.cmd([[packadd nvim-lspconfig]])
 	local opts = {
 		tools = {
 			-- rust-tools options
@@ -74,6 +75,7 @@ end
 
 function config.lang_go()
 	vim.g.go_doc_keywordprg_enabled = false
+	vim.g.go_def_mapping_enabled = false
 end
 
 -- function config.lang_org()

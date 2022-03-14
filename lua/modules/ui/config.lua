@@ -35,7 +35,7 @@ end
 
 function config.catppuccin()
 	require("catppuccin").setup({
-		transparent_background = false,
+		transparent_background = true,
 		term_colors = true,
 		styles = {
 			comments = "italic",
@@ -93,6 +93,14 @@ function config.lualine()
 			return ""
 		end
 	end
+	local mini_sections = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = { "location" },
+	}
 	local simple_sections = {
 		lualine_a = { "mode" },
 		lualine_b = { "filetype" },
@@ -101,9 +109,13 @@ function config.lualine()
 		lualine_y = {},
 		lualine_z = { "location" },
 	}
-	local symbols_outline = {
-		sections = simple_sections,
-		filetypes = { "Outline" },
+	local minimap = {
+		sections = mini_sections,
+		filetypes = { "minimap" },
+	}
+	local aerial = {
+		sections = mini_sections,
+		filetypes = { "aerial" },
 	}
 	local dapui_scopes = {
 		sections = simple_sections,
@@ -178,7 +190,8 @@ function config.lualine()
 			"nvim-tree",
 			"toggleterm",
 			"fugitive",
-			symbols_outline,
+			minimap,
+			aerial,
 			dapui_scopes,
 			dapui_breakpoints,
 			dapui_stacks,

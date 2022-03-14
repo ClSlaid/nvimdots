@@ -4,6 +4,7 @@ vim.cmd([[packadd nvim-lsp-installer]])
 vim.cmd([[packadd lsp_signature.nvim]])
 vim.cmd([[packadd lspsaga.nvim]])
 vim.cmd([[packadd cmp-nvim-lsp]])
+vim.cmd([[packadd aerial.nvim]])
 
 local nvim_lsp = require("lspconfig")
 local saga = require("lspsaga")
@@ -41,7 +42,7 @@ vim.lsp.handlers["textDocument/formatting"] = function(err, result, ctx)
 		vim.api.nvim_buf_get_var(ctx.bufnr, "init_changedtick") == vim.api.nvim_buf_get_var(ctx.bufnr, "changedtick")
 	then
 		local view = vim.fn.winsaveview()
-		vim.lsp.util.apply_text_edits(result, ctx.bufnr, "utf-8")
+		vim.lsp.util.apply_text_edits(result, ctx.bufnr, "utf-16")
 		vim.fn.winrestview(view)
 		if ctx.bufnr == vim.api.nvim_get_current_buf() then
 			vim.b.saving_format = true
@@ -61,6 +62,7 @@ local function custom_attach(client)
 		hi_parameter = "Search",
 		handler_opts = { "double" },
 	})
+	require("aerial").on_attach(client)
 
 	if client.resolved_capabilities.document_formatting then
 		vim.cmd([[augroup Format]])
