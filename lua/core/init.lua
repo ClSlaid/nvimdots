@@ -169,7 +169,7 @@ local load_core = function()
 	require("core.event")
 	pack.load_compile()
 
-	vim.cmd([[colorscheme catppuccin]])
+	vim.cmd([[colorscheme everforest]])
 end
 
 load_core()

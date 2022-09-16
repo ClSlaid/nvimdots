@@ -116,4 +116,8 @@ function config.haskell()
 	-- to enable highlighting of backpack keywords
 end
 
+function config.hls()
+	cmd = "haskell-language-server-wrapper"
+end
+
 return config
