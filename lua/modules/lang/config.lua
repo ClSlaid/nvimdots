@@ -167,7 +167,7 @@ function config.rust_tools()
 						allFeatures = true
 					},
 					procMacro = {
-						enable = true
+						enable = false
 					},
 					checkOnSave = {
 						command = "clippy",
