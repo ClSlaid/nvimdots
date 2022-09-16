@@ -1,22 +1,30 @@
 local config = {}
 local sessions_dir = vim.fn.stdpath("data") .. "/sessions/"
 
-function config.vim_cursorwod()
-	vim.api.nvim_command("augroup user_plugin_cursorword")
-	vim.api.nvim_command("autocmd!")
-	vim.api.nvim_command("autocmd FileType NvimTree,lspsagafinder,dashboard let b:cursorword = 0")
-	vim.api.nvim_command("autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif")
-	vim.api.nvim_command("autocmd InsertEnter * let b:cursorword = 0")
-	vim.api.nvim_command("autocmd InsertLeave * let b:cursorword = 1")
-	vim.api.nvim_command("augroup END")
-end
-
 function config.nvim_treesitter()
-	vim.api.nvim_command("set foldmethod=expr")
-	vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()")
+	vim.api.nvim_set_option_value("foldmethod", "expr", {})
+	vim.api.nvim_set_option_value("foldexpr", "nvim_treesitter#foldexpr()", {})
 
 	require("nvim-treesitter.configs").setup({
-		ensure_installed = "maintained",
+		ensure_installed = {
+			"bash",
+			"c",
+			"cpp",
+			"lua",
+			"go",
+			"gomod",
+			"json",
+			"yaml",
+			"latex",
+			"make",
+			"python",
+			"rust",
+			"html",
+			"javascript",
+			"typescript",
+			"vue",
+			"css",
+		},
 		highlight = { enable = true, disable = { "vim" } },
 		textobjects = {
 			select = {
@@ -56,7 +64,6 @@ function config.nvim_treesitter()
 		},
 		context_commentstring = { enable = true, enable_autocmd = false },
 		matchup = { enable = true },
-		context = { enable = true, throttle = true },
 	})
 	require("nvim-treesitter.install").prefer_git = true
 	local parsers = require("nvim-treesitter.parsers").get_parser_configs()
@@ -65,30 +72,53 @@ function config.nvim_treesitter()
 	end
 end
 
-function config.matchup()
-	vim.cmd([[let g:matchup_matchparen_offscreen = {'method': 'popup'}]])
+function config.illuminate()
+	-- Use background for "Visual" as highlight for words. Change this behavior here!
+	if vim.api.nvim_get_hl_by_name("Visual", true).background then
+		local illuminate_bg = string.format("#%06x", vim.api.nvim_get_hl_by_name("Visual", true).background)
+
+		vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = illuminate_bg })
+		vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = illuminate_bg })
+		vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = illuminate_bg })
+	end
+
+	require("illuminate").configure({
+		providers = {
+			"lsp",
+			"treesitter",
+			"regex",
+		},
+		delay = 100,
+		filetypes_denylist = {
+			"alpha",
+			"dashboard",
+			"DoomInfo",
+			"fugitive",
+			"help",
+			"norg",
+			"NvimTree",
+			"Outline",
+			"packer",
+			"toggleterm",
+		},
+		under_cursor = false,
+	})
 end
 
-function config.nvim_gps()
-	require("nvim-gps").setup({
-		icons = {
-			["class-name"] = " ", -- Classes and class-like objects
-			["function-name"] = " ", -- Functions
-			["method-name"] = " ", -- Methods (functions inside class-like objects)
-		},
-		languages = {
-			-- You can disable any language individually here
-			["c"] = true,
-			["cpp"] = true,
-			["go"] = true,
-			["java"] = true,
-			["javascript"] = true,
-			["lua"] = true,
-			["python"] = true,
-			["rust"] = true,
-		},
-		separator = " > ",
+function config.nvim_comment()
+	require("nvim_comment").setup({
+		hook = function()
+			require("ts_context_commentstring.internal").update_commentstring()
+		end,
 	})
+end
+
+function config.hop()
+	require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
+end
+
+function config.matchup()
+	vim.cmd([[let g:matchup_matchparen_offscreen = {'method': 'popup'}]])
 end
 
 function config.autotag()
@@ -172,7 +202,13 @@ function config.toggleterm()
 				return vim.o.columns * 0.40
 			end
 		end,
-		open_mapping = [[<c-\>]],
+		on_open = function()
+			-- Prevent infinite calls from freezing neovim.
+			-- Only set these options specific to this terminal buffer.
+			vim.api.nvim_set_option_value("foldmethod", "manual", { scope = "local" })
+			vim.api.nvim_set_option_value("foldexpr", "0", { scope = "local" })
+		end,
+		open_mapping = false, -- [[<c-\>]],
 		hide_numbers = true, -- hide the number column in toggleterm buffers
 		shade_filetypes = {},
 		shade_terminals = false,
@@ -197,21 +233,23 @@ function config.dapui()
 			edit = "e",
 			repl = "r",
 		},
-		sidebar = {
-			elements = {
-				-- Provide as ID strings or tables with "id" and "size" keys
-				{
-					id = "scopes",
-					size = 0.25, -- Can be float or integer > 1
+		layouts = {
+			{
+				elements = {
+					-- Provide as ID strings or tables with "id" and "size" keys
+					{
+						id = "scopes",
+						size = 0.25, -- Can be float or integer > 1
+					},
+					{ id = "breakpoints", size = 0.25 },
+					{ id = "stacks", size = 0.25 },
+					{ id = "watches", size = 0.25 },
 				},
-				{ id = "breakpoints", size = 0.25 },
-				{ id = "stacks", size = 0.25 },
-				{ id = "watches", size = 00.25 },
+				size = 40,
+				position = "left",
 			},
-			size = 40,
-			position = "left",
+			{ elements = { "repl" }, size = 10, position = "bottom" },
 		},
-		tray = { elements = { "repl" }, size = 10, position = "bottom" },
 		floating = {
 			max_height = nil,
 			max_width = nil,
@@ -222,20 +260,28 @@ function config.dapui()
 end
 
 function config.dap()
+	vim.cmd([[packadd nvim-dap-ui]])
 	local dap = require("dap")
 	local dapui = require("dapui")
 
-	dap.listeners.after.event_initialized["dapui"] = function()
+	dap.listeners.after.event_initialized["dapui_config"] = function()
 		dapui.open()
 	end
-	dap.listeners.after.event_terminated["dapui"] = function()
+	dap.listeners.after.event_terminated["dapui_config"] = function()
 		dapui.close()
 	end
-	dap.listeners.after.event_exited["dapui"] = function()
+	dap.listeners.after.event_exited["dapui_config"] = function()
 		dapui.close()
 	end
 
-	vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
+	-- We need to override nvim-dap's default highlight groups, AFTER requiring nvim-dap for catppuccin.
+	vim.api.nvim_set_hl(0, "DapStopped", { fg = "#ABE9B3" })
+
+	vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+	vim.fn.sign_define("DapBreakpointCondition", { text = "ﳁ", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+	vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+	vim.fn.sign_define("DapLogPoint", { text = "", texthl = "DapLogPoint", linehl = "", numhl = "" })
+	vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStopped", linehl = "", numhl = "" })
 
 	dap.adapters.lldb = {
 		type = "executable",
@@ -285,7 +331,11 @@ function config.dap()
 			stdout:close()
 			handle:close()
 			if code ~= 0 then
-				print("dlv exited with code", code)
+				vim.notify(
+					string.format('"dlv" exited with code: %d, please check your configs for correctness.', code),
+					vim.log.levels.WARN,
+					{ title = "[go] DAP Warning!" }
+				)
 			end
 		end)
 		assert(handle, "Error running dlv: " .. tostring(pid_or_err))
@@ -387,6 +437,48 @@ function config.tabout()
 			{ open = "{", close = "}" },
 		},
 		exclude = {},
+	})
+end
+
+function config.imselect()
+	-- fcitx5 need a manual config
+	if vim.fn.executable("fcitx5-remote") == 1 then
+		vim.cmd([[
+		let g:im_select_get_im_cmd = ["fcitx5-remote"]
+		let g:im_select_default = '1'
+		let g:ImSelectSetImCmd = {
+			\ key ->
+			\ key == 1 ? ['fcitx5-remote', '-c'] :
+			\ key == 2 ? ['fcitx5-remote', '-o'] :
+			\ key == 0 ? ['fcitx5-remote', '-c'] :
+			\ execute("throw 'invalid im key'")
+			\ }
+			]])
+	end
+end
+
+function config.better_escape()
+	require("better_escape").setup({
+		mapping = { "jk", "jj" }, -- a table with mappings to use
+		timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
+		clear_empty_lines = false, -- clear line after escaping if there is only whitespace
+		keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
+		-- example(recommended)
+		-- keys = function()
+		--   return vim.api.nvim_win_get_cursor(0)[2] > 1 and '<esc>l' or '<esc>'
+		-- end,
+	})
+end
+
+function config.accelerated_jk()
+	require("accelerated-jk").setup({
+		mode = "time_driven",
+		enable_deceleration = false,
+		acceleration_motions = {},
+		acceleration_limit = 150,
+		acceleration_table = { 7, 12, 17, 21, 24, 26, 28, 30 },
+		-- when 'enable_deceleration = true', 'deceleration_table = { {200, 3}, {300, 7}, {450, 11}, {600, 15}, {750, 21}, {900, 9999} }'
+		deceleration_table = { { 150, 9999 } },
 	})
 end
 

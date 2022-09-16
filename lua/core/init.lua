@@ -53,8 +53,8 @@ local leader_map = function()
 end
 
 local neovide_config = function()
-	vim.cmd([[set guifont=JetBrainsMono\ Nerd\ Font:h12]])
-	vim.g.neovide_refresh_rate = 60
+	vim.cmd([[set guifont=JetBrainsMono\ Nerd\ Font:h15]])
+	vim.g.neovide_refresh_rate = 120
 	vim.g.neovide_cursor_vfx_mode = "railgun"
 	vim.g.neovide_no_idle = true
 	vim.g.neovide_cursor_animation_length = 0.03
@@ -64,6 +64,13 @@ local neovide_config = function()
 	vim.g.neovide_cursor_vfx_particle_lifetime = 1.2
 	vim.g.neovide_cursor_vfx_particle_speed = 20.0
 	vim.g.neovide_cursor_vfx_particle_density = 5.0
+end
+
+local function check_conda()
+	local venv = os.getenv("CONDA_PREFIX")
+	if venv then
+		vim.g.python3_host_prog = venv .. "/bin/python"
+	end
 end
 
 local dashboard_config = function()
@@ -134,7 +141,7 @@ local function minimap_config()
 	vim.g.minimap_git_colors = 1
 end
 
-local clipboard_settings = function()
+local clipboard_config = function()
 	vim.cmd([[
     let g:clipboard = {
           \   'name': 'win32yank-wsl',
@@ -169,7 +176,8 @@ local load_core = function()
 	require("core.event")
 	pack.load_compile()
 
-	vim.cmd([[colorscheme everforest]])
+	-- vim.cmd([[set background=light]])
+	vim.cmd([[colorscheme catppuccin]])
 end
 
 load_core()

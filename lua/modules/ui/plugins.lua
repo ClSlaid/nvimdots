@@ -5,51 +5,67 @@ ui['kyazdani42/nvim-web-devicons'] = {opt = false}
 ui['sainnhe/edge'] = {opt = false, config = conf.edge}
 ui['sainnhe/everforest'] = {opt = false, config = conf.everforest}
 ui["kyazdani42/nvim-web-devicons"] = { opt = false }
+ui["shaunsingh/nord.nvim"] = { opt = false, config = conf.nord }
 ui["sainnhe/edge"] = { opt = false, config = conf.edge }
-ui["rebelot/kanagawa.nvim"] = { opt = false, config = conf.kanagawa }
 ui["catppuccin/nvim"] = {
 	opt = false,
 	as = "catppuccin",
 	config = conf.catppuccin,
 }
+ui["rcarriga/nvim-notify"] = {
+	opt = false,
+	config = conf.notify,
+}
 ui["hoob3rt/lualine.nvim"] = {
 	opt = true,
-	after = "lualine-lsp-progress",
+	after = { "nvim-navic" },
 	config = conf.lualine,
 }
-ui["arkav/lualine-lsp-progress"] = { opt = true, after = "nvim-gps" }
-ui["glepnir/dashboard-nvim"] = { opt = true, event = "BufWinEnter" }
+ui["SmiteshP/nvim-navic"] = {
+	opt = true,
+	after = "nvim-lspconfig",
+	config = conf.nvim_navic,
+}
+ui["goolord/alpha-nvim"] = {
+	opt = true,
+	event = "BufWinEnter",
+	config = conf.alpha,
+}
 ui["kyazdani42/nvim-tree.lua"] = {
 	opt = true,
-	event = "BufRead",
+	cmd = { "NvimTreeToggle" },
 	config = conf.nvim_tree,
 }
 ui["lewis6991/gitsigns.nvim"] = {
 	opt = true,
-	event = { "BufRead", "BufNewFile" },
+	event = { "BufReadPost", "BufNewFile" },
 	config = conf.gitsigns,
 	requires = { "nvim-lua/plenary.nvim", opt = true },
 }
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	opt = true,
-	event = "BufRead",
+	event = "BufReadPost",
 	config = conf.indent_blankline,
 }
-ui["akinsho/nvim-bufferline.lua"] = {
+ui["akinsho/bufferline.nvim"] = {
 	opt = true,
-	event = "BufRead",
+	tag = "*",
+	event = "BufReadPost",
 	config = conf.nvim_bufferline,
 }
-ui["petertriho/nvim-scrollbar"] = {
+ui["dstein64/nvim-scrollview"] = {
 	opt = true,
-	event = "BufRead",
-	config = function()
-		require("scrollbar").setup()
-	end,
+	event = { "BufReadPost" },
+	config = conf.scrollview,
 }
-ui["wfxr/minimap.vim"] = {
+ui["mbbill/undotree"] = {
 	opt = true,
-	event = "BufRead",
+	cmd = "UndotreeToggle",
+}
+ui["j-hui/fidget.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = conf.fidget,
 }
 
 return ui

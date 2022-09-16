@@ -4,207 +4,138 @@ function config.nvim_lsp()
 	require("modules.completion.lsp")
 end
 
-function config.lightbulb()
-	vim.cmd([[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]])
-end
+function config.lspsaga()
+	local function set_sidebar_icons()
+		-- Set icons for sidebar.
+		local diagnostic_icons = {
+			Error = " ",
+			Warn = " ",
+			Info = " ",
+			Hint = " ",
+		}
+		for type, icon in pairs(diagnostic_icons) do
+			local hl = "DiagnosticSign" .. type
+			vim.fn.sign_define(hl, { text = icon, texthl = hl })
+		end
+	end
 
-function config.aerial()
-	-- Call the setup function to change the default behavior
-	require("aerial").setup({
-		-- Priority list of preferred backends for aerial.
-		-- This can be a filetype map (see :help aerial-filetype-map)
-		backends = { "lsp", "treesitter", "markdown" },
+	local function get_palette()
+		if vim.g.colors_name == "catppuccin" then
+			-- If the colorscheme is catppuccin then use the palette.
+			return require("catppuccin.palettes").get_palette()
+		else
+			-- Default behavior: return lspsaga's default palette.
+			local palette = require("lspsaga.lspkind").colors
+			palette.peach = palette.orange
+			palette.flamingo = palette.orange
+			palette.rosewater = palette.yellow
+			palette.mauve = palette.violet
+			palette.sapphire = palette.blue
+			palette.maroon = palette.orange
 
-		-- Enum: persist, close, auto, global
-		--   persist - aerial window will stay open until closed
-		--   close   - aerial window will close when original file is no longer visible
-		--   auto    - aerial window will stay open as long as there is a visible
-		--             buffer to attach to
-		--   global  - same as 'persist', and will always show symbols for the current buffer
-		close_behavior = "auto",
+			return palette
+		end
+	end
 
-		-- Set to false to remove the default keybindings for the aerial buffer
-		default_bindings = true,
+	set_sidebar_icons()
 
-		-- Enum: prefer_right, prefer_left, right, left, float
-		-- Determines the default direction to open the aerial window. The 'prefer'
-		-- options will open the window in the other direction *if* there is a
-		-- different buffer in the way of the preferred direction
-		default_direction = "prefer_right",
+	local colors = get_palette()
 
-		-- Disable aerial on files with this many lines
-		disable_max_lines = 10000,
-
-		-- A list of all symbols to display. Set to false to display all symbols.
-		-- This can be a filetype map (see :help aerial-filetype-map)
-		-- To see all available values, see :help SymbolKind
-		filter_kind = {
-			"Class",
-			"Constructor",
-			"Enum",
-			"Function",
-			"Interface",
-			"Module",
-			"Method",
-			"Struct",
-		},
-
-		-- Enum: split_width, full_width, last, none
-		-- Determines line highlighting mode when multiple splits are visible.
-		-- split_width   Each open window will have its cursor location marked in the
-		--               aerial buffer. Each line will only be partially highlighted
-		--               to indicate which window is at that location.
-		-- full_width    Each open window will have its cursor location marked as a
-		--               full-width highlight in the aerial buffer.
-		-- last          Only the most-recently focused window will have its location
-		--               marked in the aerial buffer.
-		-- none          Do not show the cursor locations in the aerial window.
-		highlight_mode = "split_width",
-
-		-- Highlight the closest symbol if the cursor is not exactly on one.
-		highlight_closest = true,
-
-		-- When jumping to a symbol, highlight the line for this many ms.
-		-- Set to false to disable
-		highlight_on_jump = 300,
-
-		-- Define symbol icons. You can also specify "<Symbol>Collapsed" to change the
-		-- icon when the tree is collapsed at that symbol, or "Collapsed" to specify a
-		-- default collapsed icon. The default icon set is determined by the
-		-- "nerd_font" option below.
-		-- If you have lspkind-nvim installed, aerial will use it for icons.
-		icons = {},
-
-		-- When you fold code with za, zo, or zc, update the aerial tree as well.
-		-- Only works when manage_folds = true
-		link_folds_to_tree = false,
-
-		-- Fold code when you open/collapse symbols in the tree.
-		-- Only works when manage_folds = true
-		link_tree_to_folds = true,
-
-		-- Use symbol tree for folding. Set to true or false to enable/disable
-		-- 'auto' will manage folds if your previous foldmethod was 'manual'
-		manage_folds = false,
-
-		-- The maximum width of the aerial window
-		max_width = 40,
-
-		-- The minimum width of the aerial window.
-		-- To disable dynamic resizing, set this to be equal to max_width
-		min_width = 10,
-
-		-- Set default symbol icons to use patched font icons (see https://www.nerdfonts.com/)
-		-- "auto" will set it to true if nvim-web-devicons or lspkind-nvim is installed.
-		nerd_font = "auto",
-
-		-- Call this function when aerial attaches to a buffer.
-		-- Useful for setting keymaps. Takes a single `bufnr` argument.
-		on_attach = nil,
-
-		-- Automatically open aerial when entering supported buffers.
-		-- This can be a function (see :help aerial-open-automatic)
-		open_automatic = false,
-
-		-- Set to true to only open aerial at the far right/left of the editor
-		-- Default behavior opens aerial relative to current window
-		placement_editor_edge = false,
-
-		-- Run this command after jumping to a symbol (false will disable)
-		post_jump_cmd = "normal! zz",
-
-		-- When true, aerial will automatically close after jumping to a symbol
-		close_on_select = false,
-
-		-- Show box drawing characters for the tree hierarchy
-		show_guides = false,
-
-		-- Customize the characters used when show_guides = true
-		guides = {
-			-- When the child item has a sibling below it
-			mid_item = "├─",
-			-- When the child item is the last in the list
-			last_item = "└─",
-			-- When there are nested child guides to the right
-			nested_top = "│ ",
-			-- Raw indentation
-			whitespace = "  ",
-		},
-
-		-- Options for opening aerial in a floating win
-		float = {
-			-- Controls border appearance. Passed to nvim_open_win
-			border = "rounded",
-
-			-- Controls row offset from cursor. Passed to nvim_open_win
-			row = 1,
-
-			-- Controls col offset from cursor. Passed to nvim_open_win
-			col = 0,
-
-			-- The maximum height of the floating aerial window
-			max_height = 100,
-
-			-- The minimum height of the floating aerial window
-			-- To disable dynamic resizing, set this to be equal to max_height
-			min_height = 4,
-		},
-
-		lsp = {
-			-- Fetch document symbols when LSP diagnostics update.
-			-- If false, will update on buffer changes.
-			diagnostics_trigger_update = true,
-
-			-- Set to false to not update the symbols when there are LSP errors
-			update_when_errors = true,
-		},
-
-		treesitter = {
-			-- How long to wait (in ms) after a buffer change before updating
-			update_delay = 300,
-		},
-
-		markdown = {
-			-- How long to wait (in ms) after a buffer change before updating
-			update_delay = 300,
+	require("lspsaga").init_lsp_saga({
+		diagnostic_header = { " ", " ", "  ", " " },
+		custom_kind = {
+			File = { " ", colors.rosewater },
+			Module = { " ", colors.blue },
+			Namespace = { " ", colors.blue },
+			Package = { " ", colors.blue },
+			Class = { "ﴯ ", colors.yellow },
+			Method = { " ", colors.blue },
+			Property = { "ﰠ ", colors.teal },
+			Field = { " ", colors.teal },
+			Constructor = { " ", colors.sapphire },
+			Enum = { " ", colors.yellow },
+			Interface = { " ", colors.yellow },
+			Function = { " ", colors.blue },
+			Variable = { " ", colors.peach },
+			Constant = { " ", colors.peach },
+			String = { " ", colors.green },
+			Number = { " ", colors.peach },
+			Boolean = { " ", colors.peach },
+			Array = { " ", colors.peach },
+			Object = { " ", colors.yellow },
+			Key = { " ", colors.red },
+			Null = { "ﳠ ", colors.yellow },
+			EnumMember = { " ", colors.teal },
+			Struct = { " ", colors.yellow },
+			Event = { " ", colors.yellow },
+			Operator = { " ", colors.sky },
+			TypeParameter = { " ", colors.maroon },
+			-- ccls-specific icons.
+			TypeAlias = { " ", colors.green },
+			Parameter = { " ", colors.blue },
+			StaticMethod = { "ﴂ ", colors.peach },
+			Macro = { " ", colors.red },
 		},
 	})
 end
 
 function config.cmp()
-	vim.cmd([[highlight CmpItemAbbrDeprecated guifg=#D8DEE9 guibg=NONE gui=strikethrough]])
-	vim.cmd([[highlight CmpItemKindSnippet guifg=#BF616A guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindUnit guifg=#D08770 guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindProperty guifg=#A3BE8C guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindKeyword guifg=#EBCB8B guibg=NONE]])
-	vim.cmd([[highlight CmpItemAbbrMatch guifg=#5E81AC guibg=NONE]])
-	vim.cmd([[highlight CmpItemAbbrMatchFuzzy guifg=#5E81AC guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindVariable guifg=#8FBCBB guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindInterface guifg=#88C0D0 guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindText guifg=#81A1C1 guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindFunction guifg=#B48EAD guibg=NONE]])
-	vim.cmd([[highlight CmpItemKindMethod guifg=#B48EAD guibg=NONE]])
-
+	-- vim.cmd([[packadd cmp-tabnine]])
 	local t = function(str)
 		return vim.api.nvim_replace_termcodes(str, true, true, true)
 	end
+
 	local has_words_before = function()
 		local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 		return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 	end
 
+	local border = function(hl)
+		return {
+			{ "╭", hl },
+			{ "─", hl },
+			{ "╮", hl },
+			{ "│", hl },
+			{ "╯", hl },
+			{ "─", hl },
+			{ "╰", hl },
+			{ "│", hl },
+		}
+	end
+
+	local cmp_window = require("cmp.utils.window")
+
+	cmp_window.info_ = cmp_window.info
+	cmp_window.info = function(self)
+		local info = self:info_()
+		info.scrollable = false
+		return info
+	end
+
+	local compare = require("cmp.config.compare")
+
 	local cmp = require("cmp")
 	cmp.setup({
+		window = {
+			completion = {
+				border = border("CmpBorder"),
+				winhighlight = "Normal:CmpPmenu,CursorLine:PmenuSel,Search:None",
+			},
+			documentation = {
+				border = border("CmpDocBorder"),
+			},
+		},
 		sorting = {
 			comparators = {
-				cmp.config.compare.offset,
-				cmp.config.compare.exact,
-				cmp.config.compare.score,
+				-- require("cmp_tabnine.compare"),
+				compare.offset,
+				compare.exact,
+				compare.score,
 				require("cmp-under-comparator").under,
-				cmp.config.compare.kind,
-				cmp.config.compare.sort_text,
-				cmp.config.compare.length,
-				cmp.config.compare.order,
+				compare.kind,
+				compare.sort_text,
+				compare.length,
+				compare.order,
 			},
 		},
 		formatting = {
@@ -255,7 +186,7 @@ function config.cmp()
 			end,
 		},
 		-- You can set mappings if you want
-		mapping = {
+		mapping = cmp.mapping.preset.insert({
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
 			["<C-p>"] = cmp.mapping.select_prev_item(),
 			["<C-n>"] = cmp.mapping.select_next_item(),
@@ -265,6 +196,8 @@ function config.cmp()
 			["<Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_next_item()
+				elseif require("luasnip").expand_or_jumpable() then
+					vim.fn.feedkeys(t("<Plug>luasnip-expand-or-jump"), "")
 				elseif has_words_before() then
 					cmp.complete()
 				else
@@ -274,25 +207,13 @@ function config.cmp()
 			["<S-Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
 					cmp.select_prev_item()
-				else
-					fallback()
-				end
-			end, { "i", "s" }),
-			["<C-h>"] = function(fallback)
-				if require("luasnip").jumpable(-1) then
+				elseif require("luasnip").jumpable(-1) then
 					vim.fn.feedkeys(t("<Plug>luasnip-jump-prev"), "")
 				else
 					fallback()
 				end
-			end,
-			["<C-l>"] = function(fallback)
-				if require("luasnip").expand_or_jumpable() then
-					vim.fn.feedkeys(t("<Plug>luasnip-expand-or-jump"), "")
-				else
-					fallback()
-				end
-			end,
-		},
+			end, { "i", "s" }),
+		}),
 		snippet = {
 			expand = function(args)
 				require("luasnip").lsp_expand(args.body)
@@ -309,22 +230,26 @@ function config.cmp()
 			{ name = "orgmode" },
 			{ name = "buffer" },
 			{ name = "latex_symbols" },
-			-- {name = 'cmp_tabnine'}
+			-- { name = "cmp_tabnine" },
 		},
 	})
 end
 
 function config.luasnip()
+	vim.o.runtimepath = vim.o.runtimepath .. "," .. os.getenv("HOME") .. "/.config/nvim/my-snippets/,"
 	require("luasnip").config.set_config({
 		history = true,
 		updateevents = "TextChanged,TextChangedI",
+		delete_check_events = "TextChanged,InsertLeave",
 	})
-	require("luasnip/loaders/from_vscode").load()
+	require("luasnip.loaders.from_lua").lazy_load()
+	require("luasnip.loaders.from_vscode").lazy_load()
+	require("luasnip.loaders.from_snipmate").lazy_load()
 end
 
 -- function config.tabnine()
---     local tabnine = require('cmp_tabnine.config')
---     tabnine:setup({max_line = 1000, max_num_results = 20, sort = true})
+-- 	local tabnine = require("cmp_tabnine.config")
+-- 	tabnine:setup({ max_line = 1000, max_num_results = 20, sort = true })
 -- end
 
 function config.autopairs()
@@ -333,69 +258,60 @@ function config.autopairs()
 	-- If you want insert `(` after select function or method item
 	local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 	local cmp = require("cmp")
-	cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { tex = "" } }))
-	cmp_autopairs.lisp[#cmp_autopairs.lisp + 1] = "racket"
+	local handlers = require("nvim-autopairs.completion.handlers")
+	cmp.event:on(
+		"confirm_done",
+		cmp_autopairs.on_confirm_done({
+			filetypes = {
+				-- "*" is an alias to all filetypes
+				["*"] = {
+					["("] = {
+						kind = {
+							cmp.lsp.CompletionItemKind.Function,
+							cmp.lsp.CompletionItemKind.Method,
+						},
+						handler = handlers["*"],
+					},
+				},
+				-- Disable for tex
+				tex = false,
+			},
+		})
+	)
 end
 
-function config.nvim_lsputils()
-	if vim.fn.has("nvim-0.5.1") == 1 then
-		vim.lsp.handlers["textDocument/codeAction"] = require("lsputil.codeAction").code_action_handler
-		vim.lsp.handlers["textDocument/references"] = require("lsputil.locations").references_handler
-		vim.lsp.handlers["textDocument/definition"] = require("lsputil.locations").definition_handler
-		vim.lsp.handlers["textDocument/declaration"] = require("lsputil.locations").declaration_handler
-		vim.lsp.handlers["textDocument/typeDefinition"] = require("lsputil.locations").typeDefinition_handler
-		vim.lsp.handlers["textDocument/implementation"] = require("lsputil.locations").implementation_handler
-		vim.lsp.handlers["textDocument/documentSymbol"] = require("lsputil.symbols").document_handler
-		vim.lsp.handlers["workspace/symbol"] = require("lsputil.symbols").workspace_handler
-	else
-		local bufnr = vim.api.nvim_buf_get_number(0)
+function config.mason_install()
+	require("mason-tool-installer").setup({
 
-		vim.lsp.handlers["textDocument/codeAction"] = function(_, _, actions)
-			require("lsputil.codeAction").code_action_handler(nil, actions, nil, nil, nil)
-		end
+		-- a list of all tools you want to ensure are installed upon
+		-- start; they should be the names Mason uses for each tool
+		ensure_installed = {
+			-- you can turn off/on auto_update per tool
+			"editorconfig-checker",
 
-		vim.lsp.handlers["textDocument/references"] = function(_, _, result)
-			require("lsputil.locations").references_handler(nil, result, {
-				bufnr = bufnr,
-			}, nil)
-		end
+			"stylua",
 
-		vim.lsp.handlers["textDocument/definition"] = function(_, method, result)
-			require("lsputil.locations").definition_handler(nil, result, {
-				bufnr = bufnr,
-				method = method,
-			}, nil)
-		end
+			"black",
 
-		vim.lsp.handlers["textDocument/declaration"] = function(_, method, result)
-			require("lsputil.locations").declaration_handler(nil, result, {
-				bufnr = bufnr,
-				method = method,
-			}, nil)
-		end
+			"prettier",
 
-		vim.lsp.handlers["textDocument/typeDefinition"] = function(_, method, result)
-			require("lsputil.locations").typeDefinition_handler(nil, result, {
-				bufnr = bufnr,
-				method = method,
-			}, nil)
-		end
+			"shellcheck",
+			"shfmt",
 
-		vim.lsp.handlers["textDocument/implementation"] = function(_, method, result)
-			require("lsputil.locations").implementation_handler(nil, result, {
-				bufnr = bufnr,
-				method = method,
-			}, nil)
-		end
+			"vint",
+		},
 
-		vim.lsp.handlers["textDocument/documentSymbol"] = function(_, _, result, _, bufn)
-			require("lsputil.symbols").document_handler(nil, result, { bufnr = bufn }, nil)
-		end
+		-- if set to true this will check each tool for updates. If updates
+		-- are available the tool will be updated.
+		-- Default: false
+		auto_update = false,
 
-		vim.lsp.handlers["textDocument/symbol"] = function(_, _, result, _, bufn)
-			require("lsputil.symbols").workspace_handler(nil, result, { bufnr = bufn }, nil)
-		end
-	end
+		-- automatically install / update on startup. If set to false nothing
+		-- will happen on startup. You can use `:MasonToolsUpdate` to install
+		-- tools and check for updates.
+		-- Default: true
+		run_on_start = true,
+	})
 end
 
 return config

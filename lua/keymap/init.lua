@@ -30,6 +30,7 @@ local plug_map = {
 	-- Lsp mapp work when insertenter and lsp start
 	["n|<leader>li"] = map_cr("LspInfo"):with_noremap():with_silent():with_nowait(),
 	["n|<leader>lr"] = map_cr("LspRestart"):with_noremap():with_silent():with_nowait(),
+	["n|<A-t>"] = map_cr("LSoutlineToggle"):with_noremap():with_silent(),
 	["n|g["] = map_cr("Lspsaga diagnostic_jump_next"):with_noremap():with_silent(),
 	["n|g]"] = map_cr("Lspsaga diagnostic_jump_prev"):with_noremap():with_silent(),
 	["n|gs"] = map_cr("Lspsaga signature_help"):with_noremap():with_silent(),
@@ -38,42 +39,50 @@ local plug_map = {
 	["n|<C-Up>"] = map_cr("lua require('lspsaga.action').smart_scroll_with_saga(-1)"):with_noremap():with_silent(),
 	["n|<C-Down>"] = map_cr("lua require('lspsaga.action').smart_scroll_with_saga(1)"):with_noremap():with_silent(),
 	["n|<leader>ca"] = map_cr("Lspsaga code_action"):with_noremap():with_silent(),
-	["v|<leader>ca"] = map_cu("Lspsaga range_code_action"):with_noremap():with_silent(),
-	["n|gd"] = map_cr("Lspsaga preview_definition"):with_noremap():with_silent(),
+	["v|<leader>ca"] = map_cu("Lspsaga code_action"):with_noremap():with_silent(),
+	["n|gd"] = map_cr("Lspsaga peek_definition"):with_noremap():with_silent(),
 	["n|gD"] = map_cr("lua vim.lsp.buf.definition()"):with_noremap():with_silent(),
-	["n|gh"] = map_cr("lua vim.lsp.buf.references()"):with_noremap():with_silent(),
-	["n|<A-d>"] = map_cu('lua require("FTerm").toggle()'):with_noremap():with_silent(),
-	["t|<A-d>"] = map_cu([[<C-\><C-n><CMD>lua require("FTerm").toggle()]]):with_noremap():with_silent(),
-	["t|<A-S-d>"] = map_cu([[<C-\><C-n><CMD>lua require("FTerm").exit()]]):with_noremap():with_silent(),
-	["n|<Leader>g"] = map_cu("lua require('FTerm').run('gitui')"):with_noremap():with_silent(),
-	["n|<Leader>G"] = map_cu("Git"):with_noremap():with_silent(),
+	["n|gh"] = map_cr("Lspsaga lsp_finder"):with_noremap():with_silent(),
 	["n|gps"] = map_cr("G push"):with_noremap():with_silent(),
 	["n|gpl"] = map_cr("G pull"):with_noremap():with_silent(),
+	-- toggleterm
+	-- ["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]), -- switch to normal mode in terminal.
+	["n|<C-\\>"] = map_cr([[execute v:count . "ToggleTerm direction=horizontal"]]):with_noremap():with_silent(),
+	["i|<C-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=horizontal<CR>"):with_noremap():with_silent(),
+	["t|<C-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent(),
+	["n|<C-w>t"] = map_cr([[execute v:count . "ToggleTerm direction=vertical"]]):with_noremap():with_silent(),
+	["i|<C-w>t"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>"):with_noremap():with_silent(),
+	["t|<C-w>t"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent(),
+	["n|<F5>"] = map_cr([[execute v:count . "ToggleTerm direction=vertical"]]):with_noremap():with_silent(),
+	["i|<F5>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>"):with_noremap():with_silent(),
+	["t|<F5>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent(),
+	["n|<A-d>"] = map_cr([[execute v:count . "ToggleTerm direction=float"]]):with_noremap():with_silent(),
+	["i|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=float<CR>"):with_noremap():with_silent(),
+	["t|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm<CR>"):with_noremap():with_silent(),
+	["n|<leader>g"] = map_cr("lua toggle_lazygit()"):with_noremap():with_silent(),
+	["t|<leader>g"] = map_cmd("<Esc><Cmd>lua toggle_lazygit()<CR>"):with_noremap():with_silent(),
+	["n|<leader>G"] = map_cu("Git"):with_noremap():with_silent(),
 	-- Plugin trouble
 	["n|gt"] = map_cr("TroubleToggle"):with_noremap():with_silent(),
 	["n|gR"] = map_cr("TroubleToggle lsp_references"):with_noremap():with_silent(),
-	["n|<leader>cd"] = map_cr("TroubleToggle lsp_document_diagnostics"):with_noremap():with_silent(),
-	["n|<leader>cw"] = map_cr("TroubleToggle lsp_workspace_diagnostics"):with_noremap():with_silent(),
+	["n|<leader>cd"] = map_cr("TroubleToggle document_diagnostics"):with_noremap():with_silent(),
+	["n|<leader>cw"] = map_cr("TroubleToggle workspace_diagnostics"):with_noremap():with_silent(),
 	["n|<leader>cq"] = map_cr("TroubleToggle quickfix"):with_noremap():with_silent(),
 	["n|<leader>cl"] = map_cr("TroubleToggle loclist"):with_noremap():with_silent(),
 	-- Plugin nvim-tree
 	["n|<C-n>"] = map_cr("NvimTreeToggle"):with_noremap():with_silent(),
 	["n|<Leader>nf"] = map_cr("NvimTreeFindFile"):with_noremap():with_silent(),
 	["n|<Leader>nr"] = map_cr("NvimTreeRefresh"):with_noremap():with_silent(),
-	-- Plugin Aerial
-	["n|<A-t>"] = map_cr("AerialToggle! right"):with_noremap():with_silent(),
-	-- Plugin Minimap
-	["n|<A-n>"] = map_cr("MinimapToggle"):with_noremap():with_silent(),
-	["n|<A-r>"] = map_cr("MinimapRefresh"):with_noremap():with_silent(),
+	-- Plugin Undotree
+	["n|<Leader>u"] = map_cr("UndotreeToggle"):with_noremap():with_silent(),
 	-- Plugin Telescope
 	["n|<Leader>fp"] = map_cu("lua require('telescope').extensions.project.project{}"):with_noremap():with_silent(),
 	["n|<Leader>fr"] = map_cu("lua require('telescope').extensions.frecency.frecency{}"):with_noremap():with_silent(),
-	["n|<Leader>fe"] = map_cu("DashboardFindHistory"):with_noremap():with_silent(),
-	["n|<Leader>ff"] = map_cu("DashboardFindFile"):with_noremap():with_silent(),
-	["n|<Leader>sc"] = map_cu("DashboardChangeColorscheme"):with_noremap():with_silent(),
-	["n|<Leader>fw"] = map_cu("DashboardFindWord"):with_noremap():with_silent(),
-	["n|<Leader>fn"] = map_cu("DashboardNewFile"):with_noremap():with_silent(),
-	["n|<Leader>fb"] = map_cu("Telescope file_browser"):with_noremap():with_silent(),
+	["n|<Leader>fe"] = map_cu("Telescope oldfiles"):with_noremap():with_silent(),
+	["n|<Leader>ff"] = map_cu("Telescope find_files"):with_noremap():with_silent(),
+	["n|<Leader>sc"] = map_cu("Telescope colorscheme"):with_noremap():with_silent(),
+	["n|<Leader>fn"] = map_cu(":enew"):with_noremap():with_silent(),
+	["n|<Leader>fw"] = map_cu("Telescope live_grep"):with_noremap():with_silent(),
 	["n|<Leader>fg"] = map_cu("Telescope git_files"):with_noremap():with_silent(),
 	["n|<Leader>fz"] = map_cu("Telescope zoxide list"):with_noremap():with_silent(),
 	-- Plugin accelerate-jk
@@ -94,9 +103,6 @@ local plug_map = {
 	-- Plugin EasyAlign
 	["n|ga"] = map_cmd("v:lua.enhance_align('nga')"):with_expr(),
 	["x|ga"] = map_cmd("v:lua.enhance_align('xga')"):with_expr(),
-	-- Plugin split-term
-	["n|<F5>"] = map_cr("VTerm"):with_noremap():with_silent(),
-	["n|<C-w>t"] = map_cr("VTerm"):with_noremap():with_silent(),
 	-- Plugin MarkdownPreview
 	["n|<F12>"] = map_cr("MarkdownPreviewToggle"):with_noremap():with_silent(),
 	-- Plugin auto_session
@@ -125,6 +131,12 @@ local plug_map = {
 	["n|<leader>dl"] = map_cr("lua require('dap').repl.open()"):with_noremap():with_silent(),
 	["o|m"] = map_cu([[lua require('tsht').nodes()]]):with_silent(),
 	["c|Q"] = map_cu([[%SnipRun]]):with_silent(),
+	-- Plugin Tabout
+	["i|<A-l>"] = map_cmd([[<Plug>(TaboutMulti)]]):with_silent(),
+	["i|<A-h>"] = map_cmd([[<Plug>(TaboutBackMulti)]]):with_silent(),
+	-- Plugin Diffview
+	["n|<leader>D"] = map_cr("DiffviewOpen"):with_silent():with_noremap(),
+	["n|<leader><leader>D"] = map_cr("DiffviewClose"):with_silent():with_noremap(),
 }
 
 bind.nvim_load_mapping(plug_map)

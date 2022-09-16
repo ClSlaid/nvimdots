@@ -1,58 +1,30 @@
-require("modules.completion.formatting")
+local formatting = require("modules.completion.formatting")
 
-vim.cmd([[packadd nvim-lsp-installer]])
 vim.cmd([[packadd lsp_signature.nvim]])
 vim.cmd([[packadd lspsaga.nvim]])
 vim.cmd([[packadd cmp-nvim-lsp]])
-vim.cmd([[packadd aerial.nvim]])
+vim.cmd([[packadd nvim-navic]])
 
 local nvim_lsp = require("lspconfig")
-local saga = require("lspsaga")
-local lsp_installer = require("nvim-lsp-installer")
+local mason = require("mason")
+local mason_lsp = require("mason-lspconfig")
 
--- Override diagnostics symbol
-
-saga.init_lsp_saga({
-	error_sign = "",
-	warn_sign = "",
-	hint_sign = "",
-	infor_sign = "",
-})
-
-lsp_installer.settings({
-	ui = {
-		icons = {
-			server_installed = "✓",
-			server_pending = "➜",
-			server_uninstalled = "✗",
-		},
+mason.setup()
+mason_lsp.setup({
+	ensure_installed = {
+		"bash-language-server",
+		"efm",
+		"lua-language-server",
+		"clangd",
+		"gopls",
+		"pyright",
 	},
 })
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
--- Override default format setting
-
-vim.lsp.handlers["textDocument/formatting"] = function(err, result, ctx)
-	if err ~= nil or result == nil then
-		return
-	end
-	if
-		vim.api.nvim_buf_get_var(ctx.bufnr, "init_changedtick") == vim.api.nvim_buf_get_var(ctx.bufnr, "changedtick")
-	then
-		local view = vim.fn.winsaveview()
-		vim.lsp.util.apply_text_edits(result, ctx.bufnr, "utf-16")
-		vim.fn.winrestview(view)
-		if ctx.bufnr == vim.api.nvim_get_current_buf() then
-			vim.b.saving_format = true
-			vim.cmd([[update]])
-			vim.b.saving_format = false
-		end
-	end
-end
-
-local function custom_attach(client)
+local function custom_attach(client, bufnr)
 	require("lsp_signature").on_attach({
 		bind = true,
 		use_lspsaga = false,
@@ -62,14 +34,7 @@ local function custom_attach(client)
 		hi_parameter = "Search",
 		handler_opts = { "double" },
 	})
-	require("aerial").on_attach(client)
-
-	if client.resolved_capabilities.document_formatting then
-		vim.cmd([[augroup Format]])
-		vim.cmd([[autocmd! * <buffer>]])
-		vim.cmd([[autocmd BufWritePost <buffer> lua require'modules.completion.formatting'.format()]])
-		vim.cmd([[augroup END]])
-	end
+	require("nvim-navic").attach(client, bufnr)
 end
 
 local function switch_source_header_splitcmd(bufnr, splitcmd)
@@ -82,173 +47,165 @@ local function switch_source_header_splitcmd(bufnr, splitcmd)
 				error(tostring(err))
 			end
 			if not result then
-				print("Corresponding file can’t be determined")
+				vim.notify("Corresponding file can’t be determined", vim.log.levels.ERROR, { title = "LSP Error!" })
 				return
 			end
 			vim.api.nvim_command(splitcmd .. " " .. vim.uri_to_fname(result))
 		end)
 	else
-		print("method textDocument/switchSourceHeader is not supported by any servers active on the current buffer")
+		vim.notify(
+			"Method textDocument/switchSourceHeader is not supported by any active server on this buffer",
+			vim.log.levels.ERROR,
+			{ title = "LSP Error!" }
+		)
 	end
 end
 
 -- Override server settings here
 
-local enhance_server_opts = {
-	["sumneko_lua"] = function(opts)
-		opts.settings = {
-			Lua = {
-				diagnostics = { globals = { "vim" } },
-				workspace = {
-					library = {
-						[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-						[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-					},
-					maxPreload = 100000,
-					preloadFileSize = 10000,
-				},
-				telemetry = { enable = false },
-			},
-		}
-	end,
-	["clangd"] = function(opts)
-		opts.args = {
-			"--background-index",
-			"-std=c++20",
-			"--pch-storage=memory",
-			"--clang-tidy",
-			"--suggest-missing-includes",
-		}
-		opts.capabilities.offsetEncoding = { "utf-16" }
-		opts.single_file_support = true
-		opts.commands = {
-			ClangdSwitchSourceHeader = {
-				function()
-					switch_source_header_splitcmd(0, "edit")
-				end,
-				description = "Open source/header in current buffer",
-			},
-			ClangdSwitchSourceHeaderVSplit = {
-				function()
-					switch_source_header_splitcmd(0, "vsplit")
-				end,
-				description = "Open source/header in a new vsplit",
-			},
-			ClangdSwitchSourceHeaderSplit = {
-				function()
-					switch_source_header_splitcmd(0, "split")
-				end,
-				description = "Open source/header in a new split",
-			},
-		}
-		-- Disable `clangd`'s format
-		opts.on_attach = function(client)
-			client.resolved_capabilities.document_formatting = false
-			custom_attach(client)
-		end
-	end,
-	["jsonls"] = function(opts)
-		opts.settings = {
-			json = {
-				-- Schemas https://www.schemastore.org
-				schemas = {
-					{
-						fileMatch = { "package.json" },
-						url = "https://json.schemastore.org/package.json",
-					},
-					{
-						fileMatch = { "tsconfig*.json" },
-						url = "https://json.schemastore.org/tsconfig.json",
-					},
-					{
-						fileMatch = {
-							".prettierrc",
-							".prettierrc.json",
-							"prettier.config.json",
-						},
-						url = "https://json.schemastore.org/prettierrc.json",
-					},
-					{
-						fileMatch = { ".eslintrc", ".eslintrc.json" },
-						url = "https://json.schemastore.org/eslintrc.json",
-					},
-					{
-						fileMatch = {
-							".babelrc",
-							".babelrc.json",
-							"babel.config.json",
-						},
-						url = "https://json.schemastore.org/babelrc.json",
-					},
-					{
-						fileMatch = { "lerna.json" },
-						url = "https://json.schemastore.org/lerna.json",
-					},
-					{
-						fileMatch = {
-							".stylelintrc",
-							".stylelintrc.json",
-							"stylelint.config.json",
-						},
-						url = "http://json.schemastore.org/stylelintrc.json",
-					},
-					{
-						fileMatch = { "/.github/workflows/*" },
-						url = "https://json.schemastore.org/github-workflow.json",
+for _, server in ipairs(mason_lsp.get_installed_servers()) do
+	if server == "gopls" then
+		nvim_lsp.gopls.setup({
+			on_attach = custom_attach,
+			flags = { debounce_text_changes = 500 },
+			capabilities = capabilities,
+			cmd = { "gopls", "-remote=auto" },
+			settings = {
+				gopls = {
+					usePlaceholders = true,
+					analyses = {
+						nilness = true,
+						shadow = true,
+						unusedparams = true,
+						unusewrites = true,
 					},
 				},
 			},
-		}
-	end,
-	["tsserver"] = function(opts)
-		-- Disable `tsserver`'s format
-		opts.on_attach = function(client)
-			client.resolved_capabilities.document_formatting = false
-			custom_attach(client)
-		end
-	end,
-	["dockerls"] = function(opts)
-		-- Disable `dockerls`'s format
-		opts.on_attach = function(client)
-			client.resolved_capabilities.document_formatting = false
-			custom_attach(client)
-		end
-	end,
-	["gopls"] = function(opts)
-		opts.settings = {
-			gopls = {
-				usePlaceholders = true,
-				analyses = {
-					nilness = true,
-					shadow = true,
-					unusedparams = true,
-					unusewrites = true,
+		})
+	elseif server == "sumneko_lua" then
+		nvim_lsp.sumneko_lua.setup({
+			capabilities = capabilities,
+			on_attach = custom_attach,
+			settings = {
+				Lua = {
+					diagnostics = { globals = { "vim", "packer_plugins" } },
+					workspace = {
+						library = {
+							[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+							[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+						},
+						maxPreload = 100000,
+						preloadFileSize = 10000,
+					},
+					telemetry = { enable = false },
 				},
 			},
-		}
-		-- Disable `gopls`'s format
-		opts.on_attach = function(client)
-			client.resolved_capabilities.document_formatting = false
-			custom_attach(client)
-		end
-	end,
-	["hls"] = function(opts)
-	end,
-}
-
-lsp_installer.on_server_ready(function(server)
-	local opts = {
-		capabilities = capabilities,
-		flags = { debounce_text_changes = 500 },
-		on_attach = custom_attach,
-	}
-
-	if enhance_server_opts[server.name] then
-		enhance_server_opts[server.name](opts)
+		})
+	elseif server == "clangd" then
+		local copy_capabilities = capabilities
+		copy_capabilities.offsetEncoding = { "utf-16" }
+		nvim_lsp.clangd.setup({
+			capabilities = copy_capabilities,
+			single_file_support = true,
+			on_attach = custom_attach,
+			cmd = {
+				"clangd",
+				"--background-index",
+				"--pch-storage=memory",
+				-- You MUST set this arg ↓ to your clangd executable location (if not included)!
+				"--query-driver=/usr/bin/clang++,/usr/bin/**/clang-*,/bin/clang,/bin/clang++,/usr/bin/gcc,/usr/bin/g++",
+				"--clang-tidy",
+				"--all-scopes-completion",
+				"--cross-file-rename",
+				"--completion-style=detailed",
+				"--header-insertion-decorators",
+				"--header-insertion=iwyu",
+			},
+			commands = {
+				ClangdSwitchSourceHeader = {
+					function()
+						switch_source_header_splitcmd(0, "edit")
+					end,
+					description = "Open source/header in current buffer",
+				},
+				ClangdSwitchSourceHeaderVSplit = {
+					function()
+						switch_source_header_splitcmd(0, "vsplit")
+					end,
+					description = "Open source/header in a new vsplit",
+				},
+				ClangdSwitchSourceHeaderSplit = {
+					function()
+						switch_source_header_splitcmd(0, "split")
+					end,
+					description = "Open source/header in a new split",
+				},
+			},
+		})
+	elseif server == "jsonls" then
+		nvim_lsp.jsonls.setup({
+			flags = { debounce_text_changes = 500 },
+			capabilities = capabilities,
+			on_attach = custom_attach,
+			settings = {
+				json = {
+					-- Schemas https://www.schemastore.org
+					schemas = {
+						{
+							fileMatch = { "package.json" },
+							url = "https://json.schemastore.org/package.json",
+						},
+						{
+							fileMatch = { "tsconfig*.json" },
+							url = "https://json.schemastore.org/tsconfig.json",
+						},
+						{
+							fileMatch = {
+								".prettierrc",
+								".prettierrc.json",
+								"prettier.config.json",
+							},
+							url = "https://json.schemastore.org/prettierrc.json",
+						},
+						{
+							fileMatch = { ".eslintrc", ".eslintrc.json" },
+							url = "https://json.schemastore.org/eslintrc.json",
+						},
+						{
+							fileMatch = {
+								".babelrc",
+								".babelrc.json",
+								"babel.config.json",
+							},
+							url = "https://json.schemastore.org/babelrc.json",
+						},
+						{
+							fileMatch = { "lerna.json" },
+							url = "https://json.schemastore.org/lerna.json",
+						},
+						{
+							fileMatch = {
+								".stylelintrc",
+								".stylelintrc.json",
+								"stylelint.config.json",
+							},
+							url = "http://json.schemastore.org/stylelintrc.json",
+						},
+						{
+							fileMatch = { "/.github/workflows/*" },
+							url = "https://json.schemastore.org/github-workflow.json",
+						},
+					},
+				},
+			},
+		})
+	else
+		nvim_lsp[server].setup({
+			capabilities = capabilities,
+			on_attach = custom_attach,
+		})
 	end
-
-	server:setup(opts)
-end)
+end
 
 -- https://github.com/vscode-langservers/vscode-html-languageserver-bin
 
@@ -279,22 +236,19 @@ efmls.init({
 -- Require `efmls-configs-nvim`'s config here
 
 local vint = require("efmls-configs.linters.vint")
-local clangtidy = require("efmls-configs.linters.clang_tidy")
 local eslint = require("efmls-configs.linters.eslint")
 local flake8 = require("efmls-configs.linters.flake8")
 local shellcheck = require("efmls-configs.linters.shellcheck")
-local staticcheck = require("efmls-configs.linters.staticcheck")
 
 local black = require("efmls-configs.formatters.black")
 local luafmt = require("efmls-configs.formatters.stylua")
-local clangfmt = require("efmls-configs.formatters.clang_format")
-local goimports = require("efmls-configs.formatters.goimports")
 local prettier = require("efmls-configs.formatters.prettier")
 local shfmt = require("efmls-configs.formatters.shfmt")
 
 -- Add your own config for formatter and linter here
 
-local rustfmt = require("modules.completion.efm.formatters.rustfmt")
+-- local rustfmt = require("modules.completion.efm.formatters.rustfmt")
+local clangfmt = require("modules.completion.efm.formatters.clangfmt")
 
 -- Override default config here
 
@@ -311,9 +265,8 @@ flake8 = vim.tbl_extend("force", flake8, {
 efmls.setup({
 	vim = { formatter = vint },
 	lua = { formatter = luafmt },
-	c = { formatter = clangfmt, linter = clangtidy },
-	cpp = { formatter = clangfmt, linter = clangtidy },
-	go = { formatter = goimports, linter = staticcheck },
+	c = { formatter = clangfmt },
+	cpp = { formatter = clangfmt },
 	python = { formatter = black },
 	vue = { formatter = prettier },
 	typescript = { formatter = prettier, linter = eslint },
@@ -328,3 +281,5 @@ efmls.setup({
 	markdown = { formatter = prettier },
 	rust = {formatter = rustfmt},
 })
+
+formatting.configure_format_on_save()
