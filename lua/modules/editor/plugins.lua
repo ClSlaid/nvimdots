@@ -72,14 +72,14 @@ editor["norcalli/nvim-colorizer.lua"] = {
 }
 
 -- lsp message highlighting
-editor['folke/lsp-colors.nvim'] = {
-    opt = true,
+editor["folke/lsp-colors.nvim"] = {
+	opt = true,
 }
 
-editor['rmagatti/auto-session'] = {
-    opt = true,
-    cmd = {"SaveSession", "RestoreSession", "DeleteSession"},
-    config = conf.auto_session
+editor["rmagatti/auto-session"] = {
+	opt = true,
+	cmd = { "SaveSession", "RestoreSession", "DeleteSession" },
+	config = conf.auto_session,
 }
 editor["max397574/better-escape.nvim"] = {
 	opt = true,
@@ -134,10 +134,10 @@ editor["luukvbaal/stabilize.nvim"] = {
 }
 
 -- only for fcitx5 user who uses non-English language during coding
--- editor["brglng/vim-im-select"] = {
--- 	opt = true,
--- 	event = "BufReadPost",
--- 	config = conf.imselect,
--- }
+editor["brglng/vim-im-select"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = conf.imselect,
+}
 
 return editor
