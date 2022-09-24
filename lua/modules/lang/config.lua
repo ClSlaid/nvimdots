@@ -160,20 +160,20 @@ function config.rust_tools()
 			-- standalone file support
 			-- setting it to false may improve startup time
 			standalone = true,
-		
 			settings = {
 				["rust-analyzer"] = {
 					cargo = {
-						allFeatures = true
+						allFeatures = true,
 					},
 					procMacro = {
-						enable = false
+						enable = false,
 					},
 					checkOnSave = {
-						command = "clippy",
+						-- command = "clippy",
+						command = "check",
 					},
-				}
-			}
+				},
+			},
 		}, -- rust-analyer options
 
 		-- debugging stuff
@@ -202,17 +202,17 @@ end
 function config.haskell()
 	vim.g.haskell_enable_quantification = true
 	-- to enable highlighting of `forall`
-	vim.g.haskell_enable_recursivedo = true 
+	vim.g.haskell_enable_recursivedo = true
 	-- to enable highlighting of `mdo` and `rec`
-	vim.g.haskell_enable_arrowsyntax = true 
+	vim.g.haskell_enable_arrowsyntax = true
 	-- to enable highlighting of `proc`
 	vim.g.haskell_enable_pattern_synonyms = true
 	-- to enable highlighting of `pattern`
-	vim.g.haskell_enable_typeroles = true   
+	vim.g.haskell_enable_typeroles = true
 	-- to enable highlighting of type roles
 	vim.g.haskell_enable_static_pointers = true
 	-- to enable highlighting of `static`
-	vim.g.haskell_backpack = true              
+	vim.g.haskell_backpack = true
 	-- to enable highlighting of backpack keywords
 end
 

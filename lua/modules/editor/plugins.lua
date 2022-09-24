@@ -133,6 +133,10 @@ editor["luukvbaal/stabilize.nvim"] = {
 	event = "BufReadPost",
 }
 
+editor["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
+	config = conf.lsp_lines,
+}
+
 -- only for fcitx5 user who uses non-English language during coding
 editor["brglng/vim-im-select"] = {
 	opt = true,

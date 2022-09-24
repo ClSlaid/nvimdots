@@ -222,7 +222,7 @@ function config.catppuccin()
 			treesitter = true,
 			native_lsp = {
 				enabled = true,
-				virtual_text = {
+				virtual_lines = {
 					errors = { "italic" },
 					hints = { "italic" },
 					warnings = { "italic" },

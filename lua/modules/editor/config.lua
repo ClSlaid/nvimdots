@@ -134,10 +134,6 @@ function config.autotag()
 	})
 end
 
-function config.nvim_colorizer()
-	require("colorizer").setup()
-end
-
 function config.lsp_colors()
 	require("lsp-colors").setup({
 		Error = "#db4b4b",
@@ -483,6 +479,13 @@ function config.accelerated_jk()
 		acceleration_table = { 7, 12, 17, 21, 24, 26, 28, 30 },
 		-- when 'enable_deceleration = true', 'deceleration_table = { {200, 3}, {300, 7}, {450, 11}, {600, 15}, {750, 21}, {900, 9999} }'
 		deceleration_table = { { 150, 9999 } },
+	})
+end
+
+function config.lsp_lines()
+	require("lsp_lines").setup()
+	vim.diagnostic.config({
+		virtual_lines = { only_current_line = true },
 	})
 end
 
