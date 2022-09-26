@@ -166,11 +166,11 @@ function config.rust_tools()
 						allFeatures = true,
 					},
 					procMacro = {
-						enable = false,
+						enable = true,
 					},
 					checkOnSave = {
-						-- command = "clippy",
-						command = "check",
+						command = "clippy",
+						-- command = "check",
 					},
 				},
 			},

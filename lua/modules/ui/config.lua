@@ -198,7 +198,7 @@ function config.catppuccin()
 			shade = "dark",
 			percentage = 0.15,
 		},
-		transparent_background = false,
+		-- transparent_background = false,
 		term_colors = true,
 		compile = {
 			enabled = enable_compile,
@@ -1017,7 +1017,7 @@ end
 
 function config.fidget()
 	require("fidget").setup({
-		window = { blend = 0 },
+		window = { blend = 4 },
 	})
 end
 
