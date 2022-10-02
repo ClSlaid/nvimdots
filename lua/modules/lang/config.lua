@@ -195,10 +195,6 @@ function config.lang_go()
 	vim.g.go_code_completion_enabled = 0
 end
 
-function config.hls()
-	cmd = "haskell-language-server-wrapper"
-end
-
 function config.haskell()
 	vim.g.haskell_enable_quantification = true
 	-- to enable highlighting of `forall`
@@ -214,10 +210,6 @@ function config.haskell()
 	-- to enable highlighting of `static`
 	vim.g.haskell_backpack = true
 	-- to enable highlighting of backpack keywords
-end
-
-function config.hls()
-	cmd = "haskell-language-server-wrapper"
 end
 
 return config

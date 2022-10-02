@@ -223,6 +223,21 @@ nvim_lsp.html.setup({
 	on_attach = custom_attach,
 })
 
+-- init haskell language server here
+nvim_lsp.hls.setup({
+	settings = {
+		haskell = {
+			plugin = {
+				rename = {
+					config = {
+						diff = true,
+					},
+				},
+			},
+		},
+	},
+})
+
 local efmls = require("efmls-configs")
 
 -- Init `efm-langserver` here.
@@ -247,7 +262,7 @@ local shfmt = require("efmls-configs.formatters.shfmt")
 
 -- Add your own config for formatter and linter here
 
--- local rustfmt = require("modules.completion.efm.formatters.rustfmt")
+local rustfmt = require("modules.completion.efm.formatters.rustfmt")
 local clangfmt = require("modules.completion.efm.formatters.clangfmt")
 
 -- Override default config here
@@ -279,7 +294,7 @@ efmls.setup({
 	scss = { formatter = prettier },
 	sh = { formatter = shfmt, linter = shellcheck },
 	markdown = { formatter = prettier },
-	rust = {formatter = rustfmt},
+	rust = { formatter = rustfmt },
 })
 
 formatting.configure_format_on_save()

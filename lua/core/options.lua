@@ -77,8 +77,8 @@ local function load_options()
 		display = "lastline",
 		showbreak = "↳  ",
 		listchars = "tab:»·,nbsp:+,trail:·,extends:→,precedes:←",
-		pumblend = 30,
-		winblend = 30,
+		pumblend = 20,
+		winblend = 20,
 		autoread = true,
 		autowrite = true,
 

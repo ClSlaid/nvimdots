@@ -25,27 +25,20 @@ lang["iamcco/markdown-preview.nvim"] = {
 	run = "cd app && yarn install",
 }
 
-lang['wlangstroth/vim-racket'] = {
-    opt = true,
-    ft = {"scheme", "racket"},
-}
-lang['Olical/conjure'] = {
-    opt = true,
-    ft = {"racket", "scheme", "clojure", "common lisp"},
-}
-lang['neovimhaskell/haskell-vim'] = {
-    opt = true,
-    ft = "haskell",
-    config = conf.haskell
-}
-lang['haskell/haskell-language-server'] = {
+lang["wlangstroth/vim-racket"] = {
 	opt = true,
-	ft = {"haskell", "lhaskell"},
-	args = {"--lsp"},
-	rootPatterns = {"*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"},
-	config = conf.hls
+	ft = { "scheme", "racket" },
+}
+lang["Olical/conjure"] = {
+	opt = true,
+	ft = { "racket", "scheme", "clojure", "common lisp" },
+}
+lang["neovimhaskell/haskell-vim"] = {
+	opt = true,
+	ft = { "haskell", "lhaskell" },
+	config = conf.haskell,
 }
 
-lang["chrisbra/csv.vim"] = {opt = true, ft = "csv"}
+lang["chrisbra/csv.vim"] = { opt = true, ft = "csv" }
 
 return lang
