@@ -225,6 +225,7 @@ nvim_lsp.html.setup({
 
 -- init haskell language server here
 nvim_lsp.hls.setup({
+	cmd = { "haskell-language-server-wrapper", "--lsp" },
 	settings = {
 		haskell = {
 			plugin = {
