@@ -226,6 +226,9 @@ nvim_lsp.html.setup({
 -- init haskell language server here
 nvim_lsp.hls.setup({
 	cmd = { "haskell-language-server-wrapper", "--lsp" },
+	filetypes = { "lhaskell", "haskell" },
+	single_file_support = true,
+	on_attach = custom_attach,
 	settings = {
 		haskell = {
 			plugin = {
@@ -233,6 +236,12 @@ nvim_lsp.hls.setup({
 					config = {
 						diff = true,
 					},
+				},
+				stan = {
+					globalOn = true,
+				},
+				hlint = {
+					globalOn = true,
 				},
 			},
 		},
