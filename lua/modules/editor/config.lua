@@ -25,7 +25,11 @@ function config.nvim_treesitter()
 			"vue",
 			"css",
 		},
-		highlight = { enable = true, disable = { "vim" } },
+		highlight = {
+			enable = true,
+			disable = { "vim" },
+			additional_vim_regex_highlighting = false,
+		},
 		textobjects = {
 			select = {
 				enable = true,
@@ -106,10 +110,6 @@ end
 
 function config.hop()
 	require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
-end
-
-function config.matchup()
-	vim.cmd([[let g:matchup_matchparen_offscreen = {'method': 'popup'}]])
 end
 
 function config.autotag()
@@ -240,6 +240,22 @@ function config.dapui()
 				position = "left",
 			},
 			{ elements = { "repl" }, size = 10, position = "bottom" },
+		},
+		-- Requires Nvim version >= 0.8
+		controls = {
+			enabled = true,
+			-- Display controls in this session
+			element = "repl",
+			icons = {
+				pause = "",
+				play = "",
+				step_into = "",
+				step_over = "",
+				step_out = "",
+				step_back = "",
+				run_last = "↻",
+				terminate = "ﱢ",
+			},
 		},
 		floating = {
 			max_height = nil,
