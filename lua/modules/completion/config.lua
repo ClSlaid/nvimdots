@@ -43,6 +43,9 @@ function config.lspsaga()
 
 	require("lspsaga").init_lsp_saga({
 		diagnostic_header = { " ", " ", "  ", " " },
+		symbol_in_winbar = {
+			in_custom = true,
+		},
 		custom_kind = {
 			File = { " ", colors.rosewater },
 			Module = { " ", colors.blue },
