@@ -225,6 +225,7 @@ nvim_lsp.html.setup({
 nvim_lsp.hls.setup({
 	cmd = { "haskell-language-server-wrapper", "--lsp" },
 	filetypes = { "lhaskell", "haskell" },
+	roots = { "Setup.hs", "stack.yaml", "*.cabal" },
 	single_file_support = true,
 	on_attach = custom_attach,
 	settings = {
