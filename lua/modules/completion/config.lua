@@ -98,7 +98,7 @@ function config.lspsaga()
 				elseif button == "m" then
 					-- middle click to visual select node
 					vim.fn.cursor(st.line + 1, st.character + 1)
-					vim.cmd("normal v")
+					vim.api.nvim_command([[normal v]])
 					vim.fn.cursor(en.line + 1, en.character + 1)
 				end
 			end,
@@ -168,7 +168,7 @@ function config.lspsaga()
 end
 
 function config.cmp()
-	-- vim.cmd([[packadd cmp-tabnine]])
+	-- vim.api.nvim_command([[packadd cmp-tabnine]])
 	local t = function(str)
 		return vim.api.nvim_replace_termcodes(str, true, true, true)
 	end
@@ -290,7 +290,11 @@ function config.cmp()
 end
 
 function config.luasnip()
-	vim.o.runtimepath = vim.o.runtimepath .. "," .. os.getenv("HOME") .. "/.config/nvim/my-snippets/,"
+	local snippet_path = os.getenv("HOME") .. "/.config/nvim/my-snippets/"
+	if not vim.tbl_contains(vim.opt.rtp:get(), snippet_path) then
+		vim.opt.rtp:append(snippet_path)
+	end
+
 	require("luasnip").config.set_config({
 		history = true,
 		updateevents = "TextChanged,TextChangedI",

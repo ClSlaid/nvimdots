@@ -22,7 +22,6 @@ local createdir = function()
 end
 
 local disable_distribution_plugins = function()
-	vim.g.did_load_filetypes = 1
 	vim.g.did_load_fzf = 1
 	vim.g.did_load_gtags = 1
 	vim.g.did_load_gzip = 1
@@ -68,18 +67,27 @@ local neovide_config = function()
 end
 
 local clipboard_config = function()
-	vim.g.clipboard = {
-		name = "win32yank-wsl",
-		copy = {
-			["+"] = "win32yank.exe -i --crlf",
-			["*"] = "win32yank.exe -i --crlf",
-		},
-		paste = {
-			["+"] = "win32yank.exe -o --lf",
-			["*"] = "win32yank.exe -o --lf",
-		},
-		cache_enabled = 0,
-	}
+	if global.is_mac then
+		vim.g.clipboard = {
+			name = "macOS-clipboard",
+			copy = { ["+"] = "pbcopy", ["*"] = "pbcopy" },
+			paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
+			cache_enabled = 0,
+		}
+	elseif global.is_wsl then
+		vim.g.clipboard = {
+			name = "win32yank-wsl",
+			copy = {
+				["+"] = "win32yank.exe -i --crlf",
+				["*"] = "win32yank.exe -i --crlf",
+			},
+			paste = {
+				["+"] = "win32yank.exe -o --lf",
+				["*"] = "win32yank.exe -o --lf",
+			},
+			cache_enabled = 0,
+		}
+	end
 end
 
 local load_core = function()
@@ -91,9 +99,7 @@ local load_core = function()
 	pack.ensure_plugins()
 	neovide_config()
 	-- clipboard_settings()
-	if global.is_windows then
-		clipboard_config()
-	end
+	clipboard_config()
 
 	require("core.options")
 	require("core.mapping")
@@ -101,8 +107,8 @@ local load_core = function()
 	require("core.event")
 	pack.load_compile()
 
-	-- vim.cmd([[set background=light]])
-	vim.cmd([[colorscheme catppuccin]])
+	-- vim.api.nvim_command([[set background=light]])
+	vim.api.nvim_command([[colorscheme catppuccin]])
 end
 
 load_core()
