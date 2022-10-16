@@ -50,10 +50,10 @@ function config.lspsaga()
 
 	require("lspsaga").init_lsp_saga({
 		diagnostic_header = {
-			icons.diagnostics.Error_alt,
-			icons.diagnostics.Warning_alt,
-			icons.diagnostics.Information_alt,
-			icons.diagnostics.Hint_alt,
+			icon.diagnostics.Error_alt .. " ",
+			icon.diagnostics.Warning_alt .. " ",
+			icon.diagnostics.Information_alt .. " ",
+			icon.diagnostics.Hint_alt .. " ",
 		},
 		custom_kind = {
 			-- Kind
