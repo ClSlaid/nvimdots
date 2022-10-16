@@ -1,11 +1,15 @@
 local fn, uv, api = vim.fn, vim.loop, vim.api
-local is_mac = require("core.global").is_mac
-local vim_path = require("core.global").vim_path
-local data_dir = require("core.global").data_dir
+local global = require("core.global")
+local is_mac = global.is_mac
+local vim_path = global.vim_path
+local data_dir = global.data_dir
 local modules_dir = vim_path .. "/lua/modules"
 local packer_compiled = data_dir .. "lua/_compiled.lua"
 local bak_compiled = data_dir .. "lua/bak_compiled.lua"
 local packer = nil
+
+local settings = require("core.settings")
+local use_ssh = settings.use_ssh
 
 local Packer = {}
 Packer.__index = Packer
@@ -16,6 +20,12 @@ function Packer:load_plugins()
 	local get_plugins_list = function()
 		local list = {}
 		local tmp = vim.split(fn.globpath(modules_dir, "*/plugins.lua"), "\n")
+		local subtmp = vim.split(fn.globpath(modules_dir, "*/user/plugins.lua"), "\n")
+		for _, v in ipairs(subtmp) do
+			if v ~= "" then
+				table.insert(tmp, v)
+			end
+		end
 		for _, f in ipairs(tmp) do
 			list[#list + 1] = f:sub(#modules_dir - 6, -1)
 		end
@@ -36,10 +46,11 @@ function Packer:load_packer()
 		api.nvim_command("packadd packer.nvim")
 		packer = require("packer")
 	end
+	local clone_prefix = use_ssh and "git@github.com:%s" or "https://github.com/%s"
 	if not is_mac then
 		packer.init({
 			compile_path = packer_compiled,
-			git = { clone_timeout = 60, default_url_format = "git@github.com:%s" },
+			git = { clone_timeout = 60, default_url_format = clone_prefix },
 			disable_commands = true,
 			display = {
 				open_fn = function()
@@ -50,7 +61,7 @@ function Packer:load_packer()
 	else
 		packer.init({
 			compile_path = packer_compiled,
-			git = { clone_timeout = 60, default_url_format = "git@github.com:%s" },
+			git = { clone_timeout = 60, default_url_format = clone_prefix },
 			disable_commands = true,
 			max_jobs = 20,
 			display = {
@@ -73,7 +84,12 @@ function Packer:init_ensure_plugins()
 	local packer_dir = data_dir .. "pack/packer/opt/packer.nvim"
 	local state = uv.fs_stat(packer_dir)
 	if not state then
-		local cmd = "!git clone git@github.com:wbthomason/packer.nvim.git " .. packer_dir
+		local cmd = (
+			(
+				use_ssh and "!git clone git@github.com:wbthomason/packer.nvim.git "
+				or "!git clone https://github.com/wbthomason/packer.nvim"
+			) .. packer_dir
+		)
 		api.nvim_command(cmd)
 		uv.fs_mkdir(data_dir .. "lua", 511, function()
 			assert(nil, "Failed to make packer compile dir. Please restart Nvim and we'll try it again!")
@@ -116,8 +132,7 @@ function plugins.load_compile()
 	if vim.fn.filereadable(packer_compiled) == 1 then
 		require("_compiled")
 	else
-		require("core.pack").back_compile()
-		assert(nil, "Missing packer compiled file! Run `PackerCompile` or `PackerInstall` to fix this.")
+		plugins.back_compile()
 	end
 
 	local cmds = { "Compile", "Install", "Update", "Sync", "Clean", "Status" }

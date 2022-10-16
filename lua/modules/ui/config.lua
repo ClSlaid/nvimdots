@@ -390,6 +390,11 @@ end
 
 function config.notify()
 	local notify = require("notify")
+	local icons = {
+		diagnostics = require("modules.ui.icons").get("diagnostics"),
+		ui = require("modules.ui.icons").get("ui"),
+	}
+
 	notify.setup({
 		---@usage Animation style one of { "fade", "slide", "fade_in_slide_out", "static" }
 		stages = "slide",
@@ -409,11 +414,11 @@ function config.notify()
 		level = "TRACE",
 		---@usage Icons for the different levels
 		icons = {
-			ERROR = "",
-			WARN = "",
-			INFO = "",
-			DEBUG = "",
-			TRACE = "✎",
+			ERROR = icons.diagnostics.Error,
+			WARN = icons.diagnostics.Warning,
+			INFO = icons.diagnostics.Information,
+			DEBUG = icons.ui.Bug,
+			TRACE = icons.ui.Pencil,
 		},
 	})
 
@@ -421,9 +426,14 @@ function config.notify()
 end
 
 function config.lualine()
+	local icons = {
+		diagnostics = require("modules.ui.icons").get("diagnostics", true),
+		misc = require("modules.ui.icons").get("misc", true),
+	}
+
 	local function escape_status()
 		local ok, m = pcall(require, "better_escape")
-		return ok and m.waiting and "✺ " or ""
+		return ok and m.waiting and icons.misc.EscapeST or ""
 	end
 
 	local function diff_source()
@@ -519,7 +529,11 @@ function config.lualine()
 				{
 					"diagnostics",
 					sources = { "nvim_diagnostic" },
-					symbols = { error = " ", warn = " ", info = " " },
+					symbols = {
+						error = icons.diagnostics.Error,
+						warn = icons.diagnostics.Warning,
+						info = icons.diagnostics.Information,
+					},
 				},
 			},
 			lualine_y = {
@@ -561,32 +575,17 @@ function config.lualine()
 	})
 end
 
-function config.nvim_gps()
-	require("nvim-gps").setup({
-		icons = {
-			["class-name"] = " ", -- Classes and class-like objects
-			["function-name"] = " ", -- Functions
-			["method-name"] = " ", -- Methods (functions inside class-like objects)
-		},
-		languages = {
-			-- You can disable any language individually here
-			["c"] = true,
-			["cpp"] = true,
-			["go"] = true,
-			["java"] = true,
-			["javascript"] = true,
-			["lua"] = true,
-			["python"] = true,
-			["rust"] = true,
-		},
-		separator = " > ",
-	})
-end
-
 function config.nvim_tree()
+	local icons = {
+		diagnostics = require("modules.ui.icons").get("diagnostics"),
+		documents = require("modules.ui.icons").get("documents"),
+		git = require("modules.ui.icons").get("git"),
+		ui = require("modules.ui.icons").get("ui"),
+	}
+
 	require("nvim-tree").setup({
 		create_in_closed_folder = false,
-		respect_buf_cwd = true,
+		respect_buf_cwd = false,
 		auto_reload_on_write = true,
 		disable_netrw = false,
 		hijack_cursor = true,
@@ -597,7 +596,7 @@ function config.nvim_tree()
 		open_on_setup_file = false,
 		open_on_tab = false,
 		sort_by = "name",
-		update_cwd = true,
+		sync_root_with_cwd = true,
 		view = {
 			adaptive_size = false,
 			centralize_selection = false,
@@ -650,29 +649,29 @@ function config.nvim_tree()
 				padding = " ",
 				symlink_arrow = "  ",
 				glyphs = {
-					default = "", --
-					symlink = "",
-					bookmark = "",
+					default = icons.documents.Default, --
+					symlink = icons.documents.Symlink, --
+					bookmark = icons.ui.Bookmark,
 					git = {
-						unstaged = "",
-						staged = "", --
-						unmerged = "שׂ",
-						renamed = "", --
-						untracked = "ﲉ",
-						deleted = "",
-						ignored = "", --◌
+						unstaged = icons.git.Mod_alt,
+						staged = icons.git.Add, --
+						unmerged = icons.git.Unmerged,
+						renamed = icons.git.Rename, --
+						untracked = icons.git.Untracked, -- "ﲉ"
+						deleted = icons.git.Remove, --
+						ignored = icons.git.Ignore, --◌
 					},
 					folder = {
 						-- arrow_open = "",
 						-- arrow_closed = "",
 						arrow_open = "",
 						arrow_closed = "",
-						default = "",
-						open = "",
-						empty = "",
-						empty_open = "",
-						symlink = "",
-						symlink_open = "",
+						default = icons.ui.Folder,
+						open = icons.ui.FolderOpen,
+						empty = icons.ui.EmptyFolder,
+						empty_open = icons.ui.EmptyFolderOpen,
+						symlink = icons.ui.SymlinkFolder,
+						symlink_open = icons.ui.FolderOpen,
 					},
 				},
 			},
@@ -683,7 +682,7 @@ function config.nvim_tree()
 		},
 		update_focused_file = {
 			enable = true,
-			update_cwd = true,
+			update_root = false,
 			ignore_list = {},
 		},
 		ignore_ft_on_setup = {},
@@ -719,10 +718,10 @@ function config.nvim_tree()
 			show_on_dirs = false,
 			debounce_delay = 50,
 			icons = {
-				hint = "",
-				info = "",
-				warning = "",
-				error = "",
+				hint = icons.diagnostics.Hint_alt,
+				info = icons.diagnostics.Information_alt,
+				warning = icons.diagnostics.Warning_alt,
+				error = icons.diagnostics.Error_alt,
 			},
 		},
 		filesystem_watchers = {
@@ -761,13 +760,15 @@ function config.nvim_tree()
 end
 
 function config.nvim_bufferline()
+	local icons = { ui = require("modules.ui.icons").get("ui") }
+
 	local opts = {
 		options = {
 			number = nil,
-			modified_icon = "✥",
-			buffer_close_icon = "",
-			left_trunc_marker = "",
-			right_trunc_marker = "",
+			modified_icon = icons.ui.Modified,
+			buffer_close_icon = icons.ui.Close,
+			left_trunc_marker = icons.ui.Left,
+			right_trunc_marker = icons.ui.Right,
 			max_name_length = 14,
 			max_prefix_length = 13,
 			tab_size = 20,
@@ -783,6 +784,13 @@ function config.nvim_bufferline()
 					text = "File Explorer",
 					text_align = "center",
 					padding = 1,
+				},
+				{
+					filetype = "undotree",
+					text = "Undo Tree",
+					text_align = "center",
+					highlight = "Directory",
+					separator = true,
 				},
 			},
 			diagnostics_indicator = function(count)
