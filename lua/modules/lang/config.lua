@@ -176,6 +176,9 @@ function config.rust_tools()
 					cargo = {
 						allFeatures = true,
 					},
+					lru = {
+						capacity = 1024,
+					},
 					procMacro = {
 						enable = true,
 					},
