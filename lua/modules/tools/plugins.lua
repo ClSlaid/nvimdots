@@ -48,5 +48,6 @@ tools["gelguy/wilder.nvim"] = {
 	config = conf.wilder,
 	requires = { { "romgrk/fzy-lua-native", after = "wilder.nvim" } },
 }
+tools['wakatime/vim-wakatime'] = {}
 
 return tools

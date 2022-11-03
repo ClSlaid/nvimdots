@@ -174,7 +174,7 @@ function config.rust_tools()
 			settings = {
 				["rust-analyzer"] = {
 					cargo = {
-						allFeatures = true,
+						features = "all",
 					},
 					lru = {
 						capacity = 1024,
