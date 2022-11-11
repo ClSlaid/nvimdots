@@ -131,6 +131,11 @@ editor["luukvbaal/stabilize.nvim"] = {
 	opt = true,
 	event = "BufReadPost",
 }
+editor["ibhagwan/smartyank.nvim"] = {
+	opt = true,
+	event = "BufReadPost",
+	config = conf.smartyank,
+}
 
 editor["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
 	config = conf.lsp_lines,
