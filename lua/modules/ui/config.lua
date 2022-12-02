@@ -562,7 +562,7 @@ function config.nvim_tree()
 			group_empty = true,
 			highlight_git = false,
 			full_name = false,
-			highlight_opened_files = "none",
+			highlight_opened_files = "name",
 			special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md", "CMakeLists.txt" },
 			symlink_destination = true,
 			indent_markers = {
