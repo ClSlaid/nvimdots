@@ -34,12 +34,14 @@ lang["Olical/conjure"] = {
 }
 
 lang["MrcJkb/haskell-tools.nvim"] = {
-	requires = {
-		"neovim/nvim-lspconfig",
-		"nvim-lua/plenary.nvim",
-		"nvim-telescope/telescope.nvim", -- optional
-	},
+	opt = true,
+	ft = { "haskell", "lhaskell", "cabal", "stack" },
 	config = conf.haskell_tools,
+	requires = {
+		{ "neovim/nvim-lspconfig", opt = false },
+		{ "nvim-lua/plenary.nvim", opt = false },
+		{ "nvim-telescope/telescope.nvim", opt = true }, -- optional
+	},
 }
 
 lang["chrisbra/csv.vim"] = { opt = true, ft = "csv" }
