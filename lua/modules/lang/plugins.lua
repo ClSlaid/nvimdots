@@ -32,10 +32,14 @@ lang["Olical/conjure"] = {
 	opt = true,
 	ft = { "racket", "scheme", "clojure", "common lisp" },
 }
-lang["neovimhaskell/haskell-vim"] = {
-	opt = true,
-	ft = { "haskell", "lhaskell" },
-	config = conf.haskell,
+
+lang["MrcJkb/haskell-tools.nvim"] = {
+	requires = {
+		"neovim/nvim-lspconfig",
+		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim", -- optional
+	},
+	config = conf.haskell_tools,
 }
 
 lang["chrisbra/csv.vim"] = { opt = true, ft = "csv" }
