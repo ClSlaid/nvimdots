@@ -283,4 +283,8 @@ function config.haskell_tools()
 	require("haskell-tools").setup(opts)
 end
 
+function config.vimtex()
+	vim.g.vimtex_view_method = "zathura"
+end
+
 return config

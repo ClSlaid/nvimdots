@@ -46,4 +46,10 @@ lang["MrcJkb/haskell-tools.nvim"] = {
 
 lang["chrisbra/csv.vim"] = { opt = true, ft = "csv" }
 
+lang["lervag/vimtex"] = {
+	opt = true,
+	ft = { "latex", "tex" },
+	config = conf.vimtex,
+}
+
 return lang
