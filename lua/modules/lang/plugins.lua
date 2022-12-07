@@ -49,6 +49,9 @@ lang["chrisbra/csv.vim"] = { opt = true, ft = "csv" }
 lang["lervag/vimtex"] = {
 	opt = true,
 	ft = { "latex", "tex" },
+	requires = {
+		{ "neovim/nvim-lspconfig", opt = false },
+	},
 	config = conf.vimtex,
 }
 
