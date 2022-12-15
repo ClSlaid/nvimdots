@@ -249,6 +249,7 @@ function config.catppuccin()
 					Keyword = { fg = cp.pink },
 					Type = { fg = cp.blue },
 					Typedef = { fg = cp.yellow },
+					StorageClass = { fg = cp.red, style = { "italic" } },
 
 					-- For native lsp configs.
 					DiagnosticVirtualTextError = { bg = cp.none },
@@ -288,6 +289,7 @@ function config.catppuccin()
 					["@constant.builtin"] = { fg = cp.lavender },
 					-- ["@function.builtin"] = { fg = cp.peach, style = { "italic" } },
 					-- ["@type.builtin"] = { fg = cp.yellow, style = { "italic" } },
+					["@type.qualifier"] = { link = "@keyword" },
 					["@variable.builtin"] = { fg = cp.red, style = { "italic" } },
 
 					-- ["@function"] = { fg = cp.blue },
@@ -352,6 +354,25 @@ function config.catppuccin()
 					-- ["@symbol"] = { fg = cp.flamingo },
 				}
 			end,
+		},
+	})
+end
+
+function config.neodim()
+	vim.api.nvim_command([[packadd nvim-treesitter]])
+	local normal_background = vim.api.nvim_get_hl_by_name("Normal", true).background
+	local blend_color = normal_background ~= nil and string.format("#%06x", normal_background) or "#000000"
+	require("neodim").setup({
+		alpha = 0.45,
+		blend_color = blend_color,
+		update_in_insert = {
+			enable = true,
+			delay = 100,
+		},
+		hide = {
+			virtual_text = true,
+			signs = false,
+			underline = false,
 		},
 	})
 end
@@ -635,7 +656,7 @@ function config.nvim_tree()
 		},
 		update_focused_file = {
 			enable = true,
-			update_root = false,
+			update_root = true,
 			ignore_list = {},
 		},
 		ignore_ft_on_setup = {},

@@ -86,6 +86,20 @@ function config.telescope()
 	require("telescope").load_extension("live_grep_args")
 end
 
+function config.project()
+	require("project_nvim").setup({
+		manual_mode = false,
+		detection_methods = { "lsp", "pattern" },
+		patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json" },
+		ignore_lsp = { "efm", "copilot" },
+		exclude_dirs = {},
+		show_hidden = false,
+		silent_chdir = true,
+		scope_chdir = "global",
+		datapath = vim.fn.stdpath("data"),
+	})
+end
+
 function config.trouble()
 	local icons = {
 		ui = require("modules.ui.icons").get("ui"),
@@ -269,6 +283,23 @@ function config.legendary()
 			results_view = "float",
 			keep_contents = true,
 		},
+		sort = {
+			-- sort most recently used item to the top
+			most_recent_first = true,
+			-- sort user-defined items before built-in items
+			user_items_first = true,
+			frecency = {
+				-- the directory to store the database in
+				db_root = string.format("%s/legendary/", vim.fn.stdpath("data")),
+				-- the maximum number of timestamps for a single item
+				-- to store in the database
+				max_timestamps = 10,
+			},
+		},
+		-- Directory used for caches
+		cache_path = string.format("%s/legendary/", vim.fn.stdpath("cache")),
+		-- Log level, one of 'trace', 'debug', 'info', 'warn', 'error', 'fatal'
+		log_level = "info",
 	})
 
 	require("which-key").register({
@@ -342,10 +373,11 @@ function config.legendary()
 			},
 		},
 		["g"] = {
-			c = "lsp: Code action",
+			a = "lsp: Code action",
 			d = "lsp: Preview definition",
 			D = "lsp: Goto definition",
 			h = "lsp: Show reference",
+			o = "lsp: Toggle outline",
 			r = "lsp: Rename",
 			s = "lsp: Signature help",
 			t = "lsp: Toggle trouble list",
