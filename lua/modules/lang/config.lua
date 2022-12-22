@@ -196,6 +196,7 @@ function config.rust_tools()
 				type = "executable",
 				command = "lldb-vscode",
 				name = "rt_lldb",
+				sourceLanguages = { "rust" },
 			},
 		},
 	}
