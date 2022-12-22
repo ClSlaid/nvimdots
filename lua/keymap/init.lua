@@ -32,7 +32,7 @@ local plug_map = {
 	-- Lsp mapp work when insertenter and lsp start
 	["n|<leader>li"] = map_cr("LspInfo"):with_noremap():with_silent():with_nowait(),
 	["n|<leader>lr"] = map_cr("LspRestart"):with_noremap():with_silent():with_nowait(),
-	["n|<A-t>"] = map_cr("LSoutlineToggle"):with_noremap():with_silent(),
+	["n|go"] = map_cr("Lspsaga outline"):with_noremap():with_silent(),
 	["n|g["] = map_cr("Lspsaga diagnostic_jump_prev"):with_noremap():with_silent(),
 	["n|g]"] = map_cr("Lspsaga diagnostic_jump_next"):with_noremap():with_silent(),
 	["n|gs"] = map_cr("lua vim.lsp.buf.signature_help()"):with_noremap():with_silent(),
@@ -70,13 +70,12 @@ local plug_map = {
 	["n|<leader>tq"] = map_cr("TroubleToggle quickfix"):with_noremap():with_silent(),
 	["n|<leader>tl"] = map_cr("TroubleToggle loclist"):with_noremap():with_silent(),
 	-- Plugin nvim-tree
-	["n|<C-n>"] = map_cr("NvimTreeToggle"):with_noremap():with_silent(),
+	["n|<C-n>"] = map_cr("lua toggle_nvimtree()"):with_noremap():with_silent(),
 	["n|<Leader>nf"] = map_cr("NvimTreeFindFile"):with_noremap():with_silent(),
 	["n|<Leader>nr"] = map_cr("NvimTreeRefresh"):with_noremap():with_silent(),
-	-- Plugin Undotree
-	["n|<Leader>u"] = map_cr("UndotreeToggle"):with_noremap():with_silent(),
 	-- Plugin Telescope
-	["n|<Leader>fp"] = map_cu("lua require('telescope').extensions.project.project{}"):with_noremap():with_silent(),
+	["n|<Leader>u"] = map_cr("lua require('telescope').extensions.undo.undo()"):with_noremap():with_silent(),
+	["n|<Leader>fp"] = map_cu("lua require('telescope').extensions.projects.projects{}"):with_noremap():with_silent(),
 	["n|<Leader>fr"] = map_cu("lua require('telescope').extensions.frecency.frecency{}"):with_noremap():with_silent(),
 	["n|<Leader>fw"] = map_cu("lua require('telescope').extensions.live_grep_args.live_grep_args{}")
 		:with_noremap()

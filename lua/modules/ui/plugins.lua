@@ -12,6 +12,12 @@ ui["catppuccin/nvim"] = {
 	as = "catppuccin",
 	config = conf.catppuccin,
 }
+ui["zbirenbaum/neodim"] = {
+	opt = true,
+	event = "LspAttach",
+	requires = "nvim-treesitter",
+	config = conf.neodim,
+}
 ui["rcarriga/nvim-notify"] = {
 	opt = false,
 	config = conf.notify,
@@ -57,10 +63,6 @@ ui["dstein64/nvim-scrollview"] = {
 	opt = true,
 	event = { "BufReadPost" },
 	config = conf.scrollview,
-}
-ui["mbbill/undotree"] = {
-	opt = true,
-	cmd = "UndotreeToggle",
 }
 ui["j-hui/fidget.nvim"] = {
 	opt = true,

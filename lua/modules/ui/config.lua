@@ -249,6 +249,7 @@ function config.catppuccin()
 					Keyword = { fg = cp.pink },
 					Type = { fg = cp.blue },
 					Typedef = { fg = cp.yellow },
+					StorageClass = { fg = cp.red, style = { "italic" } },
 
 					-- For native lsp configs.
 					DiagnosticVirtualTextError = { bg = cp.none },
@@ -288,6 +289,7 @@ function config.catppuccin()
 					["@constant.builtin"] = { fg = cp.lavender },
 					-- ["@function.builtin"] = { fg = cp.peach, style = { "italic" } },
 					-- ["@type.builtin"] = { fg = cp.yellow, style = { "italic" } },
+					["@type.qualifier"] = { link = "@keyword" },
 					["@variable.builtin"] = { fg = cp.red, style = { "italic" } },
 
 					-- ["@function"] = { fg = cp.blue },
@@ -356,6 +358,24 @@ function config.catppuccin()
 	})
 end
 
+function config.neodim()
+	local normal_background = vim.api.nvim_get_hl_by_name("Normal", true).background
+	local blend_color = normal_background ~= nil and string.format("#%06x", normal_background) or "#000000"
+	require("neodim").setup({
+		alpha = 0.45,
+		blend_color = blend_color,
+		update_in_insert = {
+			enable = true,
+			delay = 100,
+		},
+		hide = {
+			virtual_text = true,
+			signs = false,
+			underline = false,
+		},
+	})
+end
+
 function config.notify()
 	local notify = require("notify")
 	local icons = {
@@ -372,6 +392,8 @@ function config.notify()
 		on_close = nil,
 		---@usage timeout for notifications in ms, default 5000
 		timeout = 2000,
+		-- @usage User render fps value
+		fps = 30,
 		-- Render function for notifications. See notify-render()
 		render = "default",
 		---@usage highlight behind the window for stages that change opacity
@@ -635,7 +657,7 @@ function config.nvim_tree()
 		},
 		update_focused_file = {
 			enable = true,
-			update_root = false,
+			update_root = true,
 			ignore_list = {},
 		},
 		ignore_ft_on_setup = {},
@@ -737,13 +759,6 @@ function config.nvim_bufferline()
 					text = "File Explorer",
 					text_align = "center",
 					padding = 1,
-				},
-				{
-					filetype = "undotree",
-					text = "Undo Tree",
-					text_align = "center",
-					highlight = "Directory",
-					separator = true,
 				},
 			},
 			diagnostics_indicator = function(count)
@@ -874,7 +889,6 @@ function config.indent_blankline()
 			"peekaboo",
 			"git",
 			"TelescopePrompt",
-			"undotree",
 			"flutterToolsOutline",
 			"", -- for all buffers without a file type
 		},
