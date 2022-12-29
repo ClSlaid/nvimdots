@@ -186,6 +186,9 @@ function config.rust_tools()
 						command = "clippy",
 						-- command = "check",
 					},
+					inlayHints = {
+						locationLinks = false,
+					},
 				},
 			},
 		}, -- rust-analyer options
