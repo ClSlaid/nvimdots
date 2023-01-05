@@ -115,9 +115,9 @@ editor["rcarriga/nvim-dap-ui"] = {
 	config = conf.dapui,
 }
 editor["tpope/vim-fugitive"] = { opt = true, cmd = { "Git", "G" } }
-editor["famiu/bufdelete.nvim"] = {
+editor["ojroques/nvim-bufdel"] = {
 	opt = true,
-	cmd = { "Bdelete", "Bwipeout", "Bdelete!", "Bwipeout!" },
+	event = "BufReadPost",
 }
 editor["edluffy/specs.nvim"] = {
 	opt = true,
@@ -127,7 +127,6 @@ editor["edluffy/specs.nvim"] = {
 editor["abecodes/tabout.nvim"] = {
 	opt = true,
 	event = "InsertEnter",
-	wants = "nvim-treesitter",
 	after = "nvim-cmp",
 	config = conf.tabout,
 }
