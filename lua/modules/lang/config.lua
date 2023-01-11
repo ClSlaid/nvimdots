@@ -179,7 +179,7 @@ function config.rust_tools()
 						features = "all",
 					},
 					lru = {
-						capacity = 1024,
+						capacity = 4096,
 					},
 					procMacro = {
 						enable = true,
@@ -187,9 +187,6 @@ function config.rust_tools()
 					checkOnSave = {
 						command = "clippy",
 						-- command = "check",
-					},
-					inlayHints = {
-						locationLinks = false,
 					},
 				},
 			},
