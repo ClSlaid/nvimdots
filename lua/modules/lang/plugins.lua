@@ -13,6 +13,12 @@ lang["simrat39/rust-tools.nvim"] = {
 	config = conf.rust_tools,
 	requires = "nvim-lua/plenary.nvim",
 }
+lang["Saecki/crates.nvim"] = {
+	opt = true,
+	ft = "rust",
+	config = conf.crates,
+	requires = "nvim-lua/plenary.nvim",
+}
 -- lang["kristijanhusak/orgmode.nvim"] = {
 -- 	opt = true,
 -- 	ft = "org",
