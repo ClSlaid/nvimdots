@@ -2,16 +2,16 @@ local lang = {}
 local conf = require("modules.lang.config")
 
 lang["fatih/vim-go"] = {
-	opt = true,
+	lazy = true,
 	ft = "go",
-	run = ":GoInstallBinaries",
+	build = ":GoInstallBinaries",
 	config = conf.lang_go,
 }
 lang["simrat39/rust-tools.nvim"] = {
-	opt = true,
+	lazy = true,
 	ft = "rust",
 	config = conf.rust_tools,
-	requires = "nvim-lua/plenary.nvim",
+	dependencies = { { "nvim-lua/plenary.nvim" } },
 }
 lang["Saecki/crates.nvim"] = {
 	opt = true,
@@ -19,24 +19,20 @@ lang["Saecki/crates.nvim"] = {
 	config = conf.crates,
 	requires = "nvim-lua/plenary.nvim",
 }
--- lang["kristijanhusak/orgmode.nvim"] = {
--- 	opt = true,
--- 	ft = "org",
--- 	config = conf.lang_org,
--- }
+
 lang["iamcco/markdown-preview.nvim"] = {
-	opt = true,
+	lazy = true,
 	ft = "markdown",
-	run = "cd app && yarn install",
+	build = "cd app && yarn install",
+}
+lang["chrisbra/csv.vim"] = {
+	lazy = true,
+	ft = "csv",
 }
 
 lang["wlangstroth/vim-racket"] = {
 	opt = true,
 	ft = { "scheme", "racket" },
-}
-lang["Olical/conjure"] = {
-	opt = true,
-	ft = { "racket", "scheme", "clojure", "common lisp" },
 }
 
 lang["MrcJkb/haskell-tools.nvim"] = {
@@ -49,8 +45,6 @@ lang["MrcJkb/haskell-tools.nvim"] = {
 		{ "nvim-telescope/telescope.nvim", opt = true }, -- optional
 	},
 }
-
-lang["chrisbra/csv.vim"] = { opt = true, ft = "csv" }
 
 lang["lervag/vimtex"] = {
 	opt = true,
