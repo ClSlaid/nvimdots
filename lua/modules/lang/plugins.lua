@@ -23,7 +23,7 @@ lang["Saecki/crates.nvim"] = {
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
 	ft = "markdown",
-	build = "cd app && yarn install",
+	build = ":call mkdp#util#install()",
 }
 lang["chrisbra/csv.vim"] = {
 	lazy = true,

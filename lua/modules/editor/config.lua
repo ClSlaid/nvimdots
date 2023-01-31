@@ -30,7 +30,14 @@ function config.nvim_treesitter()
 		},
 		highlight = {
 			enable = true,
-			disable = { "vim" },
+			disable = function(ft, bufnr)
+				if vim.tbl_contains({ "vim" }, ft) then
+					return true
+				end
+
+				local ok, is_large_file = pcall(vim.api.nvim_buf_get_var, bufnr, "bigfile_disable_treesitter")
+				return ok and is_large_file
+			end,
 			additional_vim_regex_highlighting = { "c", "cpp" },
 		},
 		textobjects = {
@@ -188,6 +195,9 @@ function config.auto_session()
 end
 
 function config.toggleterm()
+	local colors = require("modules.utils").get_palette()
+	local floatborder_hl = require("modules.utils").hl_to_rgb("FloatBorder", false, colors.blue)
+
 	require("toggleterm").setup({
 		-- size can be a number or function which is passed the current terminal
 		size = function(term)
@@ -197,6 +207,11 @@ function config.toggleterm()
 				return vim.o.columns * 0.40
 			end
 		end,
+		highlights = {
+			FloatBorder = {
+				guifg = floatborder_hl,
+			},
+		},
 		on_open = function()
 			-- Prevent infinite calls from freezing neovim.
 			-- Only set these options specific to this terminal buffer.
@@ -277,6 +292,7 @@ end
 
 function config.dap()
 	local icons = { dap = require("modules.ui.icons").get("dap") }
+	local colors = require("modules.utils").get_palette()
 
 	local dap = require("dap")
 	local dapui = require("dapui")
@@ -292,7 +308,7 @@ function config.dap()
 	end
 
 	-- We need to override nvim-dap's default highlight groups, AFTER requiring nvim-dap for catppuccin.
-	vim.api.nvim_set_hl(0, "DapStopped", { fg = "#ABE9B3" })
+	vim.api.nvim_set_hl(0, "DapStopped", { fg = colors.green })
 
 	vim.fn.sign_define(
 		"DapBreakpoint",
@@ -551,6 +567,39 @@ function config.tabout()
 		},
 		ignore_beginning = true, -- if the cursor is at the beginning of a filled element it will rather tab out than shift the content
 		exclude = {}, -- tabout will ignore these filetypes
+	})
+end
+
+function config.bigfile()
+	local ftdetect = {
+		name = "ftdetect",
+		opts = { defer = true },
+		disable = function()
+			vim.api.nvim_set_option_value("filetype", "big_file_disabled_ft", { scope = "local" })
+		end,
+	}
+
+	local cmp = {
+		name = "nvim-cmp",
+		opts = { defer = true },
+		disable = function()
+			require("cmp").setup.buffer({ enabled = false })
+		end,
+	}
+
+	require("bigfile").config({
+		filesize = 1, -- size of the file in MiB
+		pattern = { "*" }, -- autocmd pattern
+		features = { -- features to disable
+			"indent_blankline",
+			"lsp",
+			"illuminate",
+			"treesitter",
+			"syntax",
+			"vimopts",
+			ftdetect,
+			cmp,
+		},
 	})
 end
 

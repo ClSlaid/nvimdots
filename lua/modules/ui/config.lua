@@ -62,7 +62,7 @@ function config.alpha()
 		button("space f c", " Scheme change", leader, "<cmd>Telescope colorscheme<cr>"),
 		button("space f r", " File frecency", leader, "<cmd>Telescope frecency<cr>"),
 		button("space f e", " File history", leader, "<cmd>Telescope oldfiles<cr>"),
-		button("space f p", " Project find", leader, "<cmd>Telescope project<cr>"),
+		button("space f p", " Project find", leader, "<cmd>Telescope projects<cr>"),
 		button("space f f", " File find", leader, "<cmd>Telescope find_files<cr>"),
 		button("space f n", " File new", leader, "<cmd>enew<cr>"),
 		button("space f w", " Word find", leader, "<cmd>Telescope live_grep<cr>"),
@@ -258,12 +258,6 @@ function config.catppuccin()
 			},
 		},
 		highlight_overrides = {
-			all = function(cp)
-				return {
-					-- For lspsaga.nvim
-					SagaBeacon = { bg = cp.surface0 },
-				}
-			end,
 			mocha = function(cp)
 				return {
 					-- For base configs.
@@ -447,6 +441,7 @@ function config.notify()
 end
 
 function config.lualine()
+	local colors = require("modules.utils").get_palette()
 	local icons = {
 		diagnostics = require("modules.ui.icons").get("diagnostics", true),
 		misc = require("modules.ui.icons").get("misc", true),
@@ -458,6 +453,7 @@ function config.lualine()
 		return ok and m.waiting and icons.misc.EscapeST or ""
 	end
 
+	local _cache = { context = "", bufnr = -1 }
 	local function lspsaga_symbols()
 		local exclude = {
 			["terminal"] = true,
@@ -469,14 +465,16 @@ function config.lualine()
 		if vim.api.nvim_win_get_config(0).zindex or exclude[vim.bo.filetype] then
 			return "" -- Excluded filetypes
 		else
+			local currbuf = vim.api.nvim_get_current_buf()
 			local ok, lspsaga = pcall(require, "lspsaga.symbolwinbar")
-			if ok then
-				if lspsaga:get_winbar() ~= nil then
-					return lspsaga:get_winbar()
-				else
-					return "" -- Cannot get node
-				end
+			if ok and lspsaga:get_winbar() ~= nil then
+				_cache.context = lspsaga:get_winbar()
+				_cache.bufnr = currbuf
+			elseif _cache.bufnr ~= currbuf then
+				_cache.context = "" -- Reset [invalid] cache (usually from another buffer)
 			end
+
+			return _cache.context
 		end
 	end
 
@@ -604,8 +602,8 @@ function config.lualine()
 	})
 
 	-- Properly set background color for lspsaga
-	local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, "#000000")
-	for _, hlGroup in pairs(require("lspsaga.highlight").get_kind()) do
+	local winbar_bg = require("modules.utils").hl_to_rgb("StatusLine", true, colors.mantle)
+	for _, hlGroup in pairs(require("lspsaga.lspkind").get_kind()) do
 		require("modules.utils").extend_hl("LspSagaWinbar" .. hlGroup[1], { bg = winbar_bg })
 	end
 	require("modules.utils").extend_hl("LspSagaWinbarSep", { bg = winbar_bg })

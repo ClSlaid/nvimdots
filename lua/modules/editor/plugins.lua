@@ -115,6 +115,11 @@ editor["ibhagwan/smartyank.nvim"] = {
 	event = "BufReadPost",
 	config = conf.smartyank,
 }
+editor["LunarVim/bigfile.nvim"] = {
+	lazy = false,
+	config = conf.bigfile,
+	cond = require("core.settings").load_big_files_faster,
+}
 
 editor["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
 	config = conf.lsp_lines,
