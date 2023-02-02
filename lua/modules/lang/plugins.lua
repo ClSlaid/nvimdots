@@ -17,7 +17,7 @@ lang["Saecki/crates.nvim"] = {
 	opt = true,
 	ft = "rust",
 	config = conf.crates,
-	requires = "nvim-lua/plenary.nvim",
+	dependencies = { { "nvim-lua/plenary.nvim" } },
 }
 
 lang["iamcco/markdown-preview.nvim"] = {
@@ -39,7 +39,7 @@ lang["MrcJkb/haskell-tools.nvim"] = {
 	opt = true,
 	ft = { "haskell", "lhaskell", "cabal", "stack" },
 	config = conf.haskell_tools,
-	requires = {
+	dependencies = {
 		{ "neovim/nvim-lspconfig", opt = false },
 		{ "nvim-lua/plenary.nvim", opt = false },
 		{ "nvim-telescope/telescope.nvim", opt = true }, -- optional
