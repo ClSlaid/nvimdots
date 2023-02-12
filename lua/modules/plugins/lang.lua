@@ -30,26 +30,26 @@ lang["chrisbra/csv.vim"] = {
 }
 
 lang["wlangstroth/vim-racket"] = {
-	opt = true,
+	lazy = true,
 	ft = { "scheme", "racket" },
 }
 
 lang["MrcJkb/haskell-tools.nvim"] = {
-	opt = true,
+	lazy = true,
 	ft = { "haskell", "lhaskell", "cabal", "stack" },
 	config = require("lang.haskell-tools"),
 	dependencies = {
-		{ "neovim/nvim-lspconfig", opt = false },
-		{ "nvim-lua/plenary.nvim", opt = false },
-		{ "nvim-telescope/telescope.nvim", opt = true }, -- optional
+		{ "neovim/nvim-lspconfig" },
+		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-telescope/telescope.nvim" }, -- optional
 	},
 }
 
 lang["lervag/vimtex"] = {
-	opt = true,
+	lazy = true,
 	ft = { "latex", "tex" },
-	requires = {
-		{ "neovim/nvim-lspconfig", opt = false },
+	dependencies = {
+		{ "neovim/nvim-lspconfig" },
 	},
 	config = require("lang.vimtex"),
 }
