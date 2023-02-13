@@ -112,7 +112,7 @@ return function()
 		ui = {
 			theme = "round",
 			border = "single", -- Can be single, double, rounded, solid, shadow.
-			winblend = 0,
+			winblend = 14,
 			expand = icons.ui.ArrowClosed,
 			collapse = icons.ui.ArrowOpen,
 			preview = icons.ui.Newspaper,

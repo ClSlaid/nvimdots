@@ -160,7 +160,6 @@ return function()
 				},
 			},
 		},
-
 		-- all the opts to send to nvim-lspconfig
 		-- these override the defaults set by rust-tools.nvim
 		-- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
@@ -186,7 +185,6 @@ return function()
 				},
 			},
 		}, -- rust-analyer options
-
 		-- debugging stuff
 		dap = {
 			adapter = {

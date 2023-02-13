@@ -1,5 +1,9 @@
 local editor = {}
-
+editor["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
+	lazy = true,
+	event = "BufReadPost",
+	config = require("editor.lsp_lines"),
+}
 editor["rainbowhxch/accelerated-jk.nvim"] = {
 	lazy = true,
 	event = "VeryLazy",
