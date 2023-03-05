@@ -187,12 +187,13 @@ return function()
 		}, -- rust-analyer options
 		-- debugging stuff
 		dap = {
-			adapter = {
-				type = "executable",
-				command = "lldb-vscode",
-				name = "rt_lldb",
-				sourceLanguages = { "rust" },
-			},
+			-- adapter = {
+			-- type = "executable",
+			-- command = "lldb-vscode",
+			-- name = "rt_lldb",
+			-- sourceLanguages = { "rust" },
+			-- },
+			adapter = require("dap").adapters.codelldb,
 		},
 	}
 

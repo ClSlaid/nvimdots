@@ -4,10 +4,10 @@ local function load_options()
 	local global_local = {
 		-- backupdir = global.cache_dir .. "backup/",
 		-- directory = global.cache_dir .. "swap/",
-		pumblend = 10,
+		pumblend = 30,
 		-- spellfile = global.cache_dir .. "spell/en.uft-8.add",
 		-- viewdir = global.cache_dir .. "view/",
-		winblend = 10,
+		winblend = 30,
 		autoindent = true,
 		autoread = true,
 		autowrite = true,

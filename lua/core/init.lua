@@ -75,7 +75,7 @@ local leader_map = function()
 end
 
 local neovide_config = function()
-	vim.api.nvim_set_option_value("guifont", "Sarasa Mono SC:h15:#e-subpixelantialias:#h-slight", {})
+	vim.api.nvim_set_option_value("guifont", "Sarasa Mono SC Nerd:h17:#e-subpixelantialias:#h-slight", {})
 	vim.g.neovide_refresh_rate = 120
 	vim.g.neovide_cursor_vfx_mode = "railgun"
 	vim.g.neovide_no_idle = false
@@ -90,8 +90,8 @@ local neovide_config = function()
 	vim.g.neovide_cursor_vfx_particle_lifetime = 1.2
 	vim.g.neovide_cursor_vfx_particle_speed = 20.0
 	vim.g.neovide_cursor_vfx_particle_density = 5.0
-
-	vim.g.neovide_profiler = true
+	vim.g.neovide_floating_blur_amount_x = 4.0
+	vim.g.neovide_floating_blur_amount_y = 4.0
 end
 
 local clipboard_config = function()
