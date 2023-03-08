@@ -1,4 +1,6 @@
 return function()
+	local theme = require("core.settings").colorscheme
+
 	local colors = require("modules.utils").get_palette()
 	local icons = {
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
@@ -104,7 +106,7 @@ return function()
 	require("lualine").setup({
 		options = {
 			icons_enabled = true,
-			theme = "catppuccin",
+			theme = theme,
 			disabled_filetypes = {},
 			component_separators = "|",
 			section_separators = { left = "", right = "" },

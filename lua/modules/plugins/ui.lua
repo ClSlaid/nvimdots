@@ -11,9 +11,14 @@ ui["akinsho/bufferline.nvim"] = {
 	config = require("ui.bufferline"),
 }
 ui["catppuccin/nvim"] = {
-	lazy = false,
+	lazy = true,
 	name = "catppuccin",
 	config = require("ui.catppuccin"),
+}
+ui["EdenEast/nightfox.nvim"] = {
+	lazy = false,
+	name = "nightfox",
+	config = require("ui.nightfox"),
 }
 ui["sainnhe/edge"] = {
 	lazy = true,
