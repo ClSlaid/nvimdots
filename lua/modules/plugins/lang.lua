@@ -1,5 +1,11 @@
 local lang = {}
 
+lang["nvim-orgmode/orgmode"] = {
+	-- lazy = true,
+	ft = { "org" },
+	config = require("lang.orgmode"),
+}
+
 lang["fatih/vim-go"] = {
 	lazy = true,
 	ft = "go",
