@@ -26,7 +26,7 @@ return function()
 	---@param c integer @Cursor position (col) before calling LuaSnip
 	---@param fallback function @Fallback function inherited from cmp
 	local luasnip_fallback = vim.schedule_wrap(function(r, c, fallback)
-		local _r, _c = unpack(vim.api.nvim_win_get_cursor(0))
+		local _r, _c = table.unpack(vim.api.nvim_win_get_cursor(0))
 		if _r == r and _c == c then
 			fallback()
 		end
@@ -108,7 +108,7 @@ return function()
 				if cmp.visible() then
 					cmp.select_next_item()
 				elseif require("luasnip").expand_or_locally_jumpable() then
-					local _r, _c = unpack(vim.api.nvim_win_get_cursor(0))
+					local _r, _c = table.unpack(vim.api.nvim_win_get_cursor(0))
 					vim.fn.feedkeys(t("<Plug>luasnip-expand-or-jump"))
 					luasnip_fallback(_r, _c, fallback)
 				else
