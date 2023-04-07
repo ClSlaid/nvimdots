@@ -70,6 +70,11 @@ editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
 }
+editor["keaising/im-select.nvim"] = {
+	lazy = true,
+	event = { "InsertEnter", "InsertLeave" },
+	config = require("editor.im-select"),
+}
 
 ----------------------------------------------------------------------
 --                  :treesitter related plugins                    --
