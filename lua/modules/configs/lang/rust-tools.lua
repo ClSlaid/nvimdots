@@ -46,7 +46,7 @@ return function()
 				-- default: "=>"
 				other_hints_prefix = "=> ",
 
-				-- whether to align to the lenght of the longest line in the file
+				-- whether to align to the length of the longest line in the file
 				max_len_align = false,
 
 				-- padding from the left if max_len_align is true
@@ -164,6 +164,8 @@ return function()
 		-- these override the defaults set by rust-tools.nvim
 		-- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
 		server = {
+			-- cmd = { "<path-to-ra>" },
+
 			-- standalone file support
 			-- setting it to false may improve startup time
 			standalone = true,

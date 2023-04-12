@@ -61,7 +61,7 @@ return function()
 			},
 		},
 		lightbulb = {
-			enable = false,
+			enable = true,
 			sign = true,
 			enable_in_insert = true,
 			sign_priority = 20,
