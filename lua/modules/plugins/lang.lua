@@ -64,4 +64,14 @@ lang["lervag/vimtex"] = {
 	config = require("lang.vimtex"),
 }
 
+lang["eraserhd/parinfer-rust"] = {
+	lazy = true,
+	ft = { "scheme", "guile", "scheme.guile", "scm", "cljr", "rkt", "cl" },
+	dependencies = {
+		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-lua/popup.nvim" },
+	},
+	build = "cargo clean && cargo build --release",
+}
+
 return lang
