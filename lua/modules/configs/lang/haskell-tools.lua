@@ -58,16 +58,24 @@ return function()
 				package_events = { "BufWritePost" },
 			},
 		},
-		hls = { -- LSP client options
-			-- ...
-			settings = {
-				haskell = { -- haskell-language-server options
-					formattingProvider = "fourmolu",
-					checkProject = true, -- Setting this to true could have a performance impact on large mono repos.
-					-- ...
-				},
-			},
-		},
+		-- hls = { -- LSP client options
+		-- 	-- ...
+		-- 	settings = {
+		-- 		haskell = { -- haskell-language-server options
+		-- 			formattingProvider = "fourmolu",
+		-- 			checkProject = true, -- Setting this to true could have a performance impact on large mono repos.
+		--                   plugin = {
+		--                       rename = {
+		--                           globalOn = true,
+		--                           config = {
+		--                               crossModule = true,
+		--                           }
+		--                       }
+		--                   }
+		-- 			-- ...
+		-- 		},
+		-- 	},
+		-- },
 	}
 	require("haskell-tools").setup(opts)
 end
