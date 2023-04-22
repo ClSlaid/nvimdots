@@ -62,7 +62,7 @@ return function()
 			-- ...
 			settings = {
 				haskell = { -- haskell-language-server options
-					formattingProvider = "ormolu",
+					formattingProvider = "fourmolu",
 					checkProject = true, -- Setting this to true could have a performance impact on large mono repos.
 					-- ...
 				},
