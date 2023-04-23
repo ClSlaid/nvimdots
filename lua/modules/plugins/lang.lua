@@ -74,4 +74,14 @@ lang["eraserhd/parinfer-rust"] = {
 	build = "cargo clean && cargo build --release",
 }
 
+lang["Julian/lean.nvim"] = {
+	lazy = true,
+	ft = { "lean" },
+	dependencies = {
+		{ "neovim/nvim-lspconfig" },
+		{ "nvim-lua/plenary.nvim" },
+	},
+	config = require("lang.lean"),
+}
+
 return lang
