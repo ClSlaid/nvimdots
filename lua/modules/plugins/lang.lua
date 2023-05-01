@@ -76,7 +76,7 @@ lang["eraserhd/parinfer-rust"] = {
 
 lang["Julian/lean.nvim"] = {
 	lazy = true,
-	ft = { "lean" },
+	ft = { "lean", "lean3", "lean4" },
 	dependencies = {
 		{ "neovim/nvim-lspconfig" },
 		{ "nvim-lua/plenary.nvim" },
