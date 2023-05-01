@@ -62,10 +62,6 @@ editor["RRethy/vim-illuminate"] = {
 	event = { "CursorHold", "CursorHoldI" },
 	config = require("editor.vim-illuminate"),
 }
-editor["luukvbaal/stabilize.nvim"] = {
-	lazy = true,
-	event = "BufReadPost",
-}
 editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
@@ -74,6 +70,11 @@ editor["keaising/im-select.nvim"] = {
 	lazy = true,
 	event = { "InsertEnter", "InsertLeave" },
 	config = require("editor.im-select"),
+}
+editor["lambdalisue/suda.vim"] = {
+	lazy = true,
+	cmd = { "SudaRead", "SudaWrite" },
+	config = require("editor.suda"),
 }
 
 ----------------------------------------------------------------------
