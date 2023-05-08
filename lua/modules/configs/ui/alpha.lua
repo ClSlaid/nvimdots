@@ -75,7 +75,7 @@ return function()
 				require("telescope").extensions.frecency.frecency()
 			end,
 		}),
-		button("space f e", " File history", leader, nil, {
+		button("space f e", "󰋚 File history", leader, nil, {
 			noremap = true,
 			silent = true,
 			nowait = true,
@@ -91,7 +91,7 @@ return function()
 				require("telescope").extensions.projects.projects({})
 			end,
 		}),
-		button("space f f", " File find", leader, nil, {
+		button("space f f", "󰈞 File find", leader, nil, {
 			noremap = true,
 			silent = true,
 			nowait = true,
@@ -122,13 +122,13 @@ return function()
 		local stats = require("lazy").stats()
 		local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
 		return "   Have Fun with neovim"
-			.. "   v"
+			.. "  󰀨 v"
 			.. vim.version().major
 			.. "."
 			.. vim.version().minor
 			.. "."
 			.. vim.version().patch
-			.. "   "
+			.. "  󰂖 "
 			.. stats.count
 			.. " plugins in "
 			.. ms
