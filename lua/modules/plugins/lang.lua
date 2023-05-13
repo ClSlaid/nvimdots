@@ -46,7 +46,7 @@ lang["wlangstroth/vim-racket"] = {
 
 lang["MrcJkb/haskell-tools.nvim"] = {
 	lazy = true,
-	ft = { "haskell", "lhaskell", "cabal", "stack" },
+	ft = { "hs", "lhs", "haskell", "lhaskell", "cabal", "stack" },
 	config = require("lang.haskell-tools"),
 	dependencies = {
 		{ "neovim/nvim-lspconfig" },
