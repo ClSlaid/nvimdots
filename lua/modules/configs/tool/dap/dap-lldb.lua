@@ -4,7 +4,7 @@ local codelldb_port = "65472"
 
 dap.adapters.lldb = {
 	type = "executable",
-	command = "/usr/bin/lldb-vscode",
+	command = "lldb-vscode",
 	name = "lldb",
 }
 dap.adapters.codelldb = {
