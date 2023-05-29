@@ -68,6 +68,7 @@ settings["server_formatting_block_list"] = {
 	tsserver = true,
 	clangd = true,
 	pylsp = true,
+	volar = true,
 }
 
 -- Set the language servers that will be installed during bootstrap here.
