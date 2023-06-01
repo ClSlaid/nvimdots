@@ -76,6 +76,7 @@ settings["server_formatting_block_list"] = {
 	tsserver = true,
 	clangd = true,
 	pylsp = true,
+	pylyzer = true,
 	volar = true,
 }
 
@@ -89,7 +90,7 @@ settings["lsp_deps"] = {
 	"html",
 	"jsonls",
 	"lua_ls",
-	"pylsp",
+	-- "pylsp",
 	-- "gopls",
 }
 
