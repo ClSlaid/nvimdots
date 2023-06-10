@@ -26,6 +26,7 @@ lang["simrat39/rust-tools.nvim"] = {
 		{ "nvim-lua/plenary.nvim" },
 		{ "neovim/nvim-lspconfig" },
 		{ "nvim-telescope/telescope.nvim" }, -- optional
+		{ "mattn/webapi-vim" }, -- optional
 	},
 }
 lang["Saecki/crates.nvim"] = {

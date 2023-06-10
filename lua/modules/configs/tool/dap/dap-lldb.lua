@@ -11,7 +11,8 @@ dap.adapters.codelldb = {
 	type = "server",
 	port = codelldb_port,
 	executable = {
-		command = os.getenv("HOME") .. "/" .. ".local/share/nvim/mason/bin/codelldb",
+		-- command = os.getenv("HOME") .. "/" .. ".local/share/nvim/mason/bin/codelldb",
+		command = "codelldb",
 		args = { "--port", codelldb_port },
 	},
 	name = "codelldb",
