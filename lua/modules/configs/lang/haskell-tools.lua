@@ -64,7 +64,7 @@ return function()
 				haskell = {
 					-- The formatting providers.
 					formattingProvider = "stylish-haskell",
-					cabalFormattingProvider = "cabalfmt",
+					-- cabalFormattingProvider = "cabalfmt",
 					-- Maximum number of completions sent to the LSP client.
 					maxCompletions = 40,
 					-- Whether to typecheck the entire project on initial load.
@@ -155,5 +155,9 @@ return function()
 			},
 		},
 	}
-	require("haskell-tools").start_or_attach(opts)
+	local ht = require("haskell-tools")
+	ht.start_or_attach(opts)
+
+	local bufnr = vim.api.nvim_get_current_buf()
+	ht.dap.discover_configurations(bufnr)
 end
