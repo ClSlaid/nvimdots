@@ -164,8 +164,6 @@ return function()
 		-- these override the defaults set by rust-tools.nvim
 		-- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
 		server = {
-			-- cmd = { "<path-to-ra>" },
-
 			-- standalone file support
 			-- setting it to false may improve startup time
 			standalone = true,
@@ -199,5 +197,10 @@ return function()
 		},
 	}
 
+	-- if is linux or wsl, set server cmd to '/usr/bin/rust-analyzer'
+	-- local global = require("core.global")
+	-- if global.is_linux or global.is_wsl then
+	-- 	opts.server.cmd = { "/usr/bin/rust-analyzer" }
+	-- end
 	require("rust-tools").setup(opts)
 end

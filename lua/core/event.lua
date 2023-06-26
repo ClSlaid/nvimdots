@@ -18,7 +18,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 	callback = function(event)
 		mapping.lsp(event.buf)
-		vim.lsp.buf.inlay_hint(event.buf, true)
+		local client = vim.lsp.get_client_by_id(event.data.client_id)
+		if client.server_capabilities.inlayHintProvider ~= nil then
+			vim.lsp.buf.inlay_hint(event.buf, true)
+		end
 	end,
 })
 
