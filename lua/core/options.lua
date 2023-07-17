@@ -52,7 +52,8 @@ local function load_options()
 		number = true,
 		previewheight = 12,
 		-- Do NOT adjust the following option (pumblend) if you're using transparent background
-		pumblend = 0,
+		-- pumblend = 0,
+		pumblend = 30,
 		pumheight = 15,
 		redrawtime = 1500,
 		relativenumber = true,
@@ -96,7 +97,8 @@ local function load_options()
 		wildignore = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**",
 		wildignorecase = true,
 		-- Do NOT adjust the following option (winblend) if you're using transparent background
-		winblend = 0,
+		-- winblend = 0,
+		winblend = 20,
 		winminwidth = 10,
 		winwidth = 30,
 		wrap = false,

@@ -61,7 +61,7 @@ settings["background"] = "dark"
 -- Set the command for handling external URLs here. The executable must be available on your $PATH.
 -- This entry is IGNORED on Windows and macOS, which have their default handlers builtin.
 ---@type string
-settings["external_browser"] = "chrome-cli open"
+settings["external_browser"] = "firefox-nightly --new-tab" -- "chrome-cli open"
 
 -- Filetypes in this list will skip lsp formatting if rhs is true.
 ---@type table<string, boolean>
