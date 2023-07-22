@@ -94,7 +94,7 @@ return function()
 			in_select = false,
 			auto_save = false,
 			keys = {
-				quit = "<Esc>",
+				quit = "<C-c>",
 				select = "x",
 				exec = "<CR>",
 			},
@@ -149,7 +149,6 @@ return function()
 			frequency = 12,
 		},
 		ui = {
-			-- title = false,
 			title = true,
 			devicon = true,
 			border = "single", -- Can be single, double, rounded, solid, shadow.
