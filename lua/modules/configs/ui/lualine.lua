@@ -60,7 +60,7 @@ return function()
 	}
 	local outline = {
 		sections = mini_sections,
-		filetypes = { "lspsagaoutline" },
+		filetypes = { "Outline" },
 	}
 	local diffview = {
 		sections = mini_sections,
@@ -211,11 +211,11 @@ return function()
 				if vim.api.nvim_get_option_value("filetype", { scope = "local" }) == "python" then
 					local venv = os.getenv("CONDA_DEFAULT_ENV")
 					if venv then
-						return string.format("%s", env_cleanup(venv))
+						return icons.misc.PyEnv .. env_cleanup(venv)
 					end
 					venv = os.getenv("VIRTUAL_ENV")
 					if venv then
-						return string.format("%s", env_cleanup(venv))
+						return icons.misc.PyEnv .. env_cleanup(venv)
 					end
 				end
 				return ""

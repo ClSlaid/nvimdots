@@ -12,6 +12,10 @@ settings["format_on_save"] = true
 ---@type boolean
 settings["format_notify"] = true
 
+-- Set it to false if you don't use copilot
+---@type boolean
+settings["use_copilot"] = true
+
 -- Set it to false if diagnostics virtual text is annoying.
 -- If disabled, you may browse lsp diagnostics using trouble.nvim (press `gt` to toggle it).
 ---@type boolean
@@ -40,7 +44,7 @@ settings["load_big_files_faster"] = true
 -- Settings will complete their replacement at initialization.
 -- Parameters will be automatically completed as you type.
 -- Example: { sky = "#04A5E5" }
----@type palette
+---@type palette[]
 settings["palette_overwrite"] = {}
 
 -- Set the colorscheme to use here.
