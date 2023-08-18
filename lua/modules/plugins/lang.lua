@@ -20,7 +20,8 @@ lang["ray-x/go.nvim"] = {
 }
 lang["simrat39/rust-tools.nvim"] = {
 	lazy = true,
-	ft = "rust",
+	-- ft = { "rust", "rs" },
+	event = { "BufReadPost *.rs" },
 	config = require("lang.rust-tools"),
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
@@ -29,9 +30,11 @@ lang["simrat39/rust-tools.nvim"] = {
 		{ "mattn/webapi-vim" }, -- optional
 	},
 }
+
 lang["Saecki/crates.nvim"] = {
 	lazy = true,
-	event = "BufReadPost Cargo.toml",
+	-- event = "BufReadPost Cargo.toml",
+	event = "BufEnter Cargo.toml",
 	config = require("lang.crates"),
 	dependencies = { "nvim-lua/plenary.nvim" },
 }

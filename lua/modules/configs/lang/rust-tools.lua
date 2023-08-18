@@ -151,6 +151,7 @@ return function()
 			-- standalone file support
 			-- setting it to false may improve startup time
 			standalone = true,
+			autostart = true,
 			settings = {
 				["rust-analyzer"] = {
 					cargo = {
