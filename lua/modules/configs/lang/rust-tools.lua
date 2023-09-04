@@ -181,10 +181,5 @@ return function()
 		},
 	}
 
-	-- if is linux or wsl, set server cmd to '/usr/bin/rust-analyzer'
-	-- local global = require("core.global")
-	-- if global.is_linux or global.is_wsl then
-	-- 	opts.server.cmd = { "/usr/bin/rust-analyzer" }
-	-- end
-	require("rust-tools").setup(opts)
+	require("modules.utils").load_plugin("rust-tools", opts)
 end
