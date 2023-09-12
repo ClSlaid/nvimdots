@@ -164,19 +164,12 @@ return function()
 					},
 					checkOnSave = {
 						command = "clippy",
-						-- command = "check",
 					},
 				},
 			},
 		}, -- rust-analyer options
 		-- debugging stuff
 		dap = {
-			-- adapter = {
-			-- type = "executable",
-			-- command = "lldb-vscode",
-			-- name = "rt_lldb",
-			-- sourceLanguages = { "rust" },
-			-- },
 			adapter = require("dap").adapters.codelldb,
 		},
 	}
