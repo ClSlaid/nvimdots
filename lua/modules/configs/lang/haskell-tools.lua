@@ -155,8 +155,9 @@ return function()
 			},
 		},
 	}
+	vim.g.haskell_tools = opts
 	local ht = require("haskell-tools")
-	ht.start_or_attach(opts)
+	-- ht.start_or_attach(opts)
 
 	local bufnr = vim.api.nvim_get_current_buf()
 	ht.dap.discover_configurations(bufnr)
