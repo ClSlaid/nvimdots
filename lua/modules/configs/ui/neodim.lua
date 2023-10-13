@@ -10,6 +10,9 @@ return function()
 			signs = false,
 			underline = false,
 		},
+		regex = {
+			haskell = {},
+		},
 		priority = 80,
 		disable = { "big_file_disabled_ft" },
 	})
