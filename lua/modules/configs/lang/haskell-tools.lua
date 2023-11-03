@@ -63,7 +63,7 @@ return function()
 			settings = {
 				haskell = {
 					-- The formatting providers.
-					formattingProvider = "stylish-haskell",
+					formattingProvider = "fourmolu",
 					-- cabalFormattingProvider = "cabalfmt",
 					-- Maximum number of completions sent to the LSP client.
 					maxCompletions = 40,

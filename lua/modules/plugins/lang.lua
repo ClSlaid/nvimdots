@@ -65,6 +65,16 @@ lang["mrcJkb/haskell-tools.nvim"] = {
 	},
 }
 
+lang["scalameta/nvim-metals"] = {
+	lazy = true,
+	ft = { "scala", "sbt" },
+	config = require("lang.metals"),
+	dependencies = {
+		{ "nvim-lua/plenary.nvim" },
+		{ "mfussenegger/nvim-dap" },
+	},
+}
+
 lang["lervag/vimtex"] = {
 	lazy = true,
 	ft = { "latex", "tex" },
