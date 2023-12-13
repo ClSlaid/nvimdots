@@ -21,7 +21,7 @@ lang["ray-x/go.nvim"] = {
 lang["simrat39/rust-tools.nvim"] = {
 	lazy = true,
 	ft = { "rust", "rs" },
-	event = { "BufReadPost *.rs" },
+	-- event = { "BufReadPost *.rs" },
 	config = require("lang.rust-tools"),
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
