@@ -6,8 +6,16 @@ lang["nvim-orgmode/orgmode"] = {
 	config = require("lang.orgmode"),
 }
 
-lang["ray-x/go.nvim"] = {
+lang["kevinhwang91/nvim-bqf"] = {
 	lazy = true,
+	ft = "qf",
+	config = require("lang.bqf"),
+	dependencies = {
+		{ "junegunn/fzf", build = ":call fzf#install()" },
+	},
+}
+lang["ray-x/go.nvim"] = {
+    lazy = true,
 	dependencies = { -- optional packages
 		"ray-x/guihua.lua",
 		"neovim/nvim-lspconfig",
