@@ -15,7 +15,7 @@ lang["kevinhwang91/nvim-bqf"] = {
 	},
 }
 lang["ray-x/go.nvim"] = {
-    lazy = true,
+	lazy = true,
 	dependencies = { -- optional packages
 		"ray-x/guihua.lua",
 		"neovim/nvim-lspconfig",
@@ -26,17 +26,12 @@ lang["ray-x/go.nvim"] = {
 	build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
 	config = require("lang.go-nvim"),
 }
-lang["simrat39/rust-tools.nvim"] = {
+lang["mrcjkb/rustaceanvim"] = {
 	lazy = true,
 	ft = { "rust", "rs" },
-	-- event = { "BufReadPost *.rs" },
-	config = require("lang.rust-tools"),
-	dependencies = {
-		{ "nvim-lua/plenary.nvim" },
-		{ "neovim/nvim-lspconfig" },
-		{ "nvim-telescope/telescope.nvim" }, -- optional
-		{ "mattn/webapi-vim" }, -- optional
-	},
+	version = "^3",
+	config = require("lang.rust"),
+	dependencies = { "nvim-lua/plenary.nvim" },
 }
 
 lang["Saecki/crates.nvim"] = {
