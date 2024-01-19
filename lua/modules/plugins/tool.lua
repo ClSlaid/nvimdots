@@ -1,5 +1,10 @@
 local tool = {}
 
+tool["folke/neoconf.nvim"] = {
+	lazy = true,
+	config = require("tool.neoconf"),
+}
+
 tool["tpope/vim-fugitive"] = {
 	lazy = true,
 	cmd = { "Git", "G" },
