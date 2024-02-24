@@ -61,7 +61,7 @@ lang["mrcJkb/haskell-tools.nvim"] = {
 	lazy = true,
 	ft = { "hs", "lhs", "haskell", "lhaskell", "cabal", "stack", "cabalproject" },
 	config = require("lang.haskell-tools"),
-	version = "^2",
+	version = "^3",
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
 		{ "nvim-telescope/telescope.nvim" }, -- optional
