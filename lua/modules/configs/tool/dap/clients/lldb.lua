@@ -32,5 +32,7 @@ return function()
 	}
 
 	dap.configurations.cpp = dap.configurations.c
+	dap.configurations.cpp.sourceLanguages = { "c", "cpp" }
 	dap.configurations.rust = dap.configurations.c
+	dap.configurations.rust.sourceLanguages = { "rust" }
 end
