@@ -18,7 +18,7 @@ local mapping = require("keymap.completion")
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("LspKeymapLoader", { clear = true }),
 	callback = function(event)
-		if _G.debugging then
+		if _G._debugging then
 			return
 		end
 
