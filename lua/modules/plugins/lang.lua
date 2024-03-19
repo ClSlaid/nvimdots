@@ -29,7 +29,7 @@ lang["ray-x/go.nvim"] = {
 lang["mrcjkb/rustaceanvim"] = {
 	lazy = true,
 	ft = { "rust", "rs" },
-	version = "^3",
+	-- version = "^4",
 	config = require("lang.rust"),
 	dependencies = { "nvim-lua/plenary.nvim" },
 }
@@ -70,7 +70,7 @@ lang["mrcJkb/haskell-tools.nvim"] = {
 
 lang["scalameta/nvim-metals"] = {
 	lazy = true,
-	ft = { "scala", "sbt" },
+	ft = { "scala", "sbt", "scala2", "scala3" },
 	config = require("lang.metals"),
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },

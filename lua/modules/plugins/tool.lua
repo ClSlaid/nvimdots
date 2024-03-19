@@ -119,6 +119,7 @@ tool["mfussenegger/nvim-dap"] = {
 			config = require("tool.dap.virtual-text"),
 		},
 		{ "jay-babu/mason-nvim-dap.nvim" },
+		{ "nvim-neotest/nvim-nio" },
 	},
 }
 
