@@ -14,8 +14,8 @@ return function()
 				mode = "auto",
 			},
 			hover = {
-				-- Whether to disable haskell-tools hover and use the builtin lsp's default handler
-				disable = false,
+				-- -- Whether to disable haskell-tools hover and use the builtin lsp's default handler
+				-- disable = false,
 				-- Set to nil to disable
 				border = {
 					{ "╭", "FloatBorder" },
