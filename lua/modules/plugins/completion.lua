@@ -51,7 +51,7 @@ completion["nvimtools/none-ls.nvim"] = {
 }
 completion["hrsh7th/nvim-cmp"] = {
 	lazy = true,
-	event = { "InsertEnter", "CmdlineEnter" },
+	event = "InsertEnter",
 	config = require("completion.cmp"),
 	dependencies = {
 		{
@@ -67,7 +67,6 @@ completion["hrsh7th/nvim-cmp"] = {
 		{ "hrsh7th/cmp-path" },
 		{ "f3fora/cmp-spell" },
 		{ "hrsh7th/cmp-buffer" },
-		{ "hrsh7th/cmp-cmdline" },
 		{ "kdheepak/cmp-latex-symbols" },
 		{ "ray-x/cmp-treesitter" },
 		-- { "tzachar/cmp-tabnine", build = "./install.sh", config = require("completion.tabnine") },
