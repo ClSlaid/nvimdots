@@ -41,7 +41,7 @@ return function(options)
 		single_file_support = true,
 		cmd = {
 			"clangd",
-			"-j=12",
+			"-j=16",
 			"--enable-config",
 			"--background-index",
 			"--pch-storage=memory",
