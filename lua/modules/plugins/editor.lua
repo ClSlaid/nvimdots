@@ -82,7 +82,7 @@ editor["keaising/im-select.nvim"] = {
 editor["lambdalisue/suda.vim"] = {
 	lazy = true,
 	cmd = { "SudaRead", "SudaWrite" },
-	config = require("editor.suda"),
+	init = require("editor.suda"),
 }
 editor["tpope/vim-sleuth"] = {
 	lazy = true,
