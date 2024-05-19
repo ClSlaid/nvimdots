@@ -1,5 +1,16 @@
 local tool = {}
 
+tool["jackMort/ChatGPT.nvim"] = {
+	lazy = true,
+	event = "VeryLazy",
+	config = require("tool.chatgpt"),
+	dependencies = {
+		"MunifTanjim/nui.nvim",
+		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim",
+	},
+}
+
 tool["folke/neoconf.nvim"] = {
 	lazy = true,
 	config = require("tool.neoconf"),
