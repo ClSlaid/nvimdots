@@ -21,7 +21,7 @@ return function()
 			n = 1,
 		},
 		actions_paths = {
-			"./actions.json",
+			vim.fn.stdpath("config") .. "/chatgpt/actions.lua",
 		},
 	})
 end
