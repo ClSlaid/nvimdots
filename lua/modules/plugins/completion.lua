@@ -31,7 +31,7 @@ completion["stevearc/aerial.nvim"] = {
 	event = "LspAttach",
 	config = require("completion.aerial"),
 }
-completion["dnlhc/glance.nvim"] = {
+completion["DNLHC/glance.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
 	config = require("completion.glance"),
@@ -56,8 +56,9 @@ completion["hrsh7th/nvim-cmp"] = {
 	dependencies = {
 		{
 			"L3MON4D3/LuaSnip",
-			dependencies = { "rafamadriz/friendly-snippets" },
+			build = "make install_jsregexp",
 			config = require("completion.luasnip"),
+			dependencies = { "rafamadriz/friendly-snippets" },
 		},
 		{ "lukas-reineke/cmp-under-comparator" },
 		{ "saadparwaiz1/cmp_luasnip" },
