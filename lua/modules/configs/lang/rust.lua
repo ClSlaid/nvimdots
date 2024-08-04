@@ -15,9 +15,6 @@ return function()
 					procMacro = {
 						enable = true,
 					},
-					checkOnSave = {
-						command = "clippy",
-					},
 				},
 			},
 		}, -- DAP configuration
