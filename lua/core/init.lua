@@ -116,7 +116,6 @@ local load_core = function()
 	_v0_10_workarounds()
 
 	require("core.options")
-	require("core.mapping")
 	require("core.event")
 	require("core.pack")
 	require("keymap")
