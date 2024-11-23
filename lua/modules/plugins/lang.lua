@@ -27,7 +27,7 @@ lang["ray-x/go.nvim"] = {
 	build = ":GoInstallBinaries",
 }
 lang["mrcjkb/rustaceanvim"] = {
-	lazy = true,
+	lazy = false,
 	ft = "rust",
 	version = "*",
 	init = require("lang.rust"),
