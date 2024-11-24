@@ -34,6 +34,13 @@ lang["mrcjkb/rustaceanvim"] = {
 	dependencies = { "nvim-lua/plenary.nvim" },
 }
 
+lang["pmizio/typescript-tools.nvim"] = {
+	lazy = true,
+	ft = { "javascript", "typescript", "javascriptreact", "typescriptreact", "js", "ts", "mjs", "jsx", "tsx" },
+	dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+	config = require("lang.typescript-tools"),
+}
+
 lang["Saecki/crates.nvim"] = {
 	lazy = true,
 	-- event = "BufReadPost Cargo.toml",
