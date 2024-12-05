@@ -73,10 +73,10 @@ lang["wlangstroth/vim-racket"] = {
 }
 
 lang["mrcJkb/haskell-tools.nvim"] = {
-	lazy = true,
+	lazy = false,
 	ft = { "hs", "lhs", "haskell", "lhaskell", "cabal", "stack", "cabalproject" },
 	config = require("lang.haskell-tools"),
-	version = "^3",
+	version = "^4",
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
 		{ "nvim-telescope/telescope.nvim" }, -- optional
