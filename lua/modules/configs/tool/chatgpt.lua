@@ -4,7 +4,7 @@ return function()
 		api_host_cmd = "echo https://api.deepseek.com",
 		api_key_cmd = "cat " .. home .. "/.config/chatgpt/key.txt",
 		openai_params = {
-			model = "deepseek-coder",
+			model = "deepseek-chat",
 			frequency_penalty = 0,
 			presence_penalty = 0,
 			max_tokens = 1000,
@@ -13,7 +13,7 @@ return function()
 			n = 1,
 		},
 		openai_edit_params = {
-			model = "deepseek-coder",
+			model = "deepseek-chat",
 			frequency_penalty = 0,
 			presence_penalty = 0,
 			temperature = 1.0,
