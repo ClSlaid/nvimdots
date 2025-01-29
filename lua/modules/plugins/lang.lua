@@ -122,4 +122,14 @@ lang["Julian/lean.nvim"] = {
 	config = require("lang.lean"),
 }
 
+lang["chomosuke/typst-preview.nvim"] = {
+	lazy = true,
+	ft = { "typ", "typst" },
+	dependencies = {
+		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-treesitter/nvim-treesitter" },
+	},
+	config = require("lang.typst-preview"),
+}
+
 return lang
