@@ -5,13 +5,9 @@ return function()
 	local is_windows = require("core.global").is_windows
 
 	dap.adapters.codelldb = {
-		type = "server",
-		port = "${port}",
-		executable = {
-			command = vim.fn.exepath("codelldb"), -- Find codelldb on $PATH
-			args = { "--port", "${port}" },
-			detached = is_windows and false or true,
-		},
+		type = "executable",
+		command = "codelldb", -- Find codelldb on $PATH
+		detached = is_windows and false or true,
 	}
 	dap.configurations.c = {
 		{
