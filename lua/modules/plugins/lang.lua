@@ -132,4 +132,13 @@ lang["chomosuke/typst-preview.nvim"] = {
 	config = require("lang.typst-preview"),
 }
 
+lang["jinzhongjia/zig-lamp"] = {
+	lazy = true,
+	ft = { "zig" },
+	dependencies = {
+		{ "nvim-lua/plenary.nvim" },
+		{ "neovim/nvim-lspconfig" },
+	},
+}
+
 return lang
