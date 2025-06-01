@@ -21,12 +21,24 @@ function M.lsp(buf)
 		-- LSP-related keymaps, ONLY effective in buffers with LSP(s) attached
 		["n|<leader>li"] = map_cr("LspInfo"):with_silent():with_buffer(buf):with_desc("lsp: Info"),
 		["n|<leader>lr"] = map_cr("LspRestart"):with_silent():with_buffer(buf):with_nowait():with_desc("lsp: Restart"),
-		["n|go"] = map_callback(function()
-				require("edgy").toggle("right")
-			end)
+		["n|go"] = map_cr("Trouble symbols toggle win.position=right")
 			:with_silent()
 			:with_buffer(buf)
 			:with_desc("lsp: Toggle outline"),
+		["n|gto"] = map_callback(function()
+				local search_backend = require("core.settings").search_backend
+				if search_backend == "fzf" then
+					local prompt_position = require("telescope.config").values.layout_config.horizontal.prompt_position
+					require("fzf-lua").lsp_document_symbols({
+						fzf_opts = { ["--layout"] = prompt_position == "top" and "reverse" or "default" },
+					})
+				else
+					require("telescope.builtin").lsp_document_symbols()
+				end
+			end)
+			:with_silent()
+			:with_buffer(buf)
+			:with_desc("lsp: Toggle outline in Telescope"),
 		["n|g["] = map_cr("Lspsaga diagnostic_jump_prev")
 			:with_silent()
 			:with_buffer(buf)

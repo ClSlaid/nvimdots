@@ -16,11 +16,6 @@ ui["ayamir/nvchad-ui"] = {
 		"nvchad/volt",
 	},
 }
-ui["folke/edgy.nvim"] = {
-	lazy = true,
-	event = { "BufReadPre", "BufAdd", "BufNewFile" },
-	config = require("ui.edgy"),
-}
 ui["lewis6991/gitsigns.nvim"] = {
 	lazy = true,
 	event = { "CursorHold", "CursorHoldI" },
@@ -65,6 +60,11 @@ ui["dstein64/nvim-scrollview"] = {
 	lazy = true,
 	event = { "BufReadPost", "BufAdd", "BufNewFile" },
 	config = require("ui.scrollview"),
+}
+ui["folke/edgy.nvim"] = {
+	lazy = true,
+	event = { "VeryLazy" },
+	config = require("ui.edgy"),
 }
 
 return ui

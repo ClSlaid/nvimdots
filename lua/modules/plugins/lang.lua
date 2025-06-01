@@ -50,12 +50,8 @@ lang["Saecki/crates.nvim"] = {
 }
 lang["MeanderingProgrammer/render-markdown.nvim"] = {
 	lazy = true,
-	ft = "markdown",
+	ft = { "markdown", "codecompanion" },
 	config = require("lang.render-markdown"),
-	dependencies = {
-		"nvim-tree/nvim-web-devicons",
-		"nvim-treesitter/nvim-treesitter",
-	},
 }
 lang["iamcco/markdown-preview.nvim"] = {
 	lazy = true,
