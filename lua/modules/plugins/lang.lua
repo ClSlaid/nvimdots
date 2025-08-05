@@ -22,16 +22,16 @@ lang["ray-x/go.nvim"] = {
 		"nvim-treesitter/nvim-treesitter",
 	},
 	event = { "CmdlineEnter" },
-	config = require("lang.go-nvim"),
 	ft = { "go", "gomod", "gosum" },
 	build = ":GoInstallBinaries",
+	config = require("lang.go"),
 }
 lang["mrcjkb/rustaceanvim"] = {
 	lazy = false,
 	ft = "rust",
 	version = "*",
 	init = require("lang.rust"),
-	dependencies = { "nvim-lua/plenary.nvim" },
+	dependencies = "nvim-lua/plenary.nvim",
 }
 
 lang["pmizio/typescript-tools.nvim"] = {
@@ -46,7 +46,7 @@ lang["Saecki/crates.nvim"] = {
 	-- event = "BufReadPost Cargo.toml",
 	event = "BufEnter Cargo.toml",
 	config = require("lang.crates"),
-	dependencies = { "nvim-lua/plenary.nvim" },
+	dependencies = "nvim-lua/plenary.nvim",
 }
 lang["MeanderingProgrammer/render-markdown.nvim"] = {
 	lazy = true,

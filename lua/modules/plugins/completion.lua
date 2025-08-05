@@ -1,5 +1,4 @@
 local completion = {}
-local use_copilot = require("core.settings").use_copilot
 
 completion["neovim/nvim-lspconfig"] = {
 	lazy = true,
@@ -20,12 +19,16 @@ completion["nvimdev/lspsaga.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
 	config = require("completion.lspsaga"),
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = "nvim-tree/nvim-web-devicons",
 }
 completion["DNLHC/glance.nvim"] = {
 	lazy = true,
 	event = "LspAttach",
 	config = require("completion.glance"),
+}
+completion["rachartier/tiny-inline-diagnostic.nvim"] = {
+	lazy = false,
+	config = require("completion.tiny-inline-diagnostic"),
 }
 completion["joechrisellis/lsp-format-modifications.nvim"] = {
 	lazy = true,
@@ -40,12 +43,6 @@ completion["nvimtools/none-ls.nvim"] = {
 		"jay-babu/mason-null-ls.nvim",
 	},
 }
-completion["rachartier/tiny-inline-diagnostic.nvim"] = {
-	lazy = true,
-	event = "VeryLazy",
-	priority = 1000, -- needs to be loaded in first
-	config = require("completion.tiny-inline-diagnostic"),
-}
 completion["hrsh7th/nvim-cmp"] = {
 	lazy = true,
 	event = "InsertEnter",
@@ -55,33 +52,30 @@ completion["hrsh7th/nvim-cmp"] = {
 			"L3MON4D3/LuaSnip",
 			build = "make install_jsregexp",
 			config = require("completion.luasnip"),
-			dependencies = { "rafamadriz/friendly-snippets" },
+			dependencies = "rafamadriz/friendly-snippets",
 		},
 		{ "lukas-reineke/cmp-under-comparator" },
 		{ "saadparwaiz1/cmp_luasnip" },
 		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "hrsh7th/cmp-nvim-lua" },
 		{ "andersevenrud/cmp-tmux" },
 		{ "hrsh7th/cmp-path" },
 		{ "f3fora/cmp-spell" },
 		{ "hrsh7th/cmp-buffer" },
 		{ "kdheepak/cmp-latex-symbols" },
-		{ "ray-x/cmp-treesitter", commit = "c8e3a74" },
 	},
 }
-if use_copilot then
-	completion["zbirenbaum/copilot.lua"] = {
-		lazy = true,
-		cmd = "Copilot",
-		event = "InsertEnter",
-		config = require("completion.copilot"),
-		dependencies = {
-			{
-				"zbirenbaum/copilot-cmp",
-				config = require("completion.copilot-cmp"),
-			},
+completion["zbirenbaum/copilot.lua"] = {
+	lazy = true,
+	cond = require("core.settings").use_copilot,
+	cmd = "Copilot",
+	event = "InsertEnter",
+	config = require("completion.copilot"),
+	dependencies = {
+		{
+			"zbirenbaum/copilot-cmp",
+			config = require("completion.copilot-cmp"),
 		},
-	}
-end
+	},
+}
 
 return completion
