@@ -185,8 +185,14 @@ local mappings = {
 			:with_noremap()
 			:with_silent()
 			:with_desc("debug: Set breakpoint with condition"),
-		["n|<leader>dc"] = map_callback(function()
+		["n|<leader>dr"] = map_callback(function()
 				require("dap").run_to_cursor()
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("debug: Run to cursor"),
+		["n|<leader>dc"] = map_callback(function()
+				require("dapui").close()
 			end)
 			:with_noremap()
 			:with_silent()
@@ -227,33 +233,26 @@ local mappings = {
 			:with_desc("tool: Add selection to CodeCompanion Chat"),
 	},
 }
+
 -- set toggle mapping for n/i/t mode
 local modes = { "n", "i", "t" }
 for _, mode in pairs(modes) do
-	mappings.plugins[string.format("%s|<C-\\>", mode)] = map_callback(function()
-			require("nvchad.term").toggle({ pos = "sp", id = "HorizontalTerm" })
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("terminal: Toggle horizontal")
-	mappings.plugins[string.format("%s|<A-\\>", mode)] = map_callback(function()
-			require("nvchad.term").toggle({ pos = "vsp", id = "VerticalTerm" })
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("terminal: Toggle vertical")
-	mappings.plugins[string.format("%s|<F5>", mode)] = map_callback(function()
-			require("nvchad.term").toggle({ pos = "vsp", id = "VerticalTerm" })
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("terminal: Toggle vertical")
-	mappings.plugins[string.format("%s|<A-d>", mode)] = map_callback(function()
-			require("nvchad.term").toggle({ pos = "float", id = "FloatTerm" })
-		end)
-		:with_noremap()
-		:with_silent()
-		:with_desc("terminal: Toggle float")
+	for key, opts in pairs({
+		["<C-\\>"] = { pos = "sp", id = "HorizontalTerm" },
+		["<A-\\>"] = { pos = "vsp", id = "VerticalTerm" },
+		["<F5>"] = { pos = "vsp", id = "VerticalTerm" },
+		["<A-d>"] = { pos = "float", id = "FloatTerm" },
+	}) do
+		mappings.plugins[string.format("%s|%s", mode, key)] = map_callback(function()
+				if vim.fn.executable("direnv") == 1 and vim.loop.fs_stat(vim.uv.cwd() .. "/.envrc") ~= nil then
+					opts = vim.tbl_extend("force", opts, { cmd = "direnv allow" })
+				end
+				require("nvchad.term").toggle(opts)
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("terminal: Toggle " .. opts.pos)
+	end
 end
 
 bind.nvim_load_mapping(mappings.plugins)

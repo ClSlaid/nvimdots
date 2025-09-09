@@ -7,7 +7,8 @@ return function()
 	local builtins = require("telescope.builtin")
 	local prompt_pos = require("telescope.config").values.layout_config.horizontal.prompt_position
 
-	local base_opts = use_fzf and { fzf_opts = { ["--layout"] = (prompt_pos == "top" and "reverse" or "default") } }
+	local base_opts = use_fzf
+			and { fzf_opts = { ["--layout"] = (prompt_pos == "top" and "reverse" or "default") }, profile = "telescope" }
 		or {}
 
 	---Returns current directory and whether it's a Git repo root
@@ -57,7 +58,7 @@ return function()
 					opts = { additional_args = { "--no-ignore" } }
 				end
 			end
-			return use_fzf and fzf[fzf_fn](opts) or tb_fn(opts)
+			return (use_fzf and fzf[fzf_fn] or tb_fn)(opts)
 		end
 	end
 
