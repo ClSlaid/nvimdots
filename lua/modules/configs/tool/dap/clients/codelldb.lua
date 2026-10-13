@@ -5,13 +5,9 @@ return function()
 	local is_windows = require("core.global").is_windows
 
 	dap.adapters.codelldb = {
-		type = "server",
-		port = "${port}",
-		executable = {
-			command = vim.fn.exepath("codelldb"), -- Find codelldb on $PATH
-			args = { "--port", "${port}" },
-			detached = is_windows and false or true,
-		},
+		type = "executable",
+		command = vim.fn.exepath("codelldb"), -- Mason adds its bin directory to PATH.
+		detached = not is_windows,
 	}
 	dap.configurations.c = {
 		{

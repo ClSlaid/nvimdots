@@ -54,12 +54,11 @@ return function()
 		bottom = {
 			{ ft = "qf", size = { height = 0.3 } },
 			{
-				ft = "toggleterm",
+				ft = "NvTerm_sp",
 				size = { height = 0.3 },
 				filter = function(_, win)
 					local cfg = vim.api.nvim_win_get_config(win)
-					local term = require("toggleterm.terminal").get(1)
-					return cfg.relative == "" and term and term.direction == "horizontal"
+					return cfg.relative == ""
 				end,
 			},
 			{
@@ -70,7 +69,7 @@ return function()
 				end,
 			},
 		},
-		right = {
+		right = require("core.settings").use_chat and {
 			{
 				ft = "codecompanion",
 				pinned = true,
@@ -78,6 +77,6 @@ return function()
 				size = { width = 0.25 },
 				open = "CodeCompanionChat Toggle",
 			},
-		},
+		} or {},
 	})
 end

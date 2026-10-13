@@ -1,5 +1,8 @@
 return function()
 	require("modules.utils").load_plugin("grug-far", {
+		windowCreationCommand = "bot split",
+		disableBufferLineNumbers = false,
+		icons = { enabled = true },
 		engine = "ripgrep",
 		engines = {
 			ripgrep = {

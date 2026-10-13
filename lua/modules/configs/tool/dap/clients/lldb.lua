@@ -3,9 +3,13 @@ return function()
 	local dap = require("dap")
 	local utils = require("modules.utils.dap")
 
+	local command = vim.fn.exepath("lldb-dap")
+	if command == "" then
+		command = vim.fn.exepath("lldb-vscode")
+	end
 	dap.adapters.lldb = {
 		type = "executable",
-		command = vim.fn.exepath("lldb-vscode"), -- Find lldb-vscode on $PATH
+		command = command,
 	}
 	dap.configurations.c = {
 		{
@@ -31,6 +35,6 @@ return function()
 		},
 	}
 
-	dap.configurations.cpp = dap.configurations.c
-	dap.configurations.rust = dap.configurations.c
+	dap.configurations.cpp = vim.deepcopy(dap.configurations.c)
+	dap.configurations.rust = vim.deepcopy(dap.configurations.c)
 end

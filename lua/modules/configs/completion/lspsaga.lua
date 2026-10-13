@@ -1,6 +1,4 @@
 return function()
-	require("modules.utils").gen_lspkind_hl()
-
 	local icons = {
 		cmp = require("modules.utils.icons").get("cmp", true),
 		diagnostics = require("modules.utils.icons").get("diagnostics", true),
@@ -87,7 +85,6 @@ return function()
 			max_width = 0.45,
 			max_height = 0.7,
 			open_link = "gl",
-			open_cmd = "silent !" .. require("core.settings").external_browser,
 		},
 		-- Impl: https://nvimdev.github.io/lspsaga/implement/
 		implement = {
@@ -180,4 +177,29 @@ return function()
 		},
 		request_timeout = 3000,
 	})
+
+	-- The pinned hover implementation shells out with an unquoted URL and has
+	-- inconsistent open_cmd/open_browser options. Use Neovim's platform opener.
+	require("lspsaga.hover").open_link = function(self)
+		if not self.bufnr or not vim.api.nvim_buf_is_valid(self.bufnr) then
+			return
+		end
+		local node = vim.treesitter.get_node({ bufnr = self.bufnr })
+		if not node or node:type() ~= "inline" then
+			return
+		end
+		local link = vim.treesitter.get_node_text(node, self.bufnr):match("%]%((.-)%)")
+		if not link then
+			return
+		end
+		if link:match("^file://") then
+			vim.cmd.edit(vim.fn.fnameescape(vim.uri_to_fname(link)))
+		else
+			local browser = require("core.settings").external_browser
+			local _, err = vim.ui.open(link, browser ~= "" and { cmd = { browser } } or nil)
+			if err then
+				vim.notify(err, vim.log.levels.WARN)
+			end
+		end
+	end
 end

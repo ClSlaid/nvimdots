@@ -59,9 +59,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- Start treesitter for installed parsers
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = require("core.settings").treesitter_deps,
 	callback = function(args)
-		vim.treesitter.start(args.buf)
+		-- Filetypes and parser names differ (e.g. sh/bash, tex/latex).
+		-- A parser may not be installed yet on a fresh machine.
+		local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+		if lang then
+			local ok, loaded = pcall(vim.treesitter.language.add, lang)
+			if ok and loaded then
+				vim.treesitter.start(args.buf, lang)
+			end
+		end
 	end,
 })
 
@@ -149,14 +156,14 @@ function autocmd.load_autocmds()
 			{
 				"FileType",
 				"c,cpp",
-				"nnoremap <silent> <buffer> <leader>h <Cmd>ClangdSwitchSourceHeader<CR>",
+				"nnoremap <silent> <buffer> <leader>h <Cmd>LspClangdSwitchSourceHeader<CR>",
 			},
 		},
 		yank = {
 			{
 				"TextYankPost",
 				"*",
-				[[silent! lua vim.highlight.on_yank({ higroup = 'IncSearch', timeout = 300 })]],
+				[[silent! lua vim.hl.on_yank({ higroup = 'IncSearch', timeout = 300 })]],
 			},
 		},
 	}

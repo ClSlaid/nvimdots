@@ -19,7 +19,7 @@ local function switch_source_header_splitcmd(bufnr, splitcmd, client)
 			vim.notify("corresponding file cannot be determined")
 			return
 		end
-		vim.api.nvim_command(splitcmd .. " " .. vim.uri_to_fname(result))
+		vim.api.nvim_command(splitcmd .. " " .. vim.fn.fnameescape(vim.uri_to_fname(result)))
 	end, bufnr)
 end
 
@@ -33,7 +33,7 @@ local function symbol_info(bufnr, client)
 	local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
 	---@diagnostic disable-next-line:param-type-mismatch
 	client:request(method_name, params, function(err, res)
-		if err or #res == 0 then
+		if err or not res or #res == 0 then
 			-- Clangd always returns an error, there is no reason to parse it
 			return
 		end
@@ -67,7 +67,7 @@ return function(defaults)
 		single_file_support = true,
 		cmd = {
 			"clangd",
-			"-j=9",
+			"-j=" .. math.min(16, #(vim.uv.cpu_info() or { 1 })),
 			"--enable-config",
 			-- You MUST set this arg ↓ to your c/cpp compiler location (if not included)!
 			"--query-driver=" .. get_binary_path_list({ "clang++", "clang", "gcc", "g++" }),
@@ -76,7 +76,7 @@ return function(defaults)
 			"--clang-tidy",
 			"--completion-parse=auto",
 			"--completion-style=bundled",
-			"--function-arg-placeholders",
+			"--function-arg-placeholders=true",
 			"--header-insertion-decorators",
 			"--header-insertion=iwyu",
 			"--limit-references=1000",

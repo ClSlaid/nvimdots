@@ -43,7 +43,7 @@ local function load_options()
 		mousescroll = "ver:3,hor:6",
 		previewheight = 12,
 		-- Do NOT adjust the following option (pumblend) if you're using transparent background
-		pumblend = 0,
+		pumblend = require("core.settings").transparent_background and 0 or 30,
 		pumheight = 15,
 		redrawtime = 1500,
 		ruler = true,
@@ -79,10 +79,10 @@ local function load_options()
 		virtualedit = "block",
 		visualbell = true,
 		whichwrap = "h,l,<,>,[,],~",
-		wildignore = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store,**/node_modules/**,**/bower_modules/**",
+		wildignore = ".git,.hg,.svn,*.pyc,*.o,*.out,*.jpg,*.jpeg,*.png,*.gif,*.zip,*.DS_Store,**/node_modules/**,**/bower_modules/**",
 		wildignorecase = true,
 		-- Do NOT adjust the following option (winblend) if you're using transparent background
-		winblend = 0,
+		winblend = require("core.settings").transparent_background and 0 or 20,
 		winminwidth = 10,
 		winwidth = 30,
 		wrapscan = true,

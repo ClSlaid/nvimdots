@@ -62,7 +62,11 @@ completion["saghen/blink.cmp"] = {
 		{ "saghen/blink.compat", version = "2.*", opts = {} },
 		{
 			"L3MON4D3/LuaSnip",
-			build = "make install_jsregexp",
+			-- Optional regex support: plain snippets work without make/MSYS2.
+			build = not require("core.global").is_windows
+					and vim.fn.executable("make") == 1
+					and "make install_jsregexp"
+				or nil,
 			config = require("completion.luasnip"),
 			dependencies = "rafamadriz/friendly-snippets",
 		},

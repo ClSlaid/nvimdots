@@ -1,4 +1,4 @@
-local fn, api = vim.fn, vim.api
+local fn = vim.fn
 local global = require("core.global")
 local is_mac = global.is_mac
 local vim_path = global.vim_path
@@ -35,14 +35,17 @@ function Lazy:load_plugins()
 
 	local get_plugins_list = function()
 		local list = {}
-		local plugins_list = vim.split(fn.glob(modules_dir .. "/plugins/*.lua"), "\n")
-		local user_plugins_list = vim.split(fn.glob(user_config_dir .. "/plugins/*.lua"), "\n", { trimempty = true })
-		vim.list_extend(plugins_list, user_plugins_list)
-		for _, f in ipairs(plugins_list) do
-			-- aggregate the plugins from `plugins/*.lua` and `user/plugins/*.lua` into
-			-- a plugin list by field, for later use with `require`.
-			-- current fields include: completion, editor, lang, tool, ui
-			list[#list + 1] = f:find(modules_dir) and f:sub(#modules_dir - 6, -1) or f:sub(#user_config_dir - 3, -1)
+		-- Use list results and ignore 'wildignore' (e.g. configurations under /tmp).
+		-- Construct module names rather than slicing OS-dependent absolute paths.
+		for _, spec in ipairs({
+			{ modules_dir, "modules.plugins." },
+			{ user_config_dir, "user.plugins." },
+		}) do
+			local files = fn.glob(spec[1] .. "/plugins/*.lua", true, true)
+			table.sort(files)
+			for _, file in ipairs(files) do
+				list[#list + 1] = spec[2] .. fn.fnamemodify(file, ":t:r")
+			end
 		end
 		return list
 	end
@@ -51,7 +54,7 @@ function Lazy:load_plugins()
 
 	for _, m in ipairs(get_plugins_list()) do
 		-- require modules returned from the `get_plugins_list()` function.
-		local modules = require(m:sub(0, #m - 4))
+		local modules = require(m)
 		if type(modules) == "table" then
 			for name, conf in pairs(modules) do
 				self.modules[#self.modules + 1] = vim.tbl_extend("force", { name }, conf)
@@ -65,8 +68,12 @@ end
 
 function Lazy:load_lazy()
 	if not vim.uv.fs_stat(lazy_path) then
-		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git " or "https://github.com/folke/lazy.nvim.git "
-		api.nvim_command("!git clone --filter=blob:none --branch=stable " .. lazy_repo .. lazy_path)
+		local lazy_repo = use_ssh and "git@github.com:folke/lazy.nvim.git" or "https://github.com/folke/lazy.nvim.git"
+		local result = vim.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazy_repo, lazy_path })
+			:wait()
+		if result.code ~= 0 then
+			error("Failed to install lazy.nvim: " .. (result.stderr or result.stdout or "git clone failed"))
+		end
 	end
 	self:load_plugins()
 
@@ -81,7 +88,7 @@ function Lazy:load_lazy()
 		install = {
 			-- install missing plugins on startup. This doesn't increase startup time.
 			missing = true,
-			colorscheme = { settings.colorscheme },
+			colorscheme = { "default" }, -- Base46 compiles the NvChad theme during UI setup.
 		},
 		ui = {
 			-- a number <1 is a percentage., >1 is a fixed size

@@ -10,15 +10,8 @@ local createdir = function()
 		global.cache_dir .. "/tags",
 		global.cache_dir .. "/undo",
 	}
-	-- Only check whether cache_dir exists, this would be enough.
-	if vim.fn.isdirectory(global.cache_dir) == 0 then
-		---@diagnostic disable-next-line: param-type-mismatch
-		vim.fn.mkdir(global.cache_dir, "p")
-		for _, dir in pairs(data_dirs) do
-			if vim.fn.isdirectory(dir) == 0 then
-				vim.fn.mkdir(dir, "p")
-			end
-		end
+	for _, dir in ipairs(data_dirs) do
+		vim.fn.mkdir(dir, "p")
 	end
 end
 
@@ -55,7 +48,7 @@ local clipboard_config = function()
 			paste = { ["+"] = "pbpaste", ["*"] = "pbpaste" },
 			cache_enabled = 0,
 		}
-	elseif global.is_wsl then
+	elseif global.is_wsl and vim.fn.executable("win32yank.exe") == 1 then
 		vim.g.clipboard = {
 			name = "win32yank-wsl",
 			copy = {
@@ -79,7 +72,7 @@ local shell_config = function()
 Failed to setup terminal config
 
 PowerShell is either not installed, missing from PATH, or not executable;
-cmd.exe will be used instead for `:!` (shell bang) and toggleterm.nvim.
+The existing shell will be used instead for `:!` and terminal buffers.
 
 You're recommended to install PowerShell for better experience.]],
 				vim.log.levels.WARN,
@@ -88,12 +81,12 @@ You're recommended to install PowerShell for better experience.]],
 			return
 		end
 
-		local basecmd = "-NoLogo -MTA -ExecutionPolicy RemoteSigned"
+		local basecmd = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned"
 		local ctrlcmd = "-Command [console]::InputEncoding = [console]::OutputEncoding = [System.Text.Encoding]::UTF8"
 		local set_opts = vim.api.nvim_set_option_value
 		set_opts("shell", vim.fn.executable("pwsh") == 1 and "pwsh" or "powershell", {})
 		set_opts("shellcmdflag", string.format("%s %s;", basecmd, ctrlcmd), {})
-		set_opts("shellredir", "-RedirectStandardOutput %s -NoNewWindow -Wait", {})
+		set_opts("shellredir", "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode", {})
 		set_opts("shellpipe", "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode", {})
 		set_opts("shellquote", "", {})
 		set_opts("shellxquote", "", {})
@@ -109,13 +102,19 @@ local load_core = function()
 	clipboard_config()
 	shell_config()
 
+	-- Base46 reads this during plugin initialization and its build hook.
+	vim.g.base46_cache = vim.fn.stdpath("data") .. "/base46_cache/"
+	vim.api.nvim_set_option_value("background", settings.background, {})
+
+	-- Finish initializing the built-in LSP before plugin installers can yield
+	-- and dispatch callbacks that try to require it recursively.
+	require("vim.lsp")
 	require("core.options")
 	require("core.event")
 	require("core.pack")
 	require("keymap")
 
-	vim.api.nvim_set_option_value("background", settings.background, {})
-	vim.cmd.colorscheme(settings.colorscheme)
+	vim.cmd.colorscheme("nvchad")
 end
 
 load_core()

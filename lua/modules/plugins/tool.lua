@@ -1,17 +1,23 @@
 local tool = {}
 local settings = require("core.settings")
 
+tool["jackMort/ChatGPT.nvim"] = {
+	lazy = true,
+	commit = "5c54a7e9de67e2f8f8c3ed60f872f4a34a3e65ff",
+	cond = settings.use_chat,
+	cmd = { "ChatGPT", "ChatGPTActAs", "ChatGPTRun", "ChatGPTEditWithInstructions" },
+	config = require("tool.chatgpt"),
+	dependencies = {
+		"MunifTanjim/nui.nvim",
+		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim",
+	},
+}
+
 tool["tpope/vim-fugitive"] = {
 	lazy = true,
 	cmd = { "Git", "G" },
 }
--- This is specifically for fcitx5 users who code in languages other than English
--- tool["pysan3/fcitx5.nvim"] = {
--- 	lazy = true,
--- 	event = "BufReadPost",
--- 	cond = vim.fn.executable("fcitx5-remote") == 1,
--- 	config = require("tool.fcitx5"),
--- }
 tool["Bekaboo/dropbar.nvim"] = {
 	lazy = false,
 	config = require("tool.dropbar"),
@@ -38,23 +44,12 @@ tool["ibhagwan/smartyank.nvim"] = {
 }
 tool["michaelb/sniprun"] = {
 	lazy = true,
+	cond = not require("core.global").is_windows and vim.fn.executable("bash") == 1,
 	-- If you see an error about a missing SnipRun executable,
 	-- run `bash ./install.sh` inside `~/.local/share/nvim/site/lazy/sniprun/`.
 	build = "bash ./install.sh",
 	cmd = { "SnipRun", "SnipReset", "SnipInfo" },
 	config = require("tool.sniprun"),
-}
-tool["akinsho/toggleterm.nvim"] = {
-	lazy = true,
-	cmd = {
-		"ToggleTerm",
-		"ToggleTermSetName",
-		"ToggleTermToggleAll",
-		"ToggleTermSendVisualLines",
-		"ToggleTermSendCurrentLine",
-		"ToggleTermSendVisualSelection",
-	},
-	config = require("tool.toggleterm"),
 }
 tool["folke/trouble.nvim"] = {
 	lazy = true,
@@ -107,7 +102,10 @@ tool["nvim-telescope/telescope.nvim"] = {
 		{ "debugloop/telescope-undo.nvim" },
 		{ "nvim-telescope/telescope-frecency.nvim" },
 		{ "nvim-telescope/telescope-live-grep-args.nvim" },
-		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+		{
+			"nvim-telescope/telescope-fzf-native.nvim",
+			build = require("modules.utils.build").telescope_fzf,
+		},
 		{
 			"ayamir/search.nvim",
 			config = require("tool.search"),
@@ -148,6 +146,7 @@ tool["mfussenegger/nvim-dap"] = {
 	config = require("tool.dap"),
 	dependencies = {
 		{ "jay-babu/mason-nvim-dap.nvim" },
+		{ "theHamsta/nvim-dap-virtual-text", config = require("tool.dap.virtual-text") },
 		{
 			"rcarriga/nvim-dap-ui",
 			dependencies = "nvim-neotest/nvim-nio",

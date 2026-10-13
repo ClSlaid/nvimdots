@@ -3,5 +3,13 @@ return vim.schedule_wrap(function()
 
 	require("modules.utils").load_plugin("nvim-treesitter", {})
 
-	require("nvim-treesitter").install(require("core.settings").treesitter_deps)
+	local languages = require("core.settings").treesitter_deps
+	if #languages > 0 and vim.fn.executable("tree-sitter") == 0 then
+		vim.notify(
+			"Install tree-sitter-cli (>= 0.26.1), then restart Neovim to install the configured parsers.",
+			vim.log.levels.WARN
+		)
+		return
+	end
+	require("nvim-treesitter").install(languages)
 end)

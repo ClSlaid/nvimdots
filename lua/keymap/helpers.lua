@@ -31,17 +31,22 @@ M.telescope_collections = function(opts)
 				actions.select_default:replace(function()
 					actions.close(bufnr)
 					local selection = state.get_selected_entry()
-					require("search").open({ collection = selection[1] })
+					if selection then
+						require("search").open({ collection = selection[1] })
+					end
 				end)
 				return true
 			end,
 		})
 		:find()
 end
+vim.api.nvim_create_user_command("TelescopeCollections", function()
+	M.telescope_collections()
+end, { nargs = 0 })
 
 M.toggle_inlayhint = function()
 	local is_enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
-	vim.lsp.inlay_hint.enable(not is_enabled)
+	vim.lsp.inlay_hint.enable(not is_enabled, { bufnr = 0 })
 	vim.notify(
 		(is_enabled and "Inlay hint disabled successfully" or "Inlay hint enabled successfully"),
 		vim.log.levels.INFO,
@@ -59,20 +64,22 @@ M.toggle_virtuallines = function()
 	)
 end
 
-local _lazygit = nil
 M.toggle_lazygit = function()
 	if vim.fn.executable("lazygit") == 1 then
-		if not _lazygit then
-			_lazygit = require("toggleterm.terminal").Terminal:new({
-				cmd = "lazygit",
-				direction = "float",
-				close_on_exit = true,
-				hidden = true,
-			})
+		local term = require("nvchad.term")
+		local opts = { pos = "float", id = "Lazygit" }
+		for _, existing in pairs(vim.g.nvchad_terms or {}) do
+			if existing.id == opts.id and vim.api.nvim_buf_is_valid(existing.buf) then
+				term.toggle(opts)
+				return
+			end
 		end
-		_lazygit:toggle()
+		-- Run the executable directly: NvChad's `cmd` option assumes a POSIX-like shell.
+		opts.buf = vim.api.nvim_create_buf(false, true)
+		term.display(opts)
+		vim.fn.jobstart({ "lazygit" }, { term = true, detach = false })
 	else
-		vim.notify("Command [lazygit] not found!", vim.log.levels.ERROR, { title = "toggleterm.nvim" })
+		vim.notify("Command [lazygit] not found!", vim.log.levels.ERROR, { title = "Terminal" })
 	end
 end
 

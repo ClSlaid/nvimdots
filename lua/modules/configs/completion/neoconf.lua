@@ -1,6 +1,18 @@
 local M = {}
 
 M.setup = function()
+	-- The pinned neoconf uses buffer scope for the window-local 'spell' option.
+	-- Keep its notifications visible, but fix the callback for Neovim 0.12.
+	require("neoconf.util").notify = function(message, level)
+		vim.notify(message, level, {
+			title = "neoconf.nvim",
+			on_open = function(win)
+				vim.wo[win].conceallevel = 3
+				vim.wo[win].spell = false
+				vim.bo[vim.api.nvim_win_get_buf(win)].filetype = "markdown"
+			end,
+		})
+	end
 	require("modules.utils").load_plugin("neoconf", {
 		-- send new configuration to lsp clients when changing json settings
 		live_reload = true,

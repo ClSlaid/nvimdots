@@ -1,5 +1,4 @@
 local editor = {}
-
 editor["olimorris/persisted.nvim"] = {
 	lazy = true,
 	cmd = {
@@ -74,6 +73,23 @@ editor["brenoprata10/nvim-highlight-colors"] = {
 editor["romainl/vim-cool"] = {
 	lazy = true,
 	event = { "CursorMoved", "InsertEnter" },
+}
+editor["keaising/im-select.nvim"] = {
+	lazy = true,
+	cond = function()
+		local platform = require("core.global")
+		local commands = (platform.is_windows or platform.is_wsl) and { "im-select.exe" }
+			or platform.is_mac and { "macism", "im-select" }
+			or { "fcitx5-remote", "fcitx-remote", "ibus" }
+		for _, command in ipairs(commands) do
+			if vim.fn.executable(command) == 1 then
+				return true
+			end
+		end
+		return false
+	end,
+	event = { "InsertEnter", "InsertLeave" },
+	config = require("editor.im-select"),
 }
 editor["lambdalisue/suda.vim"] = {
 	lazy = true,

@@ -24,8 +24,20 @@ M.setup = function()
 	---A handler to setup all servers defined under `completion/servers/*.lua`
 	---@param lsp_name string
 	local function mason_lsp_handler(lsp_name)
+		-- Upstream replaced Zuban with Pyrefly; an old Mason installation must
+		-- not silently start both type checkers unless explicitly requested.
+		if
+			lsp_name == "zuban"
+			and vim.tbl_contains(lsp_deps, "pyrefly")
+			and not vim.tbl_contains(lsp_deps, "zuban")
+		then
+			return
+		end
 		-- rust_analyzer is configured using mrcjkb/rustaceanvim
 		-- warn users if they have set it up manually
+		if vim.tbl_contains({ "hls", "ts_ls", "metals", "leanls" }, lsp_name) then
+			return -- Owned by the dedicated language plugins, not Mason's generic setup.
+		end
 		if lsp_name == "rust_analyzer" then
 			local config_exist = pcall(require, "completion.servers." .. lsp_name)
 			if config_exist then
@@ -112,6 +124,8 @@ please REMOVE your LSP configuration (rust_analyzer.lua) from the `servers` dire
 	for _, pkg in ipairs(mason_registry.get_installed_package_names()) do
 		setup_lsp_for_package(pkg)
 	end
+	-- Servers installed during this session should work without restarting Neovim.
+	mason_registry:on("package:install:success", vim.schedule_wrap(setup_lsp_for_package))
 end
 
 return M

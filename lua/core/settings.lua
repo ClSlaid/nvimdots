@@ -2,7 +2,7 @@ local settings = {}
 
 -- Set to false if you want to use HTTPS to update plugins and Treesitter parsers.
 ---@type boolean
-settings["use_ssh"] = true
+settings["use_ssh"] = false
 
 -- Set to false if you don't use Copilot.
 ---@type boolean
@@ -85,7 +85,7 @@ settings["codecompanion_adapter"] = "openrouter"
 -- Valid values: `copilot`, `oai-compatible`.
 -- The hyphenated key `edit-prediction-source` is also accepted in user settings.
 ---@type "copilot"|"oai-compatible"
-settings["edit_prediction_source"] = "oai-compatible"
+settings["edit_prediction_source"] = "copilot"
 
 -- Default adapter for OpenAI-compatible edit prediction. Must be a key in `ai_adapters`.
 -- The hyphenated key `pred-adapter` is also accepted in user settings.
@@ -111,7 +111,7 @@ settings["pred_model"] = "deepseek-v4-flash"
 settings["pred_optional_params"] = {
 	top_p = 0.9,
 	max_tokens = 128,
-	{ thinking = { type = "disabled" } },
+	thinking = { type = "disabled" },
 }
 
 -- Set to false if you don't want to format on save.
@@ -201,10 +201,9 @@ settings["transparent_background"] = false
 ---@type "dark"|"light"
 settings["background"] = "dark"
 
--- Set the command for opening external URLs.
--- This is ignored on Windows and macOS, which use built-in handlers.
+-- Optional command for opening URLs. Empty uses the platform's default browser.
 ---@type string
-settings["external_browser"] = "chrome-cli open"
+settings["external_browser"] = ""
 
 -- Set the search backend here.
 -- `telescope` is fine for most use cases.
@@ -283,7 +282,8 @@ settings["treesitter_deps"] = {
 -- NOTE: Only the following GUI options are supported; others will be ignored.
 ---@type { font_name: string, font_size: number }
 settings["gui_config"] = {
-	font_name = "JetBrainsMono Nerd Font",
+	-- font_name = "JetBrainsMono Nerd Font",
+	font_name = "Sarasa Mono SC,Iosevka Nerd Font",
 	font_size = 12,
 }
 
@@ -312,30 +312,29 @@ settings["neovide_config"] = {
 -- More info: https://github.com/ayamir/nvimdots/wiki/Issues#change-dashboard-startup-image
 ---@type string[]
 settings["dashboard_image"] = {
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣠⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣡⣾⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣟⠻⣿⣿⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⡿⢫⣷⣿⣿⣿⣿⣿⣿⣿⣾⣯⣿⡿⢧⡚⢷⣌⣽⣿⣿⣿⣿⣿⣶⡌⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⠇⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⣇⣘⠿⢹⣿⣿⣿⣿⣿⣻⢿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⠀⢸⣿⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⡟⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣻⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⡇⠀⣬⠏⣿⡇⢻⣿⣿⣿⣿⣿⣿⣿⣷⣼⣿⣿⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⢻⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⠀⠈⠁⠀⣿⡇⠘⡟⣿⣿⣿⣿⣿⣿⣿⣿⡏⠿⣿⣟⣿⣿⣿⣿⣿⣿⣿⣿⣇⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⡏⠀⠀⠐⠀⢻⣇⠀⠀⠹⣿⣿⣿⣿⣿⣿⣩⡶⠼⠟⠻⠞⣿⡈⠻⣟⢻⣿⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⢿⠀⡆⠀⠘⢿⢻⡿⣿⣧⣷⢣⣶⡃⢀⣾⡆⡋⣧⠙⢿⣿⣿⣟⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⡥⠂⡐⠀⠁⠑⣾⣿⣿⣾⣿⣿⣿⡿⣷⣷⣿⣧⣾⣿⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⡿⣿⣍⡴⠆⠀⠀⠀⠀⠀⠀⠀⠀⣼⣄⣀⣷⡄⣙⢿⣿⣿⣿⣿⣯⣶⣿⣿⢟⣾⣿⣿⢡⣿⣿⣿⣿⣿]],
-	[[⣿⡏⣾⣿⣿⣿⣷⣦⠀⠀⠀⢀⡀⠀⠀⠠⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⣡⣾⣿⣿⢏⣾⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⣿⣿⣿⣿⣿⡴⠀⠀⠀⠀⠀⠠⠀⠰⣿⣿⣿⣷⣿⠿⠿⣿⣿⣭⡶⣫⠔⢻⢿⢇⣾⣿⣿⣿⣿⣿⣿]],
-	[[⣿⣿⣿⡿⢫⣽⠟⣋⠀⠀⠀⠀⣶⣦⠀⠀⠀⠈⠻⣿⣿⣿⣾⣿⣿⣿⣿⡿⣣⣿⣿⢸⣾⣿⣿⣿⣿⣿⣿⣿]],
-	[[⡿⠛⣹⣶⣶⣶⣾⣿⣷⣦⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀⠉⠛⠻⢿⣿⡿⠫⠾⠿⠋⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
-	[[⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣀⡆⣠⢀⣴⣏⡀⠀⠀⠀⠉⠀⠀⢀⣠⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
-	[[⠿⠛⠛⠛⠛⠛⠛⠻⢿⣿⣿⣿⣿⣯⣟⠷⢷⣿⡿⠋⠀⠀⠀⠀⣵⡀⢠⡿⠋⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
-	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⢿⣿⣿⠂⠀⠀⠀⠀⠀⢀⣽⣿⣿⣿⣿⣿⣿⣿⣍⠛⠿⣿⣿⣿⣿⣿⣿]],
+
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠻⠿⠿⣿⡿⠟⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠟⢋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⣀⡴⣿⣶⣣⡤⠀⠀⠀⠠⡄⠀⠀⢀⠀⠀⠀⠹⣿⠟⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠁⠀⠋⠉⠛⠀⠁⠀⠀⠀⡇⠀⠃⠈⢷⣦⣄⣳⣿⠇⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠀⠀⠀⠀⠀⠀⠀⠁⠙⠛⠙⠀⠀⢶⣬⣝⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⢀⡴⢀⠚⢿⠀⡄⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⢠⣴⣏⣾⡟⢋⣶⣆⣿⣄⠀⢙⣀⣁⠀⠀⠀⠀⠀⠀⣦⢸⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⡄⠀⢸⣿⣿⣿⣷⣾⣿⣿⣿⣿⣷⣜⡉⣸⣷⣷⡀⠀⠀⢠⣿⣾⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣼⣞⣰⠀⠀⠀⠨⡝⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⠏⣀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⢿⠇⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣄⠬⠉⣹⣿⣿⣿⣿⣿⡾⢓⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⣿⣿⡿⠛⠁⠀⠁⠎⠀⠀⠀⠀⠀⠀⠀⣜⢿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠉⠀⣸⢧⡄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠙⠿⣿⡿⠟⠛⠁⠀⠀⠀⠀⠀⠁⠸⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⣿⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠒⠒⠠⠤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠲⠤⠖⠒⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠤⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+	[[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⣿⣿⣿⣿⣿⣿⣿⣿]],
 }
 
 -- Set it to false if you don't use AI chat functionality.
 ---@type boolean
-settings["use_chat"] = true
+settings["use_chat"] = false
 
 -- Set the language to use for AI chat response here.
 --- @type string

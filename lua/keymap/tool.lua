@@ -29,50 +29,8 @@ local mappings = {
 		["v|<leader>r"] = map_cr("SnipRun"):with_noremap():with_silent():with_desc("tool: Run code by range"),
 		["n|<leader>r"] = map_cu([[%SnipRun]]):with_noremap():with_silent():with_desc("tool: Run code by file"),
 
-		-- Plugin: toggleterm
+		-- Plugin: nvchad terminal
 		["t|<Esc><Esc>"] = map_cmd([[<C-\><C-n>]]):with_noremap():with_silent(), -- switch to normal mode in terminal.
-		["n|<C-\\>"] = map_cr("ToggleTerm direction=horizontal")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle horizontal"),
-		["i|<C-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=horizontal<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle horizontal"),
-		["t|<C-\\>"] = map_cmd("<Cmd>ToggleTerm<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle horizontal"),
-		["n|<A-\\>"] = map_cr("ToggleTerm direction=vertical")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["i|<A-\\>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["t|<A-\\>"] = map_cmd("<Cmd>ToggleTerm<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["n|<F5>"] = map_cr("ToggleTerm direction=vertical")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["i|<F5>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=vertical<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle vertical"),
-		["t|<F5>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle vertical"),
-		["n|<A-d>"] = map_cr("ToggleTerm direction=float")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle float"),
-		["i|<A-d>"] = map_cmd("<Esc><Cmd>ToggleTerm direction=float<CR>")
-			:with_noremap()
-			:with_silent()
-			:with_desc("terminal: Toggle float"),
-		["t|<A-d>"] = map_cmd("<Cmd>ToggleTerm<CR>"):with_noremap():with_silent():with_desc("terminal: Toggle float"),
 		["n|<leader>gg"] = map_callback(function()
 				helpers.toggle_lazygit()
 			end)
@@ -162,6 +120,12 @@ local mappings = {
 			:with_noremap()
 			:with_silent()
 			:with_desc("tool: Miscellaneous"),
+		["n|<leader>ft"] = map_callback(function()
+				require("nvchad.themes").open()
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("tool: Miscellaneous"),
 		["n|<leader>fr"] = map_cr("Telescope resume")
 			:with_noremap()
 			:with_silent()
@@ -218,12 +182,18 @@ local mappings = {
 			:with_noremap()
 			:with_silent()
 			:with_desc("debug: Set breakpoint with condition"),
-		["n|<leader>dc"] = map_callback(function()
+		["n|<leader>dr"] = map_callback(function()
 				require("dap").run_to_cursor()
 			end)
 			:with_noremap()
 			:with_silent()
 			:with_desc("debug: Run to cursor"),
+		["n|<leader>dc"] = map_callback(function()
+				require("dapui").close()
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("debug: Close debug UI"),
 		["n|<leader>dl"] = map_callback(function()
 				require("dap").run_last()
 			end)
@@ -266,5 +236,24 @@ local mappings = {
 			:with_desc("tool: Add selection to CodeCompanion Chat"),
 	},
 }
+
+-- set toggle mapping for n/i/t mode
+local modes = { "n", "i", "t" }
+for _, mode in pairs(modes) do
+	for key, opts in pairs({
+		["<C-\\>"] = { pos = "sp", id = "HorizontalTerm" },
+		["<A-\\>"] = { pos = "vsp", id = "VerticalTerm" },
+		["<F5>"] = { pos = "vsp", id = "VerticalTerm" },
+		["<A-d>"] = { pos = "float", id = "FloatTerm" },
+	}) do
+		mappings.plugins[string.format("%s|%s", mode, key)] = map_callback(function()
+				-- Never trust a project's .envrc automatically; authorize it explicitly in your shell.
+				require("nvchad.term").toggle(vim.deepcopy(opts))
+			end)
+			:with_noremap()
+			:with_silent()
+			:with_desc("terminal: Toggle " .. opts.pos)
+	end
+end
 
 bind.nvim_load_mapping(mappings.plugins)

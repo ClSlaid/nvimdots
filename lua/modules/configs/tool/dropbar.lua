@@ -5,53 +5,18 @@ return function()
 		misc = require("modules.utils.icons").get("misc", true),
 		ui = require("modules.utils.icons").get("ui", true),
 	}
-	local utils = require("dropbar.utils")
-	local sources = require("dropbar.sources")
-	-- Custom source to display only the leaf filename in the dropbar
-	sources.symbols = {
-		get_symbols = function(buf, win, cursor)
-			local symbols = sources.path.get_symbols(buf, win, cursor)
-			return { symbols[#symbols] }
-		end,
-	}
 
 	require("modules.utils").load_plugin("dropbar", {
 		bar = {
 			hover = false,
 			truncate = true,
 			pick = { pivots = "etovxqpdygfblzhckisuran" },
-			sources = function(buf)
-				if vim.bo[buf].ft == "markdown" then
-					return {
-						sources.symbols,
-						sources.markdown,
-					}
-				end
-				if vim.bo[buf].buftype == "terminal" then
-					return {
-						sources.terminal,
-					}
-				end
-				return {
-					sources.symbols,
-					utils.source.fallback({
-						sources.lsp,
-						sources.treesitter,
-					}),
-				}
-			end,
 		},
 		sources = {
-			terminal = {
-				name = function(buf)
-					local name = vim.api.nvim_buf_get_name(buf)
-					local term = select(2, require("toggleterm.terminal").identify(name))
-					-- Trying to "snag" a display name from toggleterm
-					if term then
-						return term.display_name or term.name
-					else
-						return name
-					end
+			path = {
+				relative_to = function()
+					-- Only show the leaf filename in dropbar
+					return vim.fn.expand("%:p:h")
 				end,
 			},
 		},

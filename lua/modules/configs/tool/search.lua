@@ -7,16 +7,16 @@ return function()
 	local builtins = require("telescope.builtin")
 	local prompt_pos = require("telescope.config").values.layout_config.horizontal.prompt_position
 
-	local base_opts = use_fzf and { fzf_opts = { ["--layout"] = (prompt_pos == "top" and "reverse" or "default") } }
+	local base_opts = use_fzf
+			and { fzf_opts = { ["--layout"] = (prompt_pos == "top" and "reverse" or "default") }, profile = "telescope" }
 		or {}
 
 	---Returns current directory and whether it's a Git repo root
 	---@return string @Current working directory
-	---@return boolean|nil @true if `.git` folder exists here, false if `.git` exists but isn't folder, nil if `.git` missing
+	---@return boolean @Whether the current directory belongs to a Git repository or worktree
 	local function get_root_info()
 		local cwd = vim.uv.cwd()
-		local stat = vim.uv.fs_stat(".git")
-		return cwd, stat and stat.type == "directory"
+		return cwd, vim.fs.root(cwd, ".git") ~= nil
 	end
 
 	---Creates a file search function based on backend and context
@@ -97,12 +97,6 @@ return function()
 			{ "Zoxide", extensions.zoxide.list },
 		},
 		misc = {
-			{
-				"Colorschemes",
-				function()
-					builtins.colorscheme({ enable_preview = true })
-				end,
-			},
 			{ "Notify", extensions.notify.notify },
 			{ "Undo History", extensions.undo.undo },
 		},
@@ -122,4 +116,24 @@ return function()
 		prompt_position = prompt_pos,
 		collections = collections,
 	})
+
+	vim.api.nvim_create_user_command("TelescopeFiles", function()
+		require("search").open({ collection = "file" })
+	end, { nargs = 0 })
+
+	vim.api.nvim_create_user_command("TelescopePatterns", function()
+		require("search").open({ collection = "pattern" })
+	end, { nargs = 0 })
+
+	vim.api.nvim_create_user_command("TelescopeGit", function()
+		require("search").open({ collection = "git" })
+	end, { nargs = 0 })
+
+	vim.api.nvim_create_user_command("TelescopeDossier", function()
+		require("search").open({ collection = "dossier" })
+	end, { nargs = 0 })
+
+	vim.api.nvim_create_user_command("TelescopeMisc", function()
+		require("search").open({ collection = "misc" })
+	end, { nargs = 0 })
 end

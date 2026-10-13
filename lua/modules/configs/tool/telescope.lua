@@ -80,7 +80,8 @@ return function()
 	})
 
 	require("telescope").load_extension("frecency")
-	require("telescope").load_extension("fzf")
+	-- The native sorter is optional on machines without a C toolchain.
+	pcall(require("telescope").load_extension, "fzf")
 	require("telescope").load_extension("live_grep_args")
 	require("telescope").load_extension("notify")
 	require("telescope").load_extension("projects")
